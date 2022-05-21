@@ -1,0 +1,20 @@
+{% load static %}
+<link rel="icon" href={% static 'img/favicon.ico' %}>
+<link rel="stylesheet" href={% static 'css/datepicker.css' %} media="screen,print">
+<input type="text" onkeyup="searchKeyUp()" onkeydown="searchKeyDown()">
+
+<div id="search_results">
+	<p> Nothin </p>
+</div>
+
+<div id="meals">
+	<div style="padding:10px;width:250px;border:solid 1px;" id="meal0"></div>
+	<div style="padding:10px;width:250px;border:solid 1px;" id="meal1"></div>
+	<div style="padding:10px;width:250px;border:solid 1px;" id="meal2"></div>
+	<div style="padding:10px;width:250px;border:solid 1px;" id="meal3"></div>
+	<div style="padding:10px;width:250px;border:solid 1px;" id="meal4"></div>
+</div>
+<input id="date" class="date-picker" data-format="Y-m-d">
+<script src={% static 'js/generic/datepicker.js' %}></script>
+<script src={% static 'js/day/create.js' %}></script>
+

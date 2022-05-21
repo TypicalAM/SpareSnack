@@ -1,0 +1,21 @@
+{% load static %}
+<link rel="icon" href={% static 'img/favicon.ico' %}>
+<script src={% static 'js/meal/create.js' %}></script>
+<p>Test</p>
+<input type="text" onkeyup="searchKeyUp()" onkeydown="searchKeyDown()"></input>
+<div id="search_results">
+	<p> Nothin </p>
+</div>
+<div id="ingredients">
+	<p> Ingredients div </p>
+</div>
+
+<form action="/d/meals/create/" method="POST" enctype="multipart/form-data" autocomplete="OFF">
+	{% csrf_token %}
+	<input type="hidden" id="amounts_form" value="" name="amounts">
+	<input type="hidden" id="ingredients_form" value="" name="ingredient_data">
+	{{ form.as_p }}
+	<input onclick="fillFields()" type="submit" value="OK">
+</form>
+
+<button onclick="test()"> test </button>
