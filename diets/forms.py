@@ -1,9 +1,17 @@
 import datetime
+
 from django import forms
 from django.core import serializers
-from django.forms import ValidationError
+from django.forms import ValidationError, fields
 
-from .models import Day, Diet, Ingredient, IntermediaryDayMeal, IntermediaryMealIngredient, Meal
+from .models import (
+    Day,
+    Diet,
+    Ingredient,
+    IntermediaryDayMeal,
+    IntermediaryMealIngredient,
+    Meal,
+)
 
 class MealForm(forms.ModelForm):
     class Meta:
@@ -51,12 +59,11 @@ class MealForm(forms.ModelForm):
                     amount      = clean_data['amounts'][k]
                     )
 
-class DietForm(forms.ModelForm):
+class DietCreateForm(forms.ModelForm):
 
     class Meta:
         model   = Diet
         fields  = ('name', 'public', 'description', 'date')
-
     def save(self, author):
         my_diet     = Diet.objects.create(**self.cleaned_data, author=author)
         dates       = [my_diet.date + datetime.timedelta(days=i) for i in range(8)]
@@ -76,3 +83,38 @@ class DietForm(forms.ModelForm):
                     relation.day = instance
                     relation.save()
             my_diet.days.add(instance)
+
+class DietImportForm(forms.Form):
+
+    date = fields.DateField()
+
+    def clean(self):
+        slug = self.data.get('slug')
+        if not slug:
+            raise ValidationError('No slug')
+        clean_data = self.cleaned_data
+        clean_data['slug'] = slug
+        return clean_data
+
+
+    def save(self, author):
+        clean_data = self.cleaned_data
+        diet = Diet.objects.filter(slug=clean_data['slug']).first()
+        if not diet:
+            raise ValidationError('No diet with that slug')
+
+        for i in range(8):
+            date = clean_data['date'] + datetime.timedelta(days=i)
+            day = Day.objects.filter(date=date, author=author).first()
+            if day:
+                day.delete()
+
+        for i, day in enumerate(diet.days.all()):
+            relations   = IntermediaryDayMeal.objects.filter(day=day)
+            day.date    = clean_data['date'] + datetime.timedelta(days=i)
+            day.backup  = False
+            day.author  = author
+            day.save()
+            for relation in relations:
+                relation.day = day
+                relation.save()

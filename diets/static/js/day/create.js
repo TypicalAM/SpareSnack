@@ -34,7 +34,7 @@ function fill_results(results) {
 		const button 	= document.createElement('button')
 
 		heading.textContent = result.fields['name']
-		button.textContent 	= 'meal'
+		button.textContent 	= 'Add the meal'
 		button.onclick 			= function() { addMeal(result) }
 		ingr_div.append(heading)
 		ingr_div.append(button)

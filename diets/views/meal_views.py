@@ -1,6 +1,3 @@
-"""
-Test views for the diets app
-"""
 from http import HTTPStatus as Status
 import json
 from json.decoder import JSONDecodeError
@@ -13,6 +10,7 @@ from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import DetailView, ListView
 
 from ..forms import MealForm
 from ..models import Day, Ingredient, IntermediaryDayMeal, Meal
@@ -112,3 +110,16 @@ class DayCreate(View, LoginRequiredMixin):
                 meal_num    = self.meal_nums[i]
             ).save()
         return JsonResponse(**SAVED)
+
+class MealBrowse(ListView):
+
+    model               = Meal
+    context_object_name = 'meals'
+    template_name       = 'meal/browse.html'
+    paginate_by         = 5
+
+class MealDetail(DetailView):
+
+    model               = Meal
+    context_object_name = 'meal'
+    template_name       = 'meal/view.html'
