@@ -15,7 +15,7 @@ class UserDiets(ListView, LoginRequiredMixin):
 
     model = Diet
     context_object_name = "diets"
-    template_name = "users/diets.html"
+    template_name = "diets.html"
     paginate_by = 1
 
     def get_queryset(self, *args, **kwargs):
@@ -29,7 +29,7 @@ class UserMeals(ListView, LoginRequiredMixin):
 
     model = Meal
     context_object_name = "meals"
-    template_name = "users/meals.html"
+    template_name = "meals.html"
     paginate_by = 5
 
     def get_queryset(self, *args, **kwargs):
@@ -41,7 +41,7 @@ class UserMeals(ListView, LoginRequiredMixin):
 class UserProfile(View, LoginRequiredMixin):
     """View for showing the user his/her profile"""
 
-    template_name = "users/profile.html"
+    template_name = "profile.html"
 
     def get(self, *_):
         """Add the user to the context to show his profile"""
@@ -55,4 +55,4 @@ class UserRegisterView(FormView):
 
     form_class = UserCreationForm
     success_url = reverse_lazy("login")
-    template_name = "users/register.html"
+    template_name = "register.html"
