@@ -10,47 +10,86 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('diets', '0001_initial'),
+        ("diets", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='IntermediaryMealIngredient',
+            name="IntermediaryMealIngredient",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('amount', models.IntegerField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("amount", models.IntegerField()),
             ],
         ),
         migrations.AlterField(
-            model_name='ingredient',
-            name='image',
-            field=models.ImageField(default='ingr_thumb/default.jpg', upload_to='ingr_thumb'),
+            model_name="ingredient",
+            name="image",
+            field=models.ImageField(
+                default="ingr_thumb/default.jpg", upload_to="ingr_thumb"
+            ),
         ),
         migrations.AlterField(
-            model_name='ingredient',
-            name='name',
-            field=models.CharField(default='ingr', max_length=50),
+            model_name="ingredient",
+            name="name",
+            field=models.CharField(default="ingr", max_length=50),
         ),
         migrations.CreateModel(
-            name='Meal',
+            name="Meal",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(default='mymeal', max_length=50)),
-                ('description', models.CharField(max_length=50, null=True)),
-                ('recipe', models.TextField(max_length=1000, null=True)),
-                ('image', models.ImageField(default='meal_thumb/default.jpg', upload_to='meal_thumb')),
-                ('author', models.ForeignKey(on_delete=models.SET(diets.models.get_sentinel), to=settings.AUTH_USER_MODEL)),
-                ('ingredients', models.ManyToManyField(through='diets.IntermediaryMealIngredient', to='diets.ingredient')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(default="mymeal", max_length=50)),
+                ("description", models.CharField(max_length=50, null=True)),
+                ("recipe", models.TextField(max_length=1000, null=True)),
+                (
+                    "image",
+                    models.ImageField(
+                        default="meal_thumb/default.jpg", upload_to="meal_thumb"
+                    ),
+                ),
+                (
+                    "author",
+                    models.ForeignKey(
+                        on_delete=models.SET(diets.models.get_sentinel),
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "ingredients",
+                    models.ManyToManyField(
+                        through="diets.IntermediaryMealIngredient",
+                        to="diets.ingredient",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='intermediarymealingredient',
-            name='ingredient',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='diets.ingredient'),
+            model_name="intermediarymealingredient",
+            name="ingredient",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="diets.ingredient"
+            ),
         ),
         migrations.AddField(
-            model_name='intermediarymealingredient',
-            name='meal',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='diets.meal'),
+            model_name="intermediarymealingredient",
+            name="meal",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="diets.meal"
+            ),
         ),
     ]

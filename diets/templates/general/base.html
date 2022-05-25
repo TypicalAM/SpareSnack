@@ -1,0 +1,30 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+	<head>
+			<meta charset="utf-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+			<link rel="icon" href="{% static 'favicon.ico' %}">
+			{% if title %}
+				<title>SpareSnack - {{ title }}</title>
+					{% else %}
+				<title>SpareSnack</title>
+			{% endif %}
+			<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Actor">
+			<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin:500,600,700">
+			<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alata">
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+			<link rel="stylesheet" href="{% static 'css/first.css' %}">
+			{% block css %}{% endblock %}
+	</head>
+
+	<body>
+    <div class="col">
+        <div id="main-header-1" class="section" style="margin-bottom: 6rem;margin-top: 2rem;display: flex;align-items: center;"><img src="{% static 'img/pepper.svg' %}" style="margin-left: 3%;"><a class="main-header__text" href="/" style="margin-right: 50%;margin-left: 1%;">SpareSnack</a><a class="main-header__text" href="/d/day/create" style="margin-right: 10%;">Day</a><a class="main-header__text" href="/d/meals/browse/">Recipes</a></div>
+    </div>
+		{% block content %}{% endblock %}
+		{% block js %}{% endblock %}
+	</body>
+</html>

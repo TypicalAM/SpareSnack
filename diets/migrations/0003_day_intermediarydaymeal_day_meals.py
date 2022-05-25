@@ -11,30 +11,64 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('diets', '0002_intermediarymealingredient_alter_ingredient_image_and_more'),
+        ("diets", "0002_intermediarymealingredient_alter_ingredient_image_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Day',
+            name="Day",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField(default=django.utils.timezone.now)),
-                ('author', models.ForeignKey(on_delete=models.SET(diets.models.get_sentinel), to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateField(default=django.utils.timezone.now)),
+                (
+                    "author",
+                    models.ForeignKey(
+                        on_delete=models.SET(diets.models.get_sentinel),
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='IntermediaryDayMeal',
+            name="IntermediaryDayMeal",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('meal_num', models.IntegerField()),
-                ('day', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='diets.day')),
-                ('meal', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='diets.meal')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("meal_num", models.IntegerField()),
+                (
+                    "day",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="diets.day"
+                    ),
+                ),
+                (
+                    "meal",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="diets.meal"
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='day',
-            name='meals',
-            field=models.ManyToManyField(through='diets.IntermediaryDayMeal', to='diets.meal'),
+            model_name="day",
+            name="meals",
+            field=models.ManyToManyField(
+                through="diets.IntermediaryDayMeal", to="diets.meal"
+            ),
         ),
     ]

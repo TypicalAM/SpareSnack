@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('diets', '0010_rename_desc_diet_slug'),
+        ("diets", "0010_rename_desc_diet_slug"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='meal',
-            name='url',
+            model_name="meal",
+            name="url",
             field=models.URLField(null=True),
             preserve_default=False,
         ),

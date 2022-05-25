@@ -1,0 +1,143 @@
+:root {
+  --bg1: #f59042;
+  --bg: #f2f7f5;
+  --btn: #faae2b;
+  --head: #161616;
+  --head1: #00473e;
+  --p: #475d5b;
+  --stoke: #00332c;
+  --vector__secondary: #ffa8ba;
+  --vector__tertiary: #fa5246;
+}
+
+.section {
+  padding: 0px 10% 0px 10%;
+}
+
+body {
+  color: var(--head);
+  font-family: Cabin, sans-serif;
+  background-color: var(--bg);
+}
+
+img {
+  width: 4rem;
+  height: 4rem;
+}
+
+#main-header {
+  background: var(--bg);
+}
+
+#splash {
+  display: flex;
+}
+
+.splash__component {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
+#splash__btn {
+  margin-left: 15px;
+  color: var(--head);
+  background-color: #f0c869;
+  border: none;
+  width: 15rem;
+  height: 3rem;
+}
+
+#splash__btn:hover {
+  box-shadow: 8px 10px 17px -15px rgba(42, 32, 32, 1);
+  border: none;
+}
+
+.splash__component_text {
+  margin-bottom: 2rem;
+}
+
+.main-header__text {
+  color: var(--head);
+  font-size: xx-large;
+}
+
+.main-header__text:hover {
+  color: var(--head);
+  font-size: xx-large;
+}
+
+.meal__meal_name {
+  font-size: 150%;
+  color: #a0a0a0;
+  margin-left: 3%;
+  font-family: 'Alata';
+}
+
+.meal__meal_arrow {
+}
+
+.fa.fa-chevron-down.meal__meal_button {
+}
+
+.meal__button {
+  font-size: 200%;
+  color: var(--btn);
+}
+
+.meal_text {
+  display: block;
+  color: var(--head);
+  width: 100%;
+  font-family: Cabin, sans-serif;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 28px;
+}
+
+.meal_remove {
+  color: var(--vector__secondary);
+  font-size: 200%;
+}
+
+#meal__box {
+  padding: 1%;
+  text-align: left!important;
+  background-color: var(--bg);
+}
+
+.search__result {
+  margin-right: 1%;
+  height: 70px;
+  margin-bottom: 3%;
+  display: flex;
+  align-items: center;
+  padding: 5%;
+  font-family: 'Merriweather Sans', sans-serif;
+  background: white;
+}
+
+.search__button {
+  color: var(--btn);
+  font-size: 230%;
+}
+
+.search__result__text {
+  padding-left: 2%;
+  width: 90%;
+  font-family: Alata, sans-serif;
+  text-align: left;
+  border-style: none;
+  border-bottom-style: none;
+  font-size: 20px;
+  color: #6c757d;
+}
+
+::-webkit-calendar-picker-indicator {
+  background-color: white;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+

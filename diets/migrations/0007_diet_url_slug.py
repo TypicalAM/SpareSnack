@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('diets', '0006_day_backup'),
+        ("diets", "0006_day_backup"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='diet',
-            name='url_slug',
-            field=models.SlugField(default='slug'),
+            model_name="diet",
+            name="url_slug",
+            field=models.SlugField(default="slug"),
         ),
     ]

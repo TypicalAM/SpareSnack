@@ -1,7 +1,14 @@
-# TODO
+"""Admin configuration for the diets app"""
 from django.contrib import admin
 
-from .models import Ingredient, Meal, IntermediaryMealIngredient, IntermediaryDayMeal, Day, Diet
+from .models import (
+    Ingredient,
+    Meal,
+    IntermediaryMealIngredient,
+    IntermediaryDayMeal,
+    Day,
+    Diet,
+)
 
 admin.site.register(Ingredient)
 admin.site.register(Meal)

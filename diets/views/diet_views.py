@@ -1,3 +1,4 @@
+"""Views concerning diet creation & browsing"""
 from http import HTTPStatus
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http.response import JsonResponse
@@ -9,58 +10,64 @@ from django.views.generic.base import View
 from ..forms import DietCreateForm, DietImportForm
 from ..models import Diet
 
-BAD = {'data' : {'status' : 'operation unsuccessfull'},'status' : HTTPStatus.BAD_REQUEST}
-SAVED = {'data' : {'status' : 'data saved'}, 'status' : HTTPStatus.CREATED}
+BAD = {"data": {"status": "operation unsuccessfull"}, "status": HTTPStatus.BAD_REQUEST}
+SAVED = {"data": {"status": "data saved"}, "status": HTTPStatus.CREATED}
+
 
 class DietBrowse(ListView):
+    """ListView for browsing different diets"""
 
-    model               = Diet
-    context_object_name = 'diets'
-    template_name       = 'diet/browse.html'
-    paginate_by         = 10
+    model = Diet
+    context_object_name = "diets"
+    template_name = "diet/browse.html"
+    paginate_by = 10
 
-    def get_queryset(self, *_):
-        return Diet.objects.filter(public=True)
+    def get_queryset(self, *args, **kwargs):
+        """Get only the public diets"""
+        queryset = super(DietBrowse, self).get_queryset(*args, **kwargs)
+        return queryset.filter(public=True)
+
 
 class DietDetail(DetailView):
+    """DetailView for viewing a certain diet"""
 
-    model               = Diet
-    context_object_name = 'diet'
-    template_name       = 'diet/view.html'
+    model = Diet
+    context_object_name = "diet"
+    template_name = "diet/view.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
 
 class DietCreate(FormView, LoginRequiredMixin):
+    """FormView for creating a diet using the DietCreateForm"""
 
-    form_class          = DietCreateForm
-    success_url         = reverse_lazy('day-create')
-    template_name       = 'diet/create.html'
+    form_class = DietCreateForm
+    success_url = reverse_lazy("day-create")
+    template_name = "diet/create.html"
 
     def form_valid(self, form):
+        """Save the form if the request was valid"""
         form.save(self.request.user)
         return super(DietCreate, self).form_valid(form)
 
 
 class DietImport(View, LoginRequiredMixin):
+    """A view for importing the diet, usually comming here from a redirect with url params"""
 
-    template_name = 'diet/import.html'
+    template_name = "diet/import.html"
 
     def get(self, *_):
-        diet = Diet.objects.filter(slug=self.request.GET.get('diet')).first()
+        """Get the slug from the url"""
+        diet = Diet.objects.filter(slug=self.request.GET.get("diet")).first()
         if not diet:
             return JsonResponse(**BAD)
         context = {}
-        context['diet'] = diet
-        context['form'] = DietImportForm()
+        context["diet"] = diet
+        context["form"] = DietImportForm()
         return render(self.request, self.template_name, context)
 
     def post(self, *_):
+        """Fill the form and save it"""
         form = DietImportForm(self.request.POST)
         if not form.is_valid():
-            print('Errors')
-            print(form.errors)
             return JsonResponse(**BAD)
 
         form.save(self.request.user)
