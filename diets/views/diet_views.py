@@ -53,7 +53,7 @@ class DietCreate(LoginRequiredMixin, FormView):
 
 
 class DietImport(LoginRequiredMixin, View):
-    """A view for importing the diet, usually comming here from a redirect with url params"""
+    """A view for importing the diet, usually from a redirect with a slug"""
 
     template_name = "diet/import.html"
 

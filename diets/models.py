@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.deletion import CASCADE
 from django.template.defaultfilters import slugify
-from django.utils import timezone
+import datetime
 from django.urls.base import reverse
 
 
@@ -69,7 +69,7 @@ class ThroughMealIngr(models.Model):
 class Day(models.Model):
     """The main field used to connect meals to users."""
 
-    date = models.DateField(default=timezone.now)
+    date = models.DateField(default=datetime.date.today)
     author = models.ForeignKey(User, on_delete=models.SET(get_sentinel))
     meals = models.ManyToManyField(Meal, through="ThroughDayMeal")
     backup = models.BooleanField(default=False)
@@ -95,7 +95,7 @@ class Diet(models.Model):
     name = models.CharField(max_length=50)
     public = models.BooleanField(default=True)
     author = models.ForeignKey(User, on_delete=models.SET(get_sentinel))
-    date = models.DateField(default=timezone.now)
+    date = models.DateField(default=datetime.date.today)
     description = models.TextField(max_length=200)
     days = models.ManyToManyField(Day)
     slug = models.SlugField(null=False, unique=True)

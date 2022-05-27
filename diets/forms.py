@@ -19,7 +19,7 @@ class MealForm(forms.ModelForm):
     """Form for creating meals with searched and selected ingredients"""
 
     class Meta:
-        """We don't include the author field since it will be mentioned in `save`"""
+        """We don't include the author field, it will be mentioned in `save`"""
 
         model = Meal
         fields = ("name", "description", "recipe", "image")

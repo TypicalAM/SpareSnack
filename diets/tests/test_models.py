@@ -16,7 +16,9 @@ from ..models import (
 
 
 class TestModels(TestCase):
-    def setUp(self):
+    """Test the models functionality for the diets app"""
+
+    def setUp(self) -> None:
         self.user = User.objects.create(username="testuser", password="12345")
         self.meal = Meal.objects.create(
             name="Potato soup",
@@ -33,11 +35,11 @@ class TestModels(TestCase):
             author=self.user,
         )
 
-    def test_ingredient_default_fields(self):
+    def test_ingredient_default_fields(self) -> None:
         self.assertEqual(self.ingr1.image.url, "/media/ingr_thumb/default.jpg")
         self.assertEqual(self.ingr2.image.url, "/media/ingr_thumb/default.jpg")
 
-    def test_meal_default_fields(self):
+    def test_meal_default_fields(self) -> None:
         self.assertEqual(self.meal.author.username, "testuser")
         self.assertEqual(
             self.meal.url, reverse("meal-detail", kwargs={"pk": None})
@@ -48,7 +50,7 @@ class TestModels(TestCase):
         )
         self.assertEqual(self.meal.image.url, "/media/meal_thumb/default.jpg")
 
-    def test_meal_intermediary_no_amount(self):
+    def test_meal_intermediary_no_amount(self) -> None:
         with self.assertRaises(IntegrityError):
             ThroughMealIngr.objects.create(
                 meal=self.meal, ingredient=self.ingr1
@@ -57,7 +59,7 @@ class TestModels(TestCase):
                 meal=self.meal, ingredient=self.ingr1
             )
 
-    def test_meal_intermediary(self):
+    def test_meal_intermediary(self) -> None:
         inter = ThroughMealIngr.objects.create(
             meal=self.meal, ingredient=self.ingr1, amount=200
         )
@@ -69,25 +71,25 @@ class TestModels(TestCase):
         self.assertEquals(inter.amount, 200)
         self.assertEquals(inter2.amount, 300)
 
-    def test_day_default_fields(self):
+    def test_day_default_fields(self) -> None:
         self.assertFalse(self.day.backup)
         self.assertEqual(self.day.author, self.user)
 
-    def test_day_intermediary_no_meal_num(self):
+    def test_day_intermediary_no_meal_num(self) -> None:
         with self.assertRaises(IntegrityError):
             ThroughDayMeal.objects.create(day=self.day, meal=self.meal)
 
-    def test_day_intermediary(self):
+    def test_day_intermediary(self) -> None:
         inter = ThroughDayMeal.objects.create(
             meal=self.meal, day=self.day, meal_num=3
         )
         self.assertEqual(self.day.meals.all().first(), inter.meal)
         self.assertEqual(inter.meal_num, 3)
 
-    def test_diet_default_fields(self):
+    def test_diet_default_fields(self) -> None:
         self.assertTrue(self.diet.public)
         self.assertEqual(self.diet.date.day, timezone.now().day)
 
-    def test_diet_manytomany(self):
+    def test_diet_manytomany(self) -> None:
         self.diet.days.add(self.day)
         self.assertIsInstance(self.diet.days.all().first(), Day)
