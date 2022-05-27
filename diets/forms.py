@@ -9,8 +9,8 @@ from .models import (
     Day,
     Diet,
     Ingredient,
-    IntermediaryDayMeal,
-    IntermediaryMealIngredient,
+    ThroughDayMeal,
+    ThroughMealIngr,
     Meal,
 )
 
@@ -26,7 +26,7 @@ class MealForm(forms.ModelForm):
 
     def __init__(self, author, *args, **kwargs):
         self.author = author
-        super(MealForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def verify_ingredients(self):
         """Verify that the ingredient data was correct"""
@@ -41,8 +41,8 @@ class MealForm(forms.ModelForm):
             ]
             amounts_arr = [int(obj) for obj in amounts.split(",")]
             assert len(ingr_arr) == len(amounts_arr)
-        except:
-            raise ValidationError("Incoherent ingredient data")
+        except Exception as exc:
+            raise ValidationError("Incoherent ingredient data") from exc
         return ingr_arr, amounts_arr
 
     def clean(self):
@@ -65,7 +65,7 @@ class MealForm(forms.ModelForm):
         )
         my_meal.save()
         for k in range(len(clean_data["ingredients"])):
-            IntermediaryMealIngredient.objects.create(
+            ThroughMealIngr.objects.create(
                 meal=my_meal,
                 ingredient=clean_data["ingredients"][k],
                 amount=clean_data["amounts"][k],
@@ -94,7 +94,7 @@ class DietCreateForm(forms.ModelForm):
                 instance.backup = True
                 instance.save()
             else:
-                relations = IntermediaryDayMeal.objects.filter(day=instance)
+                relations = ThroughDayMeal.objects.filter(day=instance)
                 instance.pk = None
                 instance.backup = True
                 instance.save()  # generates a new instance
@@ -133,7 +133,7 @@ class DietImportForm(forms.Form):
                 day.delete()
 
         for i, day in enumerate(diet.days.all()):
-            relations = IntermediaryDayMeal.objects.filter(day=day)
+            relations = ThroughDayMeal.objects.filter(day=day)
             day.date = clean_data["date"] + datetime.timedelta(days=i)
             day.backup = False
             day.author = author

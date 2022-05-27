@@ -1,5 +1,5 @@
 [tool.black]
-line-length = 88
+line-length = 80
 exclude = '''
 /(
     \.git
@@ -7,7 +7,3 @@ exclude = '''
   | \venv
 )/
 '''
-
-[flake8]
-max-line-length = 88
-max-complexity = 18

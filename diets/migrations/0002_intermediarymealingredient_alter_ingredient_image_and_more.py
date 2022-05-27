@@ -82,7 +82,8 @@ class Migration(migrations.Migration):
             model_name="intermediarymealingredient",
             name="ingredient",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="diets.ingredient"
+                on_delete=django.db.models.deletion.CASCADE,
+                to="diets.ingredient",
             ),
         ),
         migrations.AddField(

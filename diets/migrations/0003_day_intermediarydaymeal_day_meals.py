@@ -11,7 +11,10 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("diets", "0002_intermediarymealingredient_alter_ingredient_image_and_more"),
+        (
+            "diets",
+            "0002_intermediarymealingredient_alter_ingredient_image_and_more",
+        ),
     ]
 
     operations = [
@@ -53,13 +56,15 @@ class Migration(migrations.Migration):
                 (
                     "day",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="diets.day"
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="diets.day",
                     ),
                 ),
                 (
                     "meal",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="diets.meal"
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="diets.meal",
                     ),
                 ),
             ],

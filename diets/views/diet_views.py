@@ -1,7 +1,7 @@
 """Views concerning diet creation & browsing"""
 from http import HTTPStatus
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http.response import JsonResponse
+from django.http.response import Http404, JsonResponse
 from django.shortcuts import render
 from django.urls.base import reverse_lazy
 from django.views.generic import DetailView, FormView, ListView
@@ -10,7 +10,10 @@ from django.views.generic.base import View
 from ..forms import DietCreateForm, DietImportForm
 from ..models import Diet
 
-BAD = {"data": {"status": "operation unsuccessfull"}, "status": HTTPStatus.BAD_REQUEST}
+BAD = {
+    "data": {"status": "operation unsuccessfull"},
+    "status": HTTPStatus.BAD_REQUEST,
+}
 SAVED = {"data": {"status": "data saved"}, "status": HTTPStatus.CREATED}
 
 
@@ -24,7 +27,7 @@ class DietBrowse(ListView):
 
     def get_queryset(self, *args, **kwargs):
         """Get only the public diets"""
-        queryset = super(DietBrowse, self).get_queryset(*args, **kwargs)
+        queryset = super().get_queryset(*args, **kwargs)
         return queryset.filter(public=True)
 
 
@@ -36,7 +39,7 @@ class DietDetail(DetailView):
     template_name = "diet/view.html"
 
 
-class DietCreate(FormView, LoginRequiredMixin):
+class DietCreate(LoginRequiredMixin, FormView):
     """FormView for creating a diet using the DietCreateForm"""
 
     form_class = DietCreateForm
@@ -46,10 +49,10 @@ class DietCreate(FormView, LoginRequiredMixin):
     def form_valid(self, form):
         """Save the form if the request was valid"""
         form.save(self.request.user)
-        return super(DietCreate, self).form_valid(form)
+        return super().form_valid(form)
 
 
-class DietImport(View, LoginRequiredMixin):
+class DietImport(LoginRequiredMixin, View):
     """A view for importing the diet, usually comming here from a redirect with url params"""
 
     template_name = "diet/import.html"
@@ -57,8 +60,9 @@ class DietImport(View, LoginRequiredMixin):
     def get(self, *_):
         """Get the slug from the url"""
         diet = Diet.objects.filter(slug=self.request.GET.get("diet")).first()
+
         if not diet:
-            return JsonResponse(**BAD)
+            raise Http404()
         context = {}
         context["diet"] = diet
         context["form"] = DietImportForm()

@@ -16,7 +16,9 @@ class Ingredient(models.Model):
     """Ingredients are intertwined with meals"""
 
     name = models.CharField(max_length=50, default="ingr")
-    image = models.ImageField(default="ingr_thumb/default.jpg", upload_to="ingr_thumb")
+    image = models.ImageField(
+        default="ingr_thumb/default.jpg", upload_to="ingr_thumb"
+    )
 
     def __str__(self):
         return f"{self.name}"
@@ -28,17 +30,17 @@ class Meal(models.Model):
     name = models.CharField(max_length=50, default="mymeal")
     description = models.CharField(max_length=50, null=True)
     recipe = models.TextField(max_length=1000, null=True)
-    image = models.ImageField(default="meal_thumb/default.jpg", upload_to="meal_thumb")
-    author = models.ForeignKey(User, on_delete=models.SET(get_sentinel))
-    ingredients = models.ManyToManyField(
-        Ingredient, through="IntermediaryMealIngredient"
+    image = models.ImageField(
+        default="meal_thumb/default.jpg", upload_to="meal_thumb"
     )
+    author = models.ForeignKey(User, on_delete=models.SET(get_sentinel))
+    ingredients = models.ManyToManyField(Ingredient, through="ThroughMealIngr")
     url = models.URLField(null=True)
 
     def save(self, *args, **kwargs):
         """Set the url for the meal"""
         self.url = self.get_absolute_url()
-        super(Meal, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         """Generate the attribute url for the meal"""
@@ -47,8 +49,13 @@ class Meal(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+    class Meta:
+        """Set the ordering by pk"""
 
-class IntermediaryMealIngredient(models.Model):
+        ordering = ["pk"]
+
+
+class ThroughMealIngr(models.Model):
     """Through model between meals and ingredients"""
 
     meal = models.ForeignKey(Meal, on_delete=CASCADE)
@@ -60,18 +67,18 @@ class IntermediaryMealIngredient(models.Model):
 
 
 class Day(models.Model):
-    """Days have meals, days are included in diets"""
+    """The main field used to connect meals to users."""
 
     date = models.DateField(default=timezone.now)
     author = models.ForeignKey(User, on_delete=models.SET(get_sentinel))
-    meals = models.ManyToManyField(Meal, through="IntermediaryDayMeal")
+    meals = models.ManyToManyField(Meal, through="ThroughDayMeal")
     backup = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.date},{self.author}"
 
 
-class IntermediaryDayMeal(models.Model):
+class ThroughDayMeal(models.Model):
     """Through model between days and meals to denote meal numbers"""
 
     meal = models.ForeignKey(Meal, on_delete=models.CASCADE)
@@ -86,7 +93,7 @@ class Diet(models.Model):
     """Diets have days, which are backups of the real days of the user"""
 
     name = models.CharField(max_length=50)
-    public = models.BooleanField()
+    public = models.BooleanField(default=True)
     author = models.ForeignKey(User, on_delete=models.SET(get_sentinel))
     date = models.DateField(default=timezone.now)
     description = models.TextField(max_length=200)
@@ -104,3 +111,8 @@ class Diet(models.Model):
 
     def __str__(self):
         return f"{self.date},{self.author}"
+
+    class Meta:
+        """Set the ordering by pk"""
+
+        ordering = ["pk"]

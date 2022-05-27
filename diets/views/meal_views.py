@@ -1,5 +1,5 @@
 """Views for creating/browsisng meals and managing the day"""
-from http import HTTPStatus as Status
+from http import HTTPStatus
 import json
 from json.decoder import JSONDecodeError
 
@@ -14,14 +14,17 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView
 
 from ..forms import MealForm
-from ..models import Day, Ingredient, IntermediaryDayMeal, Meal
+from ..models import Day, Ingredient, ThroughDayMeal, Meal
 
-OK = {"data": {"status": "operation successfull"}, "status": Status.OK}
-BAD = {"data": {"status": "operation unsuccessfull"}, "status": Status.BAD_REQUEST}
-SAVED = {"data": {"status": "data saved"}, "status": Status.CREATED}
+OK = {"data": {"status": "operation successfull"}, "status": HTTPStatus.OK}
+BAD = {
+    "data": {"status": "operation unsuccessfull"},
+    "status": HTTPStatus.BAD_REQUEST,
+}
+SAVED = {"data": {"status": "data saved"}, "status": HTTPStatus.CREATED}
 
 
-class MealCreate(View, LoginRequiredMixin):
+class MealCreate(LoginRequiredMixin, View):
     """View for creating meals"""
 
     template_name = "meal/create.html"
@@ -49,7 +52,9 @@ class MealCreate(View, LoginRequiredMixin):
 
     def post(self, *_):
         """Validate the form and create a meal"""
-        form = MealForm(self.request.user, self.request.POST, self.request.FILES)
+        form = MealForm(
+            self.request.user, self.request.POST, self.request.FILES
+        )
         if not form.is_valid():
             return JsonResponse(**BAD)
 
@@ -58,7 +63,7 @@ class MealCreate(View, LoginRequiredMixin):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-class DayCreate(View, LoginRequiredMixin):
+class DayCreate(LoginRequiredMixin, View):
     """View for creating days"""
 
     template_name = "day/create.html"
@@ -78,7 +83,7 @@ class DayCreate(View, LoginRequiredMixin):
             day, _ = Day.objects.get_or_create(
                 date=day_query, author=self.request.user, backup=False
             )
-            inter = IntermediaryDayMeal.objects.filter(day=day)
+            inter = ThroughDayMeal.objects.filter(day=day)
             meals = [obj.meal for obj in inter]
             meal_nums = [obj.meal_num for obj in inter]
             data_dict["meals"] = serializers.serialize("json", meals)
@@ -99,7 +104,9 @@ class DayCreate(View, LoginRequiredMixin):
                 Meal.objects.get(name=obj.object.name, pk=obj.object.pk)
                 for obj in serializers.deserialize("json", json_object["meals"])
             ]
-            meal_nums = [int(x) for x in (json_object["meal_nums"][1:-1].split(","))]
+            meal_nums = [
+                int(x) for x in (json_object["meal_nums"][1:-1].split(","))
+            ]
             date = json_object["date"]
         except (JSONDecodeError, KeyError, ValueError):
             return False
@@ -115,11 +122,13 @@ class DayCreate(View, LoginRequiredMixin):
         check = self.validate_save_data()
         if not check:
             return JsonResponse(**BAD)
-        day = Day.objects.get(date=self.date, author=self.request.user, backup=False)
-        for rel in IntermediaryDayMeal.objects.filter(day=day):
+        day = Day.objects.get(
+            date=self.date, author=self.request.user, backup=False
+        )
+        for rel in ThroughDayMeal.objects.filter(day=day):
             rel.delete()
         for i, meal in enumerate(self.meals):
-            IntermediaryDayMeal.objects.create(
+            ThroughDayMeal.objects.create(
                 day=day, meal=meal, meal_num=self.meal_nums[i]
             ).save()
         return JsonResponse(**SAVED)
