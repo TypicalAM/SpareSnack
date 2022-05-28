@@ -227,10 +227,88 @@ class TestDayViews(TestCase):
         self.client.force_login(self.user)
 
     def test_day_create_post_right(self) -> None:
-        ...
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse("day-create"),
+            {
+                "meal_nums": "[0]",
+                "date": datetime.strftime(self.day.date, "%Y-%m-%d"),
+                "meals": """
+                [
+                    {
+                    "model" : "diets.meal",
+                    "pk" : 1,
+                    "fields": {
+                        "name" : "Potato soup",
+                        "description":"Quick soup",
+                        "recipe":"Put potato in broth",
+                        "image":"meal_thumb/default.jpg",
+                        "author":1,
+                        "url":null
+                        }
+                    }
+                ]
+                """,
+            },
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, HTTPStatus.CREATED)
+        self.assertIsInstance(response, JsonResponse)
+        self.assertTrue(len(self.day.meals.all()))
 
     def test_day_create_post_nonexistent_meal(self) -> None:
-        ...
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse("day-create"),
+            {
+                "meal_nums": "[0]",
+                "date": datetime.strftime(self.day.date, "%Y-%m-%d"),
+                "meals": """
+                [
+                    {
+                    "model" : "diets.meal",
+                    "pk" : 1,
+                    "fields": {
+                        "name" : "Nonexistent",
+                        "description":"Quick soup",
+                        "recipe":"Put potato in broth",
+                        "image":"meal_thumb/default.jpg",
+                        "author":1,
+                        "url":null
+                        }
+                    }
+                ]
+                """,
+            },
+            content_type="application/json",
+        )
+        self.assertIsInstance(response, JsonResponse)
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
 
     def test_day_create_post_no_mealnums(self) -> None:
-        ...
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse("day-create"),
+            {
+                "date": datetime.strftime(self.day.date, "%Y-%m-%d"),
+                "meals": """
+                [
+                    {
+                    "model" : "diets.meal",
+                    "pk" : 1,
+                    "fields": {
+                        "name" : "Potato soup",
+                        "description":"Quick soup",
+                        "recipe":"Put potato in broth",
+                        "image":"meal_thumb/default.jpg",
+                        "author":1,
+                        "url":null
+                        }
+                    }
+                ]
+                """,
+            },
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        self.assertIsInstance(response, JsonResponse)

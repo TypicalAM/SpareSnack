@@ -1,9 +1,10 @@
 """Models for the diets app"""
+import datetime
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.deletion import CASCADE
 from django.template.defaultfilters import slugify
-import datetime
 from django.urls.base import reverse
 
 

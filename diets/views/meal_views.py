@@ -108,7 +108,7 @@ class DayCreate(LoginRequiredMixin, View):
                 int(x) for x in (json_object["meal_nums"][1:-1].split(","))
             ]
             date = json_object["date"]
-        except (JSONDecodeError, KeyError, ValueError):
+        except (JSONDecodeError, KeyError, ValueError, Meal.DoesNotExist):
             return False
         if len(meals) != len(meal_nums) or not (meals and meal_nums and date):
             return False
