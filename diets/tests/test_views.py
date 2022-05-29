@@ -236,15 +236,15 @@ class TestDayViews(TestCase):
                 "meals": """
                 [
                     {
-                    "model" : "diets.meal",
-                    "pk" : 1,
-                    "fields": {
-                        "name" : "Potato soup",
-                        "description":"Quick soup",
-                        "recipe":"Put potato in broth",
-                        "image":"meal_thumb/default.jpg",
-                        "author":1,
-                        "url":null
+                        "model": "diets.meal",
+                        "pk": 1,
+                        "fields": {
+                            "name": "Potato soup",
+                            "description": "Quick soup",
+                            "recipe": "Put potato in broth",
+                            "image": "meal_thumb/default.jpg",
+                            "author": 1,
+                            "url": null
                         }
                     }
                 ]
@@ -266,15 +266,15 @@ class TestDayViews(TestCase):
                 "meals": """
                 [
                     {
-                    "model" : "diets.meal",
-                    "pk" : 1,
-                    "fields": {
-                        "name" : "Nonexistent",
-                        "description":"Quick soup",
-                        "recipe":"Put potato in broth",
-                        "image":"meal_thumb/default.jpg",
-                        "author":1,
-                        "url":null
+                        "model": "diets.meal",
+                        "pk": 1,
+                        "fields": {
+                            "name": "Tomato soup",
+                            "description": "Quick soup",
+                            "recipe": "Put tomato in broth",
+                            "image": "meal_thumb/defunct.jpg",
+                            "author": 100,
+                            "url": null
                         }
                     }
                 ]
@@ -294,15 +294,15 @@ class TestDayViews(TestCase):
                 "meals": """
                 [
                     {
-                    "model" : "diets.meal",
-                    "pk" : 1,
-                    "fields": {
-                        "name" : "Potato soup",
-                        "description":"Quick soup",
-                        "recipe":"Put potato in broth",
-                        "image":"meal_thumb/default.jpg",
-                        "author":1,
-                        "url":null
+                        "model": "diets.meal",
+                        "pk": 1,
+                        "fields": {
+                            "name": "Potato soup",
+                            "description": "Quick soup",
+                            "recipe": "Put potato in broth",
+                            "image": "meal_thumb/default.jpg",
+                            "author": 1,
+                            "url": null
                         }
                     }
                 ]

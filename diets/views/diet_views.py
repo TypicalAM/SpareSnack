@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.urls.base import reverse_lazy
 from django.views.generic import DetailView, FormView, ListView
 from django.views.generic.base import View
+from django.views.generic.edit import DeleteView
 
 from ..forms import DietCreateForm, DietImportForm
 from ..models import Diet
@@ -76,3 +77,22 @@ class DietImport(LoginRequiredMixin, View):
 
         form.save(self.request.user)
         return JsonResponse(**SAVED)
+
+
+class DietDelete(LoginRequiredMixin, DeleteView):
+    """A view for deleting a diet, usually from a redirect with a slug"""
+
+    model = Diet
+    context_object_name = "diet"
+    template_name = "diet/delete.html"
+    success_url = reverse_lazy("diet-browse")
+
+    def get_context_data(self, **kwargs):
+        """If the person here isn't the author, it's fishy"""
+
+        context = super().get_context_data(**kwargs)
+        diet = context.get("diet")
+
+        if not diet or self.request.user != diet.author:
+            raise Http404()
+        return context

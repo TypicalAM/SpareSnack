@@ -101,7 +101,7 @@ class Diet(models.Model):
     days = models.ManyToManyField(Day)
     slug = models.SlugField(null=False, unique=True)
 
-    def save(self, dates = None, *args, **kwargs):
+    def save(self, dates=None, *args, **kwargs):
         """Set the slug field, create days or the backups of the days"""
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)
@@ -125,8 +125,8 @@ class Diet(models.Model):
                     relation.pk = None
                     relation.day = instance
                     relation.save()
-            self.days.add(instance)
 
+            self.days.add(instance)
 
     def delete(self, *args, **kwargs):
         """Delete the diet and the associated backup days"""
@@ -136,15 +136,21 @@ class Diet(models.Model):
 
     def fill_days(self, user, date):
         """Fill the days of the `user` from `date` with the selected diet"""
-        for i in range(8):
-            date = date + datetime.timedelta(days=i)
+
+        if isinstance(date, str):
+            origin = datetime.datetime.strptime(date, "%Y-%m-%d")
+        else:
+            origin = date
+
+        for i in range(len(self.days.all())):
+            date = origin + datetime.timedelta(days=i)
             day = Day.objects.filter(date=date, author=user).first()
             if day:
                 day.delete()
 
         for i, day in enumerate(self.days.all()):
             relations = ThroughDayMeal.objects.filter(day=day)
-            day.date = date + datetime.timedelta(days=i)
+            day.date = origin + datetime.timedelta(days=i)
             day.backup = False
             day.author = user
             day.save()
@@ -161,4 +167,5 @@ class Diet(models.Model):
 
     class Meta:
         """Set the ordering by pk"""
+
         ordering = ["pk"]

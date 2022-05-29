@@ -1,5 +1,4 @@
 """Test models for the diets app"""
-# TODO: Add test for filling the days
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
 from django.test import TestCase
@@ -30,11 +29,15 @@ class TestModels(TestCase):
         self.ingr1 = Ingredient.objects.create(name="Potato")
         self.ingr2 = Ingredient.objects.create(name="Chicken Broth")
         self.day = Day.objects.create(date="2022-05-18", author=self.user)
+        ThroughDayMeal.objects.create(
+            meal=self.meal, day=self.day, meal_num=1
+        ).save()
         self.diet = Diet.objects.create(
             name="An exmple diet",
             description="An example description of the diet",
             author=self.user,
         )
+        self.diet.save(["2022-05-18", "2022-05-19", "2022-05-21"])
 
     def test_ingredient_default_fields(self) -> None:
         self.assertEqual(self.ingr1.image.url, "/media/ingr_thumb/default.jpg")
@@ -91,6 +94,21 @@ class TestModels(TestCase):
         self.assertTrue(self.diet.public)
         self.assertEqual(self.diet.date.day, timezone.now().day)
 
-    def test_diet_manytomany(self) -> None:
-        self.diet.days.add(self.day)
+    def test_diet_save_backups(self) -> None:
         self.assertIsInstance(self.diet.days.all().first(), Day)
+        self.assertTrue(self.diet.days.first().backup)
+        self.assertEqual(self.diet.days.first().meals.first(), self.meal)
+
+    def test_diet_fill_days(self) -> None:
+        self.diet.fill_days(self.user, "2022-05-10")
+        filled_day = Day.objects.filter(
+            date="2022-05-10", author=self.user, backup=False
+        ).first()
+        self.assertIsNotNone(filled_day)
+        if filled_day:
+            self.assertEqual(filled_day.meals.first(), self.meal)
+
+    def test_diet_delete(self) -> None:
+        self.assertTrue(Day.objects.filter(backup=True))
+        self.diet.delete()
+        self.assertFalse(Day.objects.filter(backup=True))

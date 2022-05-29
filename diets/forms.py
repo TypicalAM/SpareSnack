@@ -6,10 +6,8 @@ from django.core import serializers
 from django.forms import ValidationError, fields
 
 from .models import (
-    Day,
     Diet,
     Ingredient,
-    ThroughDayMeal,
     ThroughMealIngr,
     Meal,
 )
@@ -87,6 +85,7 @@ class DietCreateForm(forms.ModelForm):
         dates = [my_diet.date + datetime.timedelta(days=i) for i in range(8)]
         my_diet.save(dates)
 
+
 class DietImportForm(forms.Form):
     """A form to import diets into your day"""
 
@@ -109,5 +108,3 @@ class DietImportForm(forms.Form):
             raise ValidationError("No diet with that slug")
 
         diet.fill_days(user, clean_data["date"])
-
-
