@@ -69,7 +69,7 @@ class MealForm(forms.ModelForm):
                 meal=my_meal,
                 ingredient=clean_data["ingredients"][k],
                 amount=clean_data["amounts"][k],
-            )
+            ).save()
 
 
 class DietCreateForm(forms.ModelForm):
@@ -85,25 +85,7 @@ class DietCreateForm(forms.ModelForm):
         """Save the diet and create the day backups & relations"""
         my_diet = Diet.objects.create(**self.cleaned_data, author=author)
         dates = [my_diet.date + datetime.timedelta(days=i) for i in range(8)]
-        my_diet.save()
-        for date in dates:
-            instance, created = Day.objects.get_or_create(
-                date=date, author=author, backup=False
-            )
-            if created:
-                instance.backup = True
-                instance.save()
-            else:
-                relations = ThroughDayMeal.objects.filter(day=instance)
-                instance.pk = None
-                instance.backup = True
-                instance.save()  # generates a new instance
-                for relation in relations:
-                    relation.pk = None
-                    relation.day = instance
-                    relation.save()
-            my_diet.days.add(instance)
-
+        my_diet.save(dates)
 
 class DietImportForm(forms.Form):
     """A form to import diets into your day"""
@@ -119,25 +101,13 @@ class DietImportForm(forms.Form):
         clean_data["slug"] = slug
         return clean_data
 
-    def save(self, author):
+    def save(self, user):
         """Fill the days of the user with the days from the selected diet"""
         clean_data = self.cleaned_data
         diet = Diet.objects.filter(slug=clean_data["slug"]).first()
         if not diet:
             raise ValidationError("No diet with that slug")
 
-        for i in range(8):
-            date = clean_data["date"] + datetime.timedelta(days=i)
-            day = Day.objects.filter(date=date, author=author).first()
-            if day:
-                day.delete()
+        diet.fill_days(user, clean_data["date"])
 
-        for i, day in enumerate(diet.days.all()):
-            relations = ThroughDayMeal.objects.filter(day=day)
-            day.date = clean_data["date"] + datetime.timedelta(days=i)
-            day.backup = False
-            day.author = author
-            day.save()
-            for relation in relations:
-                relation.day = day
-                relation.save()
+

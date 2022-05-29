@@ -101,10 +101,56 @@ class Diet(models.Model):
     days = models.ManyToManyField(Day)
     slug = models.SlugField(null=False, unique=True)
 
-    def save(self, *args, **kwargs):
-        """Set the slug field"""
+    def save(self, dates = None, *args, **kwargs):
+        """Set the slug field, create days or the backups of the days"""
         self.slug = slugify(self.name)
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
+        # TODO, this is a patch for basic saving,
+        # normally a diet should always have a date range supplied
+        if not dates:
+            return
+        for date in dates:
+            instance, created = Day.objects.get_or_create(
+                date=date, author=self.author, backup=False
+            )
+            if created:
+                instance.backup = True
+                instance.save()
+            else:
+                relations = ThroughDayMeal.objects.filter(day=instance)
+                instance.pk = None
+                instance.backup = True
+                instance.save()  # generates a new instance
+                for relation in relations:
+                    relation.pk = None
+                    relation.day = instance
+                    relation.save()
+            self.days.add(instance)
+
+
+    def delete(self, *args, **kwargs):
+        """Delete the diet and the associated backup days"""
+        for day in self.days.all():
+            day.delete()
+        super().delete(*args, **kwargs)
+
+    def fill_days(self, user, date):
+        """Fill the days of the `user` from `date` with the selected diet"""
+        for i in range(8):
+            date = date + datetime.timedelta(days=i)
+            day = Day.objects.filter(date=date, author=user).first()
+            if day:
+                day.delete()
+
+        for i, day in enumerate(self.days.all()):
+            relations = ThroughDayMeal.objects.filter(day=day)
+            day.date = date + datetime.timedelta(days=i)
+            day.backup = False
+            day.author = user
+            day.save()
+            for relation in relations:
+                relation.day = day
+                relation.save()
 
     def get_absolute_url(self):
         """Generate the url for diet-details"""
@@ -115,5 +161,4 @@ class Diet(models.Model):
 
     class Meta:
         """Set the ordering by pk"""
-
         ordering = ["pk"]
