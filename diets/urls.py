@@ -16,7 +16,7 @@ urlpatterns = [
     path("meals/<pk>/", MealDetail.as_view(), name="meal-detail"),
     path("diet/create/", DietCreate.as_view(), name="diet-create"),
     path("diet/browse/", DietBrowse.as_view(), name="diet-browse"),
-    path("diet/import/", DietImport.as_view(), name="diet-import"),
+    path("diet/<slug>/import/", DietImport.as_view(), name="diet-import"),
     path("diet/<slug>/", DietDetail.as_view(), name="diet-detail"),
     path("diet/<slug>/delete", DietDelete.as_view(), name="diet-delete"),
 ]

@@ -6,8 +6,9 @@ from django.contrib.auth.models import User
 from django.http.response import JsonResponse
 from django.test import Client, TestCase
 from django.urls.base import reverse
+from django.urls.exceptions import NoReverseMatch
 
-from ..models import Day, Ingredient, Meal, ThroughDayMeal
+from ..models import Day, Diet, Ingredient, Meal, ThroughDayMeal, get_sentinel
 
 
 class TestMealViews(TestCase):
@@ -312,3 +313,103 @@ class TestDayViews(TestCase):
         )
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
         self.assertIsInstance(response, JsonResponse)
+
+
+class TestDietViews(TestCase):
+    """Test the diet views"""
+
+    def setUp(self) -> None:
+        self.client = Client()
+        self.user = User.objects.create(username="testuser", password="12345")
+        self.meal = Meal.objects.create(
+            name="Potato soup",
+            description="Quick soup",
+            recipe="Put potato in broth",
+            author=self.user,
+        )
+        self.day = Day.objects.create(author=self.user, date="2000-01-01")
+        ThroughDayMeal(meal=self.meal, day=self.day, meal_num=2).save()
+        self.diet = Diet.objects.create(
+            name="An exmple diet",
+            description="An example description of the diet",
+            author=self.user,
+        )
+        self.diet2 = Diet.objects.create(
+            name="An exmple diet 2",
+            description="An example description of the diet",
+            author=get_sentinel(),
+        )
+        self.diet.save(["2000-01-01", "2022-05-19", "2022-05-21"])
+
+    def test_nologin_redirect(self) -> None:
+        response = self.client.get(reverse("diet-create"))
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+
+        response = self.client.get(
+            reverse("diet-import", kwargs={"slug": self.diet.slug})
+        )
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+
+        response = self.client.get(
+            reverse("diet-delete", kwargs={"slug": self.diet.slug})
+        )
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+
+    def test_diet_create_get(self) -> None:
+        self.client.force_login(self.user)
+        response = self.client.get(reverse("diet-create"))
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTemplateUsed(response, "diet/create.html")
+        self.assertIn("form", response.context)
+
+    def test_diet_browse_get(self) -> None:
+        response = self.client.get(reverse("diet-browse"))
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTemplateUsed(response, "diet/browse.html")
+        self.assertIn("diets", response.context)
+        self.assertIn("paginator", response.context)
+        self.assertEqual(response.context["diets"].first(), self.diet)
+
+    def test_diet_import_get_right(self) -> None:
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse("diet-import", kwargs={"slug": self.diet.slug})
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTemplateUsed(response, "diet/import.html")
+        self.assertIn("form", response.context)
+        self.assertIn("diet", response.context)
+
+    def test_diet_import_get_noslug(self) -> None:
+        self.client.force_login(self.user)
+        with self.assertRaises(NoReverseMatch):
+            self.client.get(reverse("diet-import"))
+
+    def test_diet_delete_get_right(self) -> None:
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse("diet-delete", kwargs={"slug": self.diet.slug})
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTemplateUsed(response, "diet/delete.html")
+        self.assertIn("form", response.context)
+        self.assertIn("diet", response.context)
+
+    def test_diet_delete_get_baduser(self) -> None:
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse("diet-delete", kwargs={"slug": self.diet2.slug})
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    def test_diet_delete_get_nodiet(self) -> None:
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse("diet-delete", kwargs={"slug": "nodiet"})
+        )
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
