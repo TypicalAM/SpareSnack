@@ -8,7 +8,14 @@ from django.test import Client, TestCase
 from django.urls.base import reverse
 from django.urls.exceptions import NoReverseMatch
 
-from ..models import Day, Diet, Ingredient, Meal, ThroughDayMeal, get_sentinel
+from diets.models import (
+    Day,
+    Diet,
+    Ingredient,
+    Meal,
+    ThroughDayMeal,
+    get_sentinel,
+)
 
 
 class TestMealViews(TestCase):
@@ -166,6 +173,25 @@ class TestMealViews(TestCase):
 
     def test_meal_detail_get_wrong_pk(self) -> None:
         response = self.client.get(reverse("meal-detail", kwargs={"pk": 2}))
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    def test_meal_delete_GET_right(self) -> None:
+        self.client.force_login(self.user)
+        meal = Meal.objects.all()[0]
+        response = self.client.get(
+            reverse("meal-delete", kwargs={"pk": meal.pk})
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertIn("form", response.context)
+        self.assertIn("meal", response.context)
+        self.assertTemplateUsed(response, "meal/delete.html")
+
+    def test_meal_delete_GET_bad_user(self) -> None:
+        self.client.force_login(get_sentinel())
+        meal = Meal.objects.all()[0]
+        response = self.client.get(
+            reverse("meal-delete", kwargs={"pk": meal.pk})
+        )
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
 

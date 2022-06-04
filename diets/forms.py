@@ -1,19 +1,35 @@
 """Forms for the diets app"""
 import datetime
+import json
+from json.decoder import JSONDecodeError
 
 from django import forms
 from django.core import serializers
 from django.forms import ValidationError, fields
 
-from .models import (
-    Diet,
-    Ingredient,
-    ThroughMealIngr,
-    Meal,
-)
+from diets.models import Diet, Ingredient, Meal, ThroughMealIngr
 
 
-class MealForm(forms.ModelForm):
+def validate_day_post_save(request):
+    """Validate the POST save data from the day"""
+    try:
+        json_object = json.loads(request.body)
+        meals = [
+            Meal.objects.get(name=obj.object.name, pk=obj.object.pk)
+            for obj in serializers.deserialize("json", json_object["meals"])
+        ]
+        meal_nums = [
+            int(x) for x in (json_object["meal_nums"][1:-1].split(","))
+        ]
+        date = json_object["date"]
+    except (JSONDecodeError, KeyError, ValueError, Meal.DoesNotExist):
+        return False
+    if len(meals) != len(meal_nums) or not (meals and meal_nums and date):
+        return False
+    return meals, meal_nums, date
+
+
+class MealCreateForm(forms.ModelForm):
     """Form for creating meals with searched and selected ingredients"""
 
     class Meta:
@@ -22,8 +38,7 @@ class MealForm(forms.ModelForm):
         model = Meal
         fields = ("name", "description", "recipe", "image")
 
-    def __init__(self, author, *args, **kwargs):
-        self.author = author
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def verify_ingredients(self):
@@ -51,7 +66,7 @@ class MealForm(forms.ModelForm):
         clean_data["amounts"] = amounts
         return clean_data
 
-    def save(self):
+    def save(self, author):
         """Save data with additional and create ingredient relations"""
         clean_data = self.cleaned_data
         my_meal = Meal.objects.create(
@@ -59,7 +74,7 @@ class MealForm(forms.ModelForm):
             description=clean_data["description"],
             recipe=clean_data["recipe"],
             image=clean_data["image"],
-            author=self.author,
+            author=author,
         )
         my_meal.save()
         for k in range(len(clean_data["ingredients"])):

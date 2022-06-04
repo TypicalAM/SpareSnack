@@ -1,27 +1,19 @@
 """Views for creating/browsisng meals and managing the day"""
 from http import HTTPStatus
-import json
-from json.decoder import JSONDecodeError
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
-from django.http.response import JsonResponse
+from django.http.response import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView
+from django.views.generic.edit import DeleteView
 
-from ..forms import MealForm
-from ..models import Day, Ingredient, ThroughDayMeal, Meal
-
-OK = {"data": {"status": "operation successfull"}, "status": HTTPStatus.OK}
-BAD = {
-    "data": {"status": "operation unsuccessfull"},
-    "status": HTTPStatus.BAD_REQUEST,
-}
-SAVED = {"data": {"status": "data saved"}, "status": HTTPStatus.CREATED}
+from diets.forms import MealCreateForm, validate_day_post_save
+from diets.models import Day, Ingredient, Meal, ThroughDayMeal
 
 
 class MealCreate(LoginRequiredMixin, View):
@@ -34,7 +26,7 @@ class MealCreate(LoginRequiredMixin, View):
         data_dict = {}
         query = self.request.GET.get("q")
         if not query:
-            return JsonResponse(**BAD)
+            return JsonResponse({}, status=HTTPStatus.BAD_REQUEST)
 
         ingredients = Ingredient.objects.filter(name__icontains=query)
         data_dict["results"] = serializers.serialize("json", ingredients)
@@ -47,18 +39,16 @@ class MealCreate(LoginRequiredMixin, View):
             return self.get_ingredient_data()
 
         context = {}
-        context["form"] = MealForm(self.request.user)
+        context["form"] = MealCreateForm()
         return render(self.request, self.template_name, context)
 
     def post(self, *_):
         """Validate the form and create a meal"""
-        form = MealForm(
-            self.request.user, self.request.POST, self.request.FILES
-        )
+        form = MealCreateForm(self.request.POST, self.request.FILES)
         if not form.is_valid():
-            return JsonResponse(**BAD)
+            return JsonResponse({}, status=HTTPStatus.BAD_REQUEST)
 
-        form.save()
+        form.save(self.request.user)
         return redirect(reverse_lazy("day-create"))
 
 
@@ -75,7 +65,7 @@ class DayCreate(LoginRequiredMixin, View):
         day_query = self.request.GET.get("d")
 
         if not search_query and not day_query:
-            return JsonResponse(**BAD)
+            return JsonResponse({}, status=HTTPStatus.BAD_REQUEST)
         if search_query:
             recipes = Meal.objects.filter(name__icontains=search_query)[:5]
             data_dict["search_results"] = serializers.serialize("json", recipes)
@@ -96,46 +86,26 @@ class DayCreate(LoginRequiredMixin, View):
             return self.get_data()
         return render(self.request, self.template_name)
 
-    def validate_save_data(self) -> bool:
-        """Validate the POST save data from the day"""
-        try:
-            json_object = json.loads(self.request.body)
-            meals = [
-                Meal.objects.get(name=obj.object.name, pk=obj.object.pk)
-                for obj in serializers.deserialize("json", json_object["meals"])
-            ]
-            meal_nums = [
-                int(x) for x in (json_object["meal_nums"][1:-1].split(","))
-            ]
-            date = json_object["date"]
-        except (JSONDecodeError, KeyError, ValueError, Meal.DoesNotExist):
-            return False
-        if len(meals) != len(meal_nums) or not (meals and meal_nums and date):
-            return False
-        self.meals = meals
-        self.meal_nums = meal_nums
-        self.date = date
-        return True
-
     def post(self, *_):
         """Receive a day update"""
-        check = self.validate_save_data()
+        check = validate_day_post_save(self.request)
         if not check:
-            return JsonResponse(**BAD)
-        day = Day.objects.get(
-            date=self.date, author=self.request.user, backup=False
-        )
+            return JsonResponse({}, status=HTTPStatus.BAD_REQUEST)
+
+        meals, meal_nums, date = check
+
+        day = Day.objects.get(date=date, author=self.request.user, backup=False)
         for rel in ThroughDayMeal.objects.filter(day=day):
             rel.delete()
-        for i, meal in enumerate(self.meals):
+        for meal, meal_num in zip(meals, meal_nums):
             ThroughDayMeal.objects.create(
-                day=day, meal=meal, meal_num=self.meal_nums[i]
+                day=day, meal=meal, meal_num=meal_num
             ).save()
-        return JsonResponse(**SAVED)
+        return JsonResponse({}, status=HTTPStatus.CREATED)
 
 
 class MealBrowse(ListView):
-    """Browse different diets"""
+    """Browse different meals"""
 
     model = Meal
     context_object_name = "meals"
@@ -149,3 +119,34 @@ class MealDetail(DetailView):
     model = Meal
     context_object_name = "meal"
     template_name = "meal/view.html"
+
+
+class MealDelete(LoginRequiredMixin, DeleteView):
+    """Delete a meal that you have created"""
+
+    model = Meal
+    context_object_name = "meal"
+    template_name = "meal/delete.html"
+    success_url = reverse_lazy("day-create")
+
+    def get_context_data(self, **kwargs):
+        """If the person here isn't the author, it's fishy"""
+        context = super().get_context_data(**kwargs)
+        meal = context.get("meal")
+        if not meal or self.request.user != meal.author:
+            raise Http404
+        return context
+
+
+class UserMeals(ListView, LoginRequiredMixin):
+    """ListView for showing the user his/her diets"""
+
+    model = Meal
+    context_object_name = "meals"
+    template_name = "meals.html"
+    paginate_by = 5
+
+    def get_queryset(self, *args, **kwargs):
+        """Get only the meals which the user has authored"""
+        queryset = super().get_queryset(*args, **kwargs)
+        return queryset.filter(author=self.request.user)

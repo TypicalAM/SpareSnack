@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.urls.base import reverse
 from django.utils import timezone
 
-from ..models import (
+from diets.models import (
     Day,
     Diet,
     Ingredient,

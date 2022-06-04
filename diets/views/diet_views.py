@@ -6,8 +6,8 @@ from django.urls.base import reverse_lazy
 from django.views.generic import DetailView, FormView, ListView
 from django.views.generic.edit import DeleteView
 
-from ..forms import DietCreateForm, DietImportForm
-from ..models import Diet
+from diets.forms import DietCreateForm, DietImportForm
+from diets.models import Diet
 
 
 class DietBrowse(ListView):
@@ -83,3 +83,17 @@ class DietDelete(LoginRequiredMixin, DeleteView):
         if not diet or self.request.user != diet.author:
             raise Http404
         return context
+
+
+class UserDiets(ListView, LoginRequiredMixin):
+    """ListView for showing the user his/her diets"""
+
+    model = Diet
+    context_object_name = "diets"
+    template_name = "diets.html"
+    paginate_by = 1
+
+    def get_queryset(self, *args, **kwargs):
+        """Get only the diets which the user has authored"""
+        queryset = super().get_queryset(*args, **kwargs)
+        return queryset.filter(author=self.request.user)

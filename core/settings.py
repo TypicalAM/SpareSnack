@@ -55,7 +55,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "sparesnack.urls"
+ROOT_URLCONF = "core.urls"
 
 TEMPLATES = [
     {
@@ -73,7 +73,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "sparesnack.wsgi.application"
+WSGI_APPLICATION = "core.wsgi.application"
 
 
 # Database

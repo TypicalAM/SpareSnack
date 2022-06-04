@@ -1,7 +1,7 @@
 """Admin configuration for the diets app"""
 from django.contrib import admin
 
-from .models import (
+from diets.models import (
     Ingredient,
     Meal,
     ThroughMealIngr,
