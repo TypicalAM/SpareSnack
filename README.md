@@ -20,10 +20,10 @@
 
 _🛠 This project requires `pip` and `Python 3.6` or above_. See: [Python downloads](https://www.python.org/downloads/)
 
-### 2. Clone the repository
+### 2. Clone the repository and enter it
 
 ```sh
-git clone --depth=1 https://github.com/TypicalAM/sparesnack-new.git
+git clone --depth=1 https://github.com/TypicalAM/sparesnack-new.git && cd sparesnack-new
 ```
 
 ### 3. Install the dependencies
@@ -34,12 +34,9 @@ python3 -m pip install -r requirements.txt
 
 ### 4. Set up keys and make migrations
 
-- 👤 You need to make migrations and set up an authorized user
-
 ```sh
 python3 manage.py makemigrations
 python3 manage.py migrate
-python3 manage.py createsuperuser
 ```
 
 ### 5. Run the app!
