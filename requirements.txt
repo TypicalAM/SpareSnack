@@ -1,4 +1,2 @@
-Django==4.0.4
-Pillow==9.1.0
-pre-commit==2.19.0
-django-stubs==1.11.0
+Django
+Pillow
