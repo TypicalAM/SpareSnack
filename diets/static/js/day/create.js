@@ -1,4 +1,4 @@
-const endpoint = '/d/day/create/'
+const endpoint = '/day/create/'
 const search_results_div = document.getElementById('search-content')
 const date_picker = document.querySelector('input[type="date"]')
 let typingTimer;
@@ -21,12 +21,55 @@ function formatDate(date) {
   ].join('-');
 }
 
+function addDay() {
+	const date_picker = document.querySelector('input[type="date"]')
+	day = date_picker.value
+	result = new Date(day)
+	result.setDate(result.getDate() + 1)
+	date_picker.value = formatDate(result)
+	date_changed()
+}
+
+function removeDay() {
+	const date_picker = document.querySelector('input[type="date"]')
+	day = date_picker.value
+	result = new Date(day)
+	result.setDate(result.getDate() - 1)
+	date_picker.value = formatDate(result)
+	date_changed()
+}
+
 function fill_results(results) {
 	const results_div = document.createElement('div')
 	if (!results.length) {
+		const search_div= document.createElement('div')
+		const link 			= document.createElement('a')
+		const link_add 	= document.createElement('a')
+		const icon 			= document.createElement('i')
+
+		search_div.classList.add('search__result')
+
+		link.classList.add('search__result__text')
+		link.href = "/meals/create"
+		link.textContent = 'Not found... Create a new meal?'
+		link.style.overflow = 'hidden'
+		link.style.whiteSpace = 'nowrap'
+		link.style.textOverflow = 'ellipsis'
+
+		link_add.style.cursor = 'pointer'
+
+		icon.classList.add('fa')
+		icon.classList.add('fa-arrow-up')
+		icon.classList.add('search__button')
+
+		link_add.append(icon)
+
+		search_div.append(link)
+		search_div.append(link_add)
+		results_div.appendChild(search_div)
+
 		const p = document.createElement('p')
-		p.textContent = 'Nothin found'
-		results_div.append(p)
+		results_div.appendChild(p)
 		return results_div
 	}
 

@@ -279,7 +279,6 @@ class TestDayViews(TestCase):
             },
             content_type="application/json",
         )
-        self.assertEqual(response.status_code, HTTPStatus.CREATED)
         self.assertIsInstance(response, JsonResponse)
         self.assertTrue(len(self.day.meals.all()))
 

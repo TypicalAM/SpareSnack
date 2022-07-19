@@ -16,7 +16,7 @@ def get_sentinel() -> User:
 class Ingredient(models.Model):
     """Ingredients are intertwined with meals"""
 
-    name = models.CharField(max_length=50, default="ingr")
+    name = models.CharField(max_length=100, default="ingr")
     image = models.ImageField(
         default="ingr_thumb/default.jpg", upload_to="ingr_thumb"
     )
@@ -28,8 +28,8 @@ class Ingredient(models.Model):
 class Meal(models.Model):
     """Meals have ingredients, they are also included in days"""
 
-    name = models.CharField(max_length=50, default="mymeal")
-    description = models.CharField(max_length=50, null=True)
+    name = models.CharField(max_length=100, default="mymeal")
+    description = models.CharField(max_length=200, null=True)
     recipe = models.TextField(max_length=1000, null=True)
     image = models.ImageField(
         default="meal_thumb/default.jpg", upload_to="meal_thumb"
@@ -93,7 +93,7 @@ class ThroughDayMeal(models.Model):
 class Diet(models.Model):
     """Diets have days, which are backups of the real days of the user"""
 
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     public = models.BooleanField(default=True)
     author = models.ForeignKey(User, on_delete=models.SET(get_sentinel))
     date = models.DateField(default=datetime.date.today)
@@ -101,7 +101,7 @@ class Diet(models.Model):
     days = models.ManyToManyField(Day)
     slug = models.SlugField(null=False, unique=True)
 
-    def save(self, dates=None, *args, **kwargs):
+    def save(self, *args, dates=None, **kwargs):
         """Set the slug field, create days or the backups of the days"""
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)

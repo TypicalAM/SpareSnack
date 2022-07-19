@@ -1,94 +1,151 @@
-{% extends "general/base.html" %}
 {% load static %}
-<input type="text" onkeyup="searchKeyUp()" onkeydown="searchKeyDown()">
+<!DOCTYPE html>
+<html>
 
-<div id="search_results">
-	<p> Nothin </p>
-</div>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+		<link rel="icon" href="{% static '/img/favicon.ico' %}">
+    <title>My Day - SpareSnack</title>
+		<link rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alata">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin:400,700">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static '/fonts/fontawesome5-overrides.min.css' %}">
+    <link rel="stylesheet" href="{% static '/css/first.css' %}">
+</head>
 
-<div id="meals">
-	<div style="padding:10px;width:250px;border:solid 1px;" id="meal0"></div>
-	<div style="padding:10px;width:250px;border:solid 1px;" id="meal1"></div>
-	<div style="padding:10px;width:250px;border:solid 1px;" id="meal2"></div>
-	<div style="padding:10px;width:250px;border:solid 1px;" id="meal3"></div>
-	<div style="padding:10px;width:250px;border:solid 1px;" id="meal4"></div>
-</div>
-
-{% block js %}
-<script src={% static 'js/day/create.js' %}></script>
-{% endblock js %}
-
-{% block content %}
-    <div class="col">
-        <div class="section" style="padding-bottom: 3rem;display: flex;justify-content: center;"><input class="text-muted" onchange="date_changed()" type="date" style="width: 12rem;padding: 0.5rem;font-family: 'Alata';font-size: 18px;outline: none;background-color: white;border: none;"></div>
-        <div class="container" style="max-width: 75%;">
-            <div class="row">
-                <div class="col-md-4" style="padding: 1%;background-color: var(--bg;">
-                    <div class="card" style="border: none;">
-                        <div class="card-body" style="background-color: #fff;">
-                            <h4 class="card-title" style="font-family: Alata, sans-serif;">Editor</h4>
-                            <h6 class="text-muted card-subtitle mb-2" style="font-family: Alata, sans-serif;">This is your day editor.&nbsp;You can add meals to your day and also rearrange them to your needs, search below to add meals to your collection!</h6>
-                        </div>
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background-image: linear-gradient(180deg, var(--bg1) 10%, var(--vector__tertiary));background-color: var(--bg1);">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="/">
+                    <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-pepper-hot"></i></div>
+                    <div class="sidebar-brand-text mx-3" style="text-transform: capitalize;font-family: Cabin, sans-serif;"><span style="font-family: Alata, sans-serif;">spareSnack</span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link active" href="/day/create"><i class="fa fa-home"></i><span style="font-family: Alata, sans-serif;">My day</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/meals/browse"><i class="fas fa-table"></i><span style="font-family: Alata, sans-serif;">Meals</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/diet/browse"><i class="fa fa-th-list"></i><span style="font-family: Alata, sans-serif;">Diets</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/accounts/login"><i class="far fa-user-circle"></i><span style="font-family: Alata, sans-serif;">Login</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/accounts/register"><i class="fas fa-user-circle"></i><span style="font-family: Alata, sans-serif;">Register</span></a></li>
+                </ul>
+                <div class="text-center d-none d-md-inline"></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content" style="background-color: var(--bg);">
+                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+                    <div class="container-fluid">
+                        <ul class="navbar-nav flex-nowrap ml-auto">
+                            <li class="nav-item dropdown no-arrow">
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-toggle="dropdown" href="#"><span class="d-none d-lg-inline mr-2 text-gray-600 small">{{ request.user.username }}</span><img class="border rounded-circle img-profile" src="{{ request.user.profile.image.url }}"></a>
+                                    <div class="dropdown-menu shadow dropdown-menu-right animated--grow-in"><a class="dropdown-item" href="/accounts/profile"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Profile</a>
+                                        <div class="dropdown-divider"></div><a class="dropdown-item" href="/accounts/logout"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
-                    <div>
-                        <div style="height: 70px;margin-bottom: 3%;display: flex;align-items: center;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;"><input onkeyup="searchKeyUp()" onkeydown="searchKeyDown()" type="text" class="text-muted" placeholder="Search for recipes" style="outline: none;margin-left: 6%;width: 78%;text-align: left;border-style: none;border-bottom-style: none;font-size: 20px;font-family: Alata, sans-serif;">
-                            <div></div><i class="fa fa-search" style="color: #6c757d!important;margin-left: 2%;margin-right: 2%;font-size: 200%;"></i>
-                        </div>
-                        <div id="search-content" style="width: 95%;position: absolute;">
-                            <div class="search__result"><a class="search__result__text" href="#">Example search result 1</a><a><i class="fa fa-plus search__button"></i></a></div>
-                            <div class="search__result"><a class="search__result__text" href="#">Example search result 1</a><a><i class="fa fa-plus search__button"></i></a></div>
-                            <div class="search__result"><a class="search__result__text" href="#">Example search result 1</a><a><i class="fa fa-plus search__button"></i></a></div>
-                            <div class="search__result"><a class="search__result__text" href="#">Example search result 1</a><a><i class="fa fa-plus search__button"></i></a></div>
-                        </div>
+                </nav>
+                <div class="container-fluid">
+                    <div class="d-sm-flex justify-content-between align-items-center mb-4">
+                        <h3 class="text-dark mb-0" style="font-family: Alata, sans-serif;">My day</h3>
                     </div>
                 </div>
-                <div class="col-md-8 text-center" id="meal__box">
-                    <div class="meal">
-                        <div class="meal__name__div" style="justify-content: center;display: flex;"><small class="meal__meal_name">Breakfast</small></div>
-                        <div class="row d-xl-flex justify-content-xl-start align-items-xl-center" style="margin: 3%;background-color: #fff;">
-                            <div class="col d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-center align-items-sm-center align-items-md-center justify-content-lg-center align-items-lg-center align-items-xl-center"><img class="rounded-circle" style="object-fit: cover;margin: 2%;width: 66px;height: 66px;" src="assets/img/cheese.svg">
-                                <div style="width: 45%;margin-left: 2%;"><span class="meal_text">Example1</span></div><a href="#" style="margin-right: 2%;margin-left: auto;"><i class="fa fa-chevron-down meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-chevron-up meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-remove meal_remove"></i></a>
+                <div class="container" style="max-width: 100%;">
+										<div class="section" style="padding-bottom: 3rem;display: flex;justify-content: center;">
+											<a class="page-link" href="#" style="color: var(--head);border: none;" onclick="removeDay()"><span style="font-size: x-large;">«</span></a>
+											<input class="text-muted" onchange="date_changed()" name="date" required="" id="id_date" type="date" style="width: 12rem;padding: 0.5rem;font-family: 'Alata';font-size: 18px;outline: none;background-color: white;border: none;" />
+											<a class="page-link" href="#" style="color: var(--head);border: none;" onclick="addDay()"><span style="font-size: x-large;">»</span></a>
+										</div>
+                    <div class="row">
+                        <div class="col-md-4" style="padding: 1%;background-color: var(--bg;">
+                            <div class="card" style="border: none;">
+                                <div class="card-body">
+                                    <h4 class="card-title" style="font-family: Alata, sans-serif;">Editor</h4>
+                                    <h6 class="text-muted card-subtitle mb-2" style="font-family: Cabin, sans-serif;">This is your day editor.&nbsp;You can add meals to your day and also rearrange them to your needs, search below to add meals to your collection!</h6>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="height: 70px;margin-bottom: 3%;display: flex;align-items: center;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;"><input onkeyup="searchKeyUp()" onkeydown="searchKeyDown()" type="text" class="text-muted" placeholder="Search for recipes" style="margin-left: 6%;width: 78%;text-align: left;border-style: none;border-bottom-style: none;font-size: 20px;font-family: Alata, sans-serif;">
+                                    <div></div><i class="fa fa-search" style="color: #6c757d!important;margin-left: 2%;margin-right: 2%;font-size: 200%;"></i>
+                                </div>
+                                <div id="search-content" style="width: 95%;position: absolute;">
+                                    <div class="search__result"><a class="search__result__text" href="#">Example search result 1</a><a><i class="fa fa-plus search__button"></i></a></div>
+                                    <div class="search__result"><a class="search__result__text" href="#">Example search result 1</a><a><i class="fa fa-plus search__button"></i></a></div>
+                                    <div class="search__result"><a class="search__result__text" href="#">Example search result 1</a><a><i class="fa fa-plus search__button"></i></a></div>
+                                    <div class="search__result"><a class="search__result__text" href="#">Example search result 1</a><a><i class="fa fa-plus search__button"></i></a></div>
+                                </div>
                             </div>
                         </div>
-                        <div class="row d-xl-flex justify-content-xl-start align-items-xl-center" style="margin: 3%;background-color: #fff;">
-                            <div class="col d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-center align-items-sm-center align-items-md-center justify-content-lg-center align-items-lg-center align-items-xl-center"><img class="rounded-circle" style="object-fit: cover;margin: 2%;width: 66px;height: 66px;" src="assets/img/kiwi.svg">
-                                <div style="width: 45%;margin-left: 2%;"><span class="meal_text">Example2</span></div><a href="#" style="margin-right: 2%;margin-left: auto;"><i class="fa fa-chevron-down meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-chevron-up meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-remove meal_remove"></i></a>
+                        <div class="col-md-8 text-center" id="meal__box">
+                            <div class="meal">
+                                <div class="meal__name__div" style="justify-content: center;display: flex;"><small class="meal__meal_name">Breakfast</small></div>
+                                <div class="row d-xl-flex justify-content-xl-start align-items-xl-center" style="margin: 3%;background-color: #fff;">
+                                    <div class="col d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-center align-items-sm-center align-items-md-center justify-content-lg-center align-items-lg-center align-items-xl-center"><img class="rounded-circle" style="object-fit: cover;margin: 2%;width: 66px;height: 66px;" src="cheese.svg">
+                                        <div style="width: 45%;margin-left: 2%;"><span class="meal_text">Example1</span></div><a href="#" style="margin-right: 2%;margin-left: auto;"><i class="fa fa-chevron-down meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-chevron-up meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-remove meal_remove"></i></a>
+                                    </div>
+                                </div>
+                                <div class="row d-xl-flex justify-content-xl-start align-items-xl-center" style="margin: 3%;background-color: #fff;">
+                                    <div class="col d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-center align-items-sm-center align-items-md-center justify-content-lg-center align-items-lg-center align-items-xl-center"><img class="rounded-circle" style="object-fit: cover;margin: 2%;width: 66px;height: 66px;" src="kiwi.svg">
+                                        <div style="width: 45%;margin-left: 2%;"><span class="meal_text">Example2</span></div><a href="#" style="margin-right: 2%;margin-left: auto;"><i class="fa fa-chevron-down meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-chevron-up meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-remove meal_remove"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+														<div class="meal">
+                                <div class="meal__name__div" style="justify-content: center;display: flex;"><small class="meal__meal_name">Lunch</small></div>
+                                <div class="row d-xl-flex justify-content-xl-start align-items-xl-center" style="margin: 3%;background-color: #fff;">
+                                    <div class="col d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-center align-items-sm-center align-items-md-center justify-content-lg-center align-items-lg-center align-items-xl-center"><img class="rounded-circle" style="object-fit: cover;margin: 2%;width: 66px;height: 66px;" src="cheese.svg">
+                                        <div style="width: 45%;margin-left: 2%;"><span class="meal_text">Example1</span></div><a href="#" style="margin-right: 2%;margin-left: auto;"><i class="fa fa-chevron-down meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-chevron-up meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-remove meal_remove"></i></a>
+                                    </div>
+                                </div>
+                                <div class="row d-xl-flex justify-content-xl-start align-items-xl-center" style="margin: 3%;background-color: #fff;">
+                                    <div class="col d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-center align-items-sm-center align-items-md-center justify-content-lg-center align-items-lg-center align-items-xl-center"><img class="rounded-circle" style="object-fit: cover;margin: 2%;width: 66px;height: 66px;" src="kiwi.svg">
+                                        <div style="width: 45%;margin-left: 2%;"><span class="meal_text">Example2</span></div><a href="#" style="margin-right: 2%;margin-left: auto;"><i class="fa fa-chevron-down meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-chevron-up meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-remove meal_remove"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="meal">
+                                <div class="meal__name__div" style="justify-content: center;display: flex;"><small class="meal__meal_name">Supper</small></div>
+                                <div class="row d-xl-flex justify-content-xl-start align-items-xl-center drag" style="margin: 3%;background-color: #fff;" draggable="true">
+                                    <div class="col d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-center align-items-sm-center align-items-md-center justify-content-lg-center align-items-lg-center align-items-xl-center"><img class="rounded-circle" style="object-fit: cover;margin: 2%;width: 66px;height: 66px;" src="shawarma.svg">
+                                        <div style="width: 45%;margin-left: 2%;"><a href="#" style="width: 100%;"><span class="meal_text">Example3</span></a></div><a href="#" style="margin-right: 2%;margin-left: auto;"><i class="fa fa-chevron-down meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-chevron-up meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-remove meal_remove"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="meal">
+                                <div class="meal__name__div" style="justify-content: center;display: flex;"><small class="meal__meal_name">Dinner</small></div>
+                                <div class="row d-xl-flex justify-content-xl-start align-items-xl-center" style="margin: 3%;" draggable="true">
+                                    <div class="col" style="display: flex;justify-content: center;"><i class="fa fa-ellipsis-h" style="padding-left: 4%;color: rgba(160,160,160,0.51);font-size: 200%;"></i></div>
+                                </div>
+                            </div>
+                            <div class="meal">
+                                <div class="meal__name__div" style="justify-content: center;display: flex;"><small class="meal__meal_name">Snack</small></div>
+                                <div class="row d-xl-flex justify-content-xl-start align-items-xl-center drag" style="margin: 3%;background-color: #fff;" draggable="true">
+                                    <div class="col d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-center align-items-sm-center align-items-md-center justify-content-lg-center align-items-lg-center align-items-xl-center"><img class="rounded-circle" style="object-fit: cover;margin: 2%;width: 66px;height: 66px;" src="pizza.svg">
+                                        <div style="width: 45%;margin-left: 2%;"><span class="meal_text">Example3</span></div><a href="#" style="margin-right: 2%;margin-left: auto;"><i class="fa fa-chevron-down meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-chevron-up meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-remove meal_remove"></i></a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="meal">
-                        <div class="meal__name__div" style="justify-content: center;display: flex;"><small class="meal__meal_name">Brunch</small></div>
-                        <div class="row d-xl-flex justify-content-xl-start align-items-xl-center drag" style="margin: 3%;background-color: #fff;" draggable="true">
-                            <div class="col d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-center align-items-sm-center align-items-md-center justify-content-lg-center align-items-lg-center align-items-xl-center"><img class="rounded-circle" style="object-fit: cover;margin: 2%;width: 66px;height: 66px;" src="assets/img/shawarma.svg">
-                                <div style="width: 45%;margin-left: 2%;"><a href="#" style="width: 100%;"><span class="meal_text">Example3</span></a></div><a href="#" style="margin-right: 2%;margin-left: auto;"><i class="fa fa-chevron-down meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-chevron-up meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-remove meal_remove"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="meal">
-                        <div class="meal__name__div" style="justify-content: center;display: flex;"><small class="meal__meal_name">Lunch</small></div>
-                        <div class="row d-xl-flex justify-content-xl-start align-items-xl-center" style="margin: 3%;" draggable="true">
-                            <div class="col" style="display: flex;justify-content: center;"><i class="fa fa-ellipsis-h" style="padding-left: 4%;color: rgba(160,160,160,0.51);font-size: 200%;"></i></div>
-                        </div>
-                    </div>
-                    <div class="meal">
-                        <div class="meal__name__div" style="justify-content: center;display: flex;"><small class="meal__meal_name">Supper</small></div>
-                        <div class="row d-xl-flex justify-content-xl-start align-items-xl-center drag" style="margin: 3%;background-color: #fff;" draggable="true">
-                            <div class="col d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-center align-items-sm-center align-items-md-center justify-content-lg-center align-items-lg-center align-items-xl-center"><img class="rounded-circle" style="object-fit: cover;margin: 2%;width: 66px;height: 66px;" src="assets/img/pizza.svg">
-                                <div style="width: 45%;margin-left: 2%;"><span class="meal_text">Example3</span></div><a href="#" style="margin-right: 2%;margin-left: auto;"><i class="fa fa-chevron-down meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-chevron-up meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-remove meal_remove"></i></a>
-                            </div>
-                        </div>
-                    </div>
-										<div class="meal">
-                        <div class="meal__name__div" style="justify-content: center;display: flex;"><small class="meal__meal_name">Dinner</small></div>
-                        <div class="row d-xl-flex justify-content-xl-start align-items-xl-center drag" style="margin: 3%;background-color: #fff;" draggable="true">
-                            <div class="col d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-center align-items-sm-center align-items-md-center justify-content-lg-center align-items-lg-center align-items-xl-center"><img class="rounded-circle" style="object-fit: cover;margin: 2%;width: 66px;height: 66px;" src="assets/img/shawarma.svg">
-                                <div style="width: 45%;margin-left: 2%;"><a href="#" style="width: 100%;"><span class="meal_text">Example3</span></a></div><a href="#" style="margin-right: 2%;margin-left: auto;"><i class="fa fa-chevron-down meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-chevron-up meal__button"></i></a><a href="#" style="margin-right: 2%;margin-left: 2%;"><i class="fa fa-remove meal_remove"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright © TypicalAM 2022</span></div>
+                </div>
+            </footer>
         </div>
     </div>
-{% endblock content %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
+		<script src="{% static '/js/general/theme.js' %}"></script>
+		<script src="{% static '/js/day/create.js' %}"></script>
+</body>
+
+</html>

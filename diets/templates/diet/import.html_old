@@ -1,0 +1,14 @@
+<p> Diet import </p>
+{% for days in diet.days.all %}
+	<p> {{ days.date }} </p>
+	{% for meal in days.meals.all %}
+	<p> Testing one two </p>
+	{% endfor %}
+{% endfor %}
+
+<form method="POST">
+{% csrf_token %}
+<input type="hidden" value="{{ diet.slug }}" name="slug">
+{{ form }}
+<button>Submit</button>
+</form>

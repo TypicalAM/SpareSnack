@@ -1,26 +1,141 @@
-<h1>Meals</h1>
-{% for meal in meals %}
-<ul>
-		<li><a href="{{ meal.get_absolute_url }}">{{ meal.name }}</a></li>
-    <li>Desc - {{ meal.name }}</li>
-		<li>Recipe - {{ meal.recipe }}</li>
-</ul>
-{% empty %}
-	<p>No diets yet.</p>
-{% endfor %}
-<div class="pagination">
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-        {% endif %}
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
+{% load static %}
+<!DOCTYPE html>
+<html>
 
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
-</div>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+		<link rel="icon" href="{% static '/img/favicon.ico' %}">
+    <title>Meals - SpareSnack</title>
+		<link rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alata">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin:400,700">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static '/fonts/fontawesome5-overrides.min.css' %}">
+    <link rel="stylesheet" href="{% static '/css/first.css' %}">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background-image: linear-gradient(180deg, var(--bg1) 10%, var(--vector__tertiary));background-color: var(--bg1);">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="/">
+                    <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-pepper-hot"></i></div>
+                    <div class="sidebar-brand-text mx-3" style="text-transform: capitalize;font-family: Cabin, sans-serif;"><span style="font-family: Alata, sans-serif;">spareSnack</span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link" href="/day/create"><i class="fa fa-home"></i><span style="font-family: Alata, sans-serif;">My day</span></a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/meals/browse"><i class="fas fa-table"></i><span style="font-family: Alata, sans-serif;">Meals</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/diet/browse"><i class="fa fa-th-list"></i><span style="font-family: Alata, sans-serif;">Diets</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/accounts/login"><i class="far fa-user-circle"></i><span style="font-family: Alata, sans-serif;">Login</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/accounts/register"><i class="fas fa-user-circle"></i><span style="font-family: Alata, sans-serif;">Register</span></a></li>
+                </ul>
+                <div class="text-center d-none d-md-inline"></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+                    <div class="container-fluid">
+                        <ul class="navbar-nav flex-nowrap ml-auto">
+                            <li class="nav-item dropdown no-arrow">
+                                <div class="nav-item dropdown no-arrow">
+										{% if request.user.is_authenticated %}
+										<a class="dropdown-toggle nav-link" aria-expanded="false" data-toggle="dropdown" href="#"><span class="d-none d-lg-inline mr-2 text-gray-600 small">{{ request.user.username }}</span>
+											<img class="border rounded-circle img-profile" src="{{ request.user.profile.image.url }}"></a>
+										{% else %}
+										<a class="dropdown-toggle nav-link" aria-expanded="false" href="/accounts/login"><span class="d-none d-lg-inline mr-2 text-gray-600 small">Not logged in</span>
+											<img class="border rounded-circle img-profile" src="{% static '/img/avatar.png' %}"></a>
+										{% endif %}
+                                    <div class="dropdown-menu shadow dropdown-menu-right animated--grow-in"><a class="dropdown-item" href="/accounts/profile"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Profile</a>
+                                        <div class="dropdown-divider"></div><a class="dropdown-item" href="/accounts/logout"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="container-fluid">
+                    <h3 class="text-dark mb-4">Meals - <a href="/meals/create" style="color: inherit;">Create your own!</a></h3>
+                    <div class="card shadow">
+                        <div class="card-header py-3">
+                            <p class="text-primary m-0 font-weight-bold" style="color: var(--p)!important;">Available meals</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                                <table class="table my-0" id="dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Desription</th>
+                                            <th>Author</th>
+                                            <th>Link</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+																				{% for meal in meals %}
+                                        <tr>
+																					<td>
+																						<a href="{{ meal.get_absolute_url }}">
+																							<img class="rounded-circle mr-2" width="30" height="30" src="{{ meal.image.url }}" />{{ meal.name }}
+																						</a>
+																					</td>
+																					<td>{{ meal.description }}</td>
+																					<td>{{ meal.author.username }}</td>
+																					<td><a href="{{ meal.get_absolute_url }}" style="color: var(--btn);font-size: x-large;"><i class="fa fa-check-square"></i></a></td>
+																				</tr>
+																		{% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 align-self-center">
+                                    <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                                        <ul class="pagination">
+																						<a class="page-link" href="?page=1" aria-label="First"><span aria-hidden="true">⮜</span></a>
+                                            <li class="page-item">
+																						{% if page_obj.has_previous %}
+																							<a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous"><span aria-hidden="true">«</span></a>
+																						{% endif %}
+																						</li>
+
+                                            <li class="page-item active"><a class="page-link" href="?page={{ page_obj.number }}">{{ page_obj.number }}</a></li>
+{% if page_obj.has_next %}
+  {% if page_obj.number|add:'1' <= page_obj.paginator.num_pages %}
+												<li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'1' }}">{{ page_obj.number|add:'1' }}</a></li>
+  {% endif %}
+  {% if page_obj.number|add:'2' <= page_obj.paginator.num_pages %}
+												<li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'2' }}">{{ page_obj.number|add:'2' }}</a></li>
+  {% endif %}
+{% endif %}
+																						{% if page_obj.has_next %}
+                                            	<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+																						{% endif %}
+																						<a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last"><span aria-hidden="true">⮞</span></a>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright © TypicalAM 2022</span></div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
+		<script src="{% static '/js/general/theme.js' %}"></script>
+</body>
+
+</html>

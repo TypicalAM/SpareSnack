@@ -13,6 +13,7 @@ from diets.views.diet_views import (
     DietImport,
 )
 from diets.views.meal_views import (
+    homepage_view,
     DayCreate,
     MealBrowse,
     MealCreate,
@@ -21,6 +22,7 @@ from diets.views.meal_views import (
 )
 
 urlpatterns = [
+    path("", homepage_view, name="home"),
     path("day/create/", DayCreate.as_view(), name="day-create"),
     path("meals/create/", MealCreate.as_view(), name="meal-create"),
     path("meals/browse/", MealBrowse.as_view(), name="meal-browse"),

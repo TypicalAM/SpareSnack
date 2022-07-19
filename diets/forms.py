@@ -97,7 +97,7 @@ class DietCreateForm(forms.ModelForm):
     def save(self, author):
         """Save the diet and create the day backups & relations"""
         my_diet = Diet.objects.create(**self.cleaned_data, author=author)
-        dates = [my_diet.date + datetime.timedelta(days=i) for i in range(8)]
+        dates = [my_diet.date + datetime.timedelta(days=i) for i in range(7)]
         my_diet.save(dates)
 
 
@@ -105,19 +105,12 @@ class DietImportForm(forms.Form):
     """A form to import diets into your day"""
 
     date = fields.DateField()
-
-    def clean(self):
-        """Clean the slug and add it to the data"""
-        slug = self.data.get("slug")
-        if not slug:
-            raise ValidationError("No slug")
-        clean_data = self.cleaned_data
-        clean_data["slug"] = slug
-        return clean_data
+    slug = fields.SlugField()
 
     def save(self, user):
         """Fill the days of the user with the days from the selected diet"""
         clean_data = self.cleaned_data
+        print(clean_data)
         diet = Diet.objects.filter(slug=clean_data["slug"]).first()
         if not diet:
             raise ValidationError("No diet with that slug")

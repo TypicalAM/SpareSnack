@@ -13,7 +13,12 @@ from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
 
 from diets.forms import MealCreateForm, validate_day_post_save
-from diets.models import Day, Ingredient, Meal, ThroughDayMeal
+from diets.models import Day, Ingredient, Meal, ThroughDayMeal, ThroughMealIngr
+
+
+def homepage_view(request):
+    """A basic view of the index page"""
+    return render(request, "general/index.html")
 
 
 class MealCreate(LoginRequiredMixin, View):
@@ -110,7 +115,7 @@ class MealBrowse(ListView):
     model = Meal
     context_object_name = "meals"
     template_name = "meal/browse.html"
-    paginate_by = 5
+    paginate_by = 10
 
 
 class MealDetail(DetailView):
@@ -119,6 +124,15 @@ class MealDetail(DetailView):
     model = Meal
     context_object_name = "meal"
     template_name = "meal/view.html"
+
+    def get_context_data(self, **kwargs):
+        """Get the ingredient amount data in addition to the meal"""
+        context = super().get_context_data(**kwargs)
+        meal = context.get("meal")
+        context["ingredients"] = (
+            ThroughMealIngr.objects.filter(meal=meal) if meal else None
+        )
+        return context
 
 
 class MealDelete(LoginRequiredMixin, DeleteView):
@@ -135,18 +149,5 @@ class MealDelete(LoginRequiredMixin, DeleteView):
         meal = context.get("meal")
         if not meal or self.request.user != meal.author:
             raise Http404
+        context["ingredients"] = ThroughMealIngr.objects.filter(meal=meal)
         return context
-
-
-class UserMeals(ListView, LoginRequiredMixin):
-    """ListView for showing the user his/her diets"""
-
-    model = Meal
-    context_object_name = "meals"
-    template_name = "meals.html"
-    paginate_by = 5
-
-    def get_queryset(self, *args, **kwargs):
-        """Get only the meals which the user has authored"""
-        queryset = super().get_queryset(*args, **kwargs)
-        return queryset.filter(author=self.request.user)

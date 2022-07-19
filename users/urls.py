@@ -10,14 +10,10 @@ from django.contrib.auth.views import (
 )
 from django.urls import path
 
-from diets.views.diet_views import UserDiets
-from diets.views.meal_views import UserMeals
 from users.views import UserProfileView, UserRegisterView
 
 urlpatterns = [
     path("profile/", UserProfileView.as_view(), name="profile"),
-    path("profile/meals", UserMeals.as_view(), name="meals"),
-    path("profile/diets", UserDiets.as_view(), name="diets"),
     path(
         "login/",
         LoginView.as_view(template_name="auth/login.html"),
