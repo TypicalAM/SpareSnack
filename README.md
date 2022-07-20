@@ -77,6 +77,14 @@ python3 manage.py runserver
 
 If you have a possiblity to run docker containers on your machine, you can also run the dev version of this product directly in the container using the provided `Dockerfile`. If you want to also use the `postgres` database engine however, you must also set up an image for a `postgres` database. A well-written guide I've found to do this is [here](https://testdriven.io/blog/dockerizing-django-with-postgres-gunicorn-and-nginx/).
 
+## ❓ How do I even use it?
+
+Glad you asked, there are four main components to the app:
+- You have **Recipes**, which go in **Meals**. Each **Day** is comprised of five **Meals**.
+- If you really liked a **Day** you can save it in a **Diet**, which can be public or private. If it is public everyone is able to see it and **import** it into their day. Importing is a process which involves *reusing* the days which have already been created to make the most out of your well-prepared **Days**.
+- After creating an account (I won't steal your details) you can go into the **My Day** tab to see all the possible options that you have.
+- Initially, it would be useful to also fill the database with ingredients, because its hard to include them in this package since that would be a lot of data.
+
 ---
 
 ## 📸 Product images
