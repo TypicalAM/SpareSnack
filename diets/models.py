@@ -101,7 +101,7 @@ class Diet(models.Model):
     days = models.ManyToManyField(Day)
     slug = models.SlugField(null=False, unique=True)
 
-    def save(self, *args, dates=None, **kwargs):
+    def save(self, dates=None, *args, **kwargs):
         """Set the slug field, create days or the backups of the days"""
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)

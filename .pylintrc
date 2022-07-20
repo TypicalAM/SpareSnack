@@ -11,4 +11,5 @@ disable=unused-argument,
 				fixme,
 				arguments-renamed,
 				unused-import,
-				import-outside-toplevel
+				import-outside-toplevel,
+				keyword-arg-before-vararg
