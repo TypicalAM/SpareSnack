@@ -1,0 +1,13 @@
+name: Django application
+on: [push]
+jobs:
+  docker_build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build docker
+      run: docker-compose up -d
+    - name: Run migrations
+      run: docker-compose run web python manage.py migrate
+    - name: Run tests
+      run: docker-compose run web python manage.py test
