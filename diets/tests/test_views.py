@@ -126,7 +126,11 @@ class TestMealViews(TestCase):
                 """,
             },
         )
-        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertIn(
+            ["Incoherent ingredient data"],
+            response.context.get("form").errors.values(),
+        )
 
     def test_meal_create_post_no_amounts(self) -> None:
         self.client.force_login(self.user)
@@ -157,7 +161,11 @@ class TestMealViews(TestCase):
                 """,
             },
         )
-        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertIn(
+            ["Invalid ingredient data"],
+            response.context.get("form").errors.values(),
+        )
 
     def test_meal_browse_get(self) -> None:
         response = self.client.get(reverse("meal-browse"))

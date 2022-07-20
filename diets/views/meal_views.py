@@ -2,6 +2,7 @@
 from http import HTTPStatus
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core import serializers
 from django.http.response import Http404, JsonResponse
 from django.shortcuts import redirect, render
@@ -10,7 +11,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView
-from django.views.generic.edit import DeleteView
+from django.views.generic.edit import DeleteView, FormView
 
 from diets.forms import MealCreateForm, validate_day_post_save
 from diets.models import Day, Ingredient, Meal, ThroughDayMeal, ThroughMealIngr
@@ -21,40 +22,37 @@ def homepage_view(request):
     return render(request, "general/index.html")
 
 
-class MealCreate(LoginRequiredMixin, View):
+class MealCreate(LoginRequiredMixin, SuccessMessageMixin, FormView):
     """View for creating meals"""
 
+    form_class = MealCreateForm
     template_name = "meal/create.html"
+    success_url = reverse_lazy("day-create")
+    success_message = "The meal has been created"
 
     def get_ingredient_data(self) -> JsonResponse:
         """Get the ingredient data from the server by a query"""
-        data_dict = {}
         query = self.request.GET.get("q")
         if not query:
             return JsonResponse({}, status=HTTPStatus.BAD_REQUEST)
 
         ingredients = Ingredient.objects.filter(name__icontains=query)
-        data_dict["results"] = serializers.serialize("json", ingredients)
+        return JsonResponse(
+            {"results": serializers.serialize("json", ingredients)}
+        )
 
-        return JsonResponse(data_dict)
-
-    def get(self, *_):
+    def get(self, request, *args, **kwargs):
         """If the request is ajax, get ingredients else generate the form"""
-        if not self.request.accepts("text/html"):
-            return self.get_ingredient_data()
+        return (
+            self.get_ingredient_data()
+            if not self.request.accepts("text/html")
+            else super().get(request, *args, **kwargs)
+        )
 
-        context = {}
-        context["form"] = MealCreateForm()
-        return render(self.request, self.template_name, context)
-
-    def post(self, *_):
-        """Validate the form and create a meal"""
-        form = MealCreateForm(self.request.POST, self.request.FILES)
-        if not form.is_valid():
-            return JsonResponse({}, status=HTTPStatus.BAD_REQUEST)
-
+    def form_valid(self, form):
+        """Save the form if the request was valid"""
         form.save(self.request.user)
-        return redirect(reverse_lazy("day-create"))
+        return super().form_valid(form)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -135,13 +133,14 @@ class MealDetail(DetailView):
         return context
 
 
-class MealDelete(LoginRequiredMixin, DeleteView):
+class MealDelete(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     """Delete a meal that you have created"""
 
     model = Meal
     context_object_name = "meal"
     template_name = "meal/delete.html"
     success_url = reverse_lazy("day-create")
+    success_message = "The meal has been deleted"
 
     def get_context_data(self, **kwargs):
         """If the person here isn't the author, it's fishy"""

@@ -39,6 +39,13 @@
             <div id="content">
                 <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
                     <div class="container-fluid">
+
+												{% for message in messages %}
+										    <div id="ingredient-3" style="margin-right: 2%;box-shadow: 6px 6px 4px #e5e5e5;border: hidden;padding: 1%;display: grid;background: #e9f4f4;border-radius: 9px;">
+													<div class="info" style="align-items: center;display: flex;"><span style="margin: 1px;color: #404040;font-family: Alata, sans-serif;font-size: 15px;">{{ message }}</span></div>
+												</div>
+												{% endfor %}
+
                         <ul class="navbar-nav flex-nowrap ml-auto">
                             <li class="nav-item dropdown no-arrow">
                                 <div class="nav-item dropdown no-arrow">

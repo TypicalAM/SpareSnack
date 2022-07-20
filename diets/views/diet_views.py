@@ -1,5 +1,6 @@
 """Views concerning diet creation & browsing"""
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http.response import Http404
 from django.shortcuts import render
 from django.urls.base import reverse_lazy
@@ -32,12 +33,13 @@ class DietDetail(DetailView):
     template_name = "diet/view.html"
 
 
-class DietCreate(LoginRequiredMixin, FormView):
+class DietCreate(LoginRequiredMixin, SuccessMessageMixin, FormView):
     """FormView for creating a diet using the DietCreateForm"""
 
     form_class = DietCreateForm
-    success_url = reverse_lazy("day-create")
     template_name = "diet/create.html"
+    success_url = reverse_lazy("day-create")
+    success_message = "The diet has been created"
 
     def form_valid(self, form):
         """Save the form if the request was valid"""
@@ -45,12 +47,13 @@ class DietCreate(LoginRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-class DietImport(LoginRequiredMixin, FormView):
+class DietImport(LoginRequiredMixin, SuccessMessageMixin, FormView):
     """A view for importing the diet, usually from a redirect with a slug"""
 
     form_class = DietImportForm
-    success_url = reverse_lazy("diet-browse")
     template_name = "diet/import.html"
+    success_url = reverse_lazy("diet-browse")
+    success_message = "Successfully imported the diet!"
 
     def get(self, request, *, slug):
         """Get the slug from the url"""
@@ -68,13 +71,14 @@ class DietImport(LoginRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-class DietDelete(LoginRequiredMixin, DeleteView):
+class DietDelete(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     """A view for deleting a diet, usually from a redirect with a slug"""
 
     model = Diet
     context_object_name = "diet"
     template_name = "diet/delete.html"
     success_url = reverse_lazy("diet-browse")
+    success_message = "The diet has been deleted"
 
     def get_context_data(self, **kwargs):
         """If the person here isn't the author, it's fishy"""
