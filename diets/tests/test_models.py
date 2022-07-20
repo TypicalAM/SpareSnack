@@ -36,8 +36,7 @@ class TestModels(TestCase):
             name="An exmple diet",
             description="An example description of the diet",
             author=self.user,
-        )
-        self.diet.save(["2022-05-18", "2022-05-19", "2022-05-21"])
+        ).save(["2022-05-18", "2022-05-19", "2022-05-21"])
 
     def test_ingredient_default_fields(self) -> None:
         self.assertEqual(self.ingr1.image.url, "/media/ingr_thumb/default.jpg")
