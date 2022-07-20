@@ -1,62 +1,8 @@
-{% load static %}
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-		<link rel="icon" href="{% static '/img/favicon.ico' %}">
-    <title>Diet Delete - SpareSnack</title>
-		<link rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alata">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin:400,700">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="{% static '/fonts/fontawesome5-overrides.min.css' %}">
-    <link rel="stylesheet" href="{% static '/css/first.css' %}">
-</head>
-
-<body id="page-top">
-    <div id="wrapper">
-        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background-image: linear-gradient(180deg, var(--bg1) 10%, var(--vector__tertiary));background-color: var(--bg1);">
-            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="/">
-                    <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-pepper-hot"></i></div>
-                    <div class="sidebar-brand-text mx-3" style="text-transform: capitalize;font-family: Cabin, sans-serif;"><span style="font-family: Alata, sans-serif;">spareSnack</span></div>
-                </a>
-                <hr class="sidebar-divider my-0">
-                <ul class="navbar-nav text-light" id="accordionSidebar">
-                    <li class="nav-item"><a class="nav-link" href="/day/create"><i class="fa fa-home"></i><span style="font-family: Alata, sans-serif;">My day</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="/meals/browse"><i class="fas fa-table"></i><span style="font-family: Alata, sans-serif;">Meals</span></a></li>
-                    <li class="nav-item"><a class="nav-link active" href="/diet/browse"><i class="fa fa-th-list"></i><span style="font-family: Alata, sans-serif;">Diets</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="/accounts/login"><i class="far fa-user-circle"></i><span style="font-family: Alata, sans-serif;">Login</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="/accounts/register"><i class="fas fa-user-circle"></i><span style="font-family: Alata, sans-serif;">Register</span></a></li>
-                </ul>
-                <div class="text-center d-none d-md-inline"></div>
-            </div>
-        </nav>
-        <div class="d-flex flex-column" id="content-wrapper">
-            <div id="content">
-                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
-                    <div class="container-fluid">
-                        <ul class="navbar-nav flex-nowrap ml-auto">
-                            <li class="nav-item dropdown no-arrow">
-                                <div class="nav-item dropdown no-arrow">
-{% if request.user.is_authenticated %}
-																		<a class="dropdown-toggle nav-link" aria-expanded="false" data-toggle="dropdown" href="#"><span class="d-none d-lg-inline mr-2 text-gray-600 small">{{ request.user.username }}</span>
-																			<img class="border rounded-circle img-profile" src="{{ request.user.profile.image.url }}"></a>
-																	{% else %}
-																		<a class="dropdown-toggle nav-link" aria-expanded="false" href="/accounts/login"><span class="d-none d-lg-inline mr-2 text-gray-600 small">Not logged in</span>
-																			<img class="border rounded-circle img-profile" src="{% static '/img/avatar.png' %}"></a>
-																	{% endif %}
-                                    <div class="dropdown-menu shadow dropdown-menu-right animated--grow-in"><a class="dropdown-item" href="/accounts/profile"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Profile</a>
-                                        <div class="dropdown-divider"></div><a class="dropdown-item" href="/accounts/logout"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Logout</a>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
+{%extends 'general/base.html'%}
+{%load static%}
+{%block title%}Diet Delete{%endblock%}
+{%block diets%}active{%endblock%}
+{%block content%}
                 <div class="container-fluid">
                     <h3 class="text-dark mb-4">Diet Deletion</h3>
                     <div class="row mb-3">
@@ -110,18 +56,4 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <footer class="bg-white sticky-footer">
-                <div class="container my-auto">
-                    <div class="text-center my-auto copyright"><span>Copyright © TypicalAM 2022</span></div>
-                </div>
-            </footer>
-        </div>
-    </div>
-   	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
-		<script src="{% static '/js/general/theme.js' %}"></script>
-</body>
-
-</html>
+{%endblock%}
