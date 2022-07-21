@@ -107,12 +107,17 @@ class DietImportForm(forms.Form):
     date = fields.DateField()
     slug = fields.SlugField()
 
-    def save(self, user):
-        """Fill the days of the user with the days from the selected diet"""
+    def clean(self, *args, **kwargs):
+        """make sure that the slug corresponds to a diet"""
+        super().clean(*args, **kwargs)
         clean_data = self.cleaned_data
-        print(clean_data)
         diet = Diet.objects.filter(slug=clean_data["slug"]).first()
         if not diet:
             raise ValidationError("No diet with that slug")
+        clean_data["diet"] = diet
+        return clean_data
 
-        diet.fill_days(user, clean_data["date"])
+    def save(self, user):
+        """Fill the days of the user with the days from the selected diet"""
+        clean_data = self.cleaned_data
+        clean_data["diet"].fill_days(user, clean_data["date"])
