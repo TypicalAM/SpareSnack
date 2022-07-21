@@ -53,7 +53,36 @@
                                 </div>
                             </div>
 														{% for day in diet.days.all %}
-														<div class="dropdown"><button class="btn btn-primary dropdown-toggle" aria-expanded="false" data-toggle="dropdown" type="button" style="background-color: #f59042;height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;">{{ day.date }}</button>
+														<div class="dropdown">
+															<button class="btn btn-primary dropdown-toggle" aria-expanded="false" data-toggle="dropdown" type="button" 
+															style="
+															{% if forloop.counter|divisibleby:2 %}
+															background: linear-gradient(104deg, #a47ff3, rgb(101,31,249)), #c5aef6;
+															height: 70px;
+															box-shadow: 6px 6px 4px #e5e5e5;
+															margin-bottom: 3%;
+															display: flex;
+															align-items: center;
+															padding: 3%;
+															border-radius: 10px;
+															width: 100%;
+															font-family: 'Merriweather Sans', sans-serif;
+															border: 1px solid #f2f2f2;
+															{% else %}
+color: black;
+background: white;
+height: 70px;
+box-shadow: 6px 6px 4px #e5e5e5;
+margin-bottom: 3%;
+display: flex;
+align-items: center;
+padding: 3%;
+border-radius: 10px;
+width: 100%;
+font-family: 'Merriweather Sans', sans-serif;
+border: 3px solid #a47ff3;
+															{% endif %}
+															">{{ day.date }}</button>
                                 <div class="dropdown-menu">
 																	{% for meal in day.meals.all %}
 																	<a class="dropdown-item" href="{{ meal.get_absolute_url }}">{{ meal.name }}</a>
