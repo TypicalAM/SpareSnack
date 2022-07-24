@@ -6,6 +6,7 @@ from json.decoder import JSONDecodeError
 from django import forms
 from django.core import serializers
 from django.forms import ValidationError, fields
+from django.template.defaultfilters import slugify
 
 from diets.models import Diet, Ingredient, Meal, ThroughMealIngr
 
@@ -61,7 +62,7 @@ class MealCreateForm(forms.ModelForm):
     def clean(self):
         """Clean ingredients and amounts to the cleaned data"""
         ingredient_data, amounts = self.verify_ingredients()
-        clean_data = self.cleaned_data
+        clean_data = super().clean()
         clean_data["ingredients"] = ingredient_data
         clean_data["amounts"] = amounts
         return clean_data
@@ -93,6 +94,15 @@ class DietCreateForm(forms.ModelForm):
 
         model = Diet
         fields = ("name", "public", "description", "date")
+
+    def clean(self):
+        """Make sure we don't have two slugs which are the same"""
+        clean_data = super().clean()
+        name = clean_data.get("name")
+
+        if Diet.objects.filter(slug=slugify(name)).exists():
+            raise ValidationError("A diet with a similar name already exists")
+        return clean_data
 
     def save(self, author):
         """Save the diet and create the day backups & relations"""

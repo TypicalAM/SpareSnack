@@ -1,4 +1,5 @@
 """Views concerning diet creation & browsing"""
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http.response import Http404
@@ -45,6 +46,12 @@ class DietCreate(LoginRequiredMixin, SuccessMessageMixin, FormView):
         """Save the form if the request was valid"""
         form.save(self.request.user)
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        """Return the view with errors"""
+        for _, error in form.errors.items():
+            messages.error(self.request, ", ".join(error))
+        return render(self.request, self.template_name)
 
 
 class DietImport(LoginRequiredMixin, SuccessMessageMixin, FormView):

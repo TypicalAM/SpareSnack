@@ -95,6 +95,19 @@ class TestForms(TestCase):
         form = DietCreateForm(data=data)
         self.assertEqual(form.errors.get("date"), ["Enter a valid date."])
 
+    def test_diet_create_existing_slug(self) -> None:
+        data = {
+            "name": "example dieT",
+            "public": False,
+            "description": "example diet",
+            "date": "2020-02-10",
+        }
+
+        form = DietCreateForm(data=data)
+        self.assertIn(
+            ["A diet with a similar name already exists"], form.errors.values()
+        )
+
     def test_diet_create_right(self) -> None:
         data = {
             "name": "My diet",
