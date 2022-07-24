@@ -8,7 +8,7 @@ from django.urls import include, path
 urlpatterns = [
     path("accounts/", include("users.urls")),
     path("admin/", admin.site.urls),
-    path("d/", include("diets.urls")),
+    path("", include("diets.urls")),
 ]
 
 if settings.DEBUG:
