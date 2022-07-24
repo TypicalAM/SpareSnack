@@ -59,10 +59,10 @@ class MealCreateForm(forms.ModelForm):
             raise ValidationError("Incoherent ingredient data") from exc
         return ingr_arr, amounts_arr
 
-    def clean(self):
+    def clean(self, *args, **kwargs):
         """Clean ingredients and amounts to the cleaned data"""
         ingredient_data, amounts = self.verify_ingredients()
-        clean_data = super().clean()
+        clean_data = super().clean(*args, **kwargs)
         clean_data["ingredients"] = ingredient_data
         clean_data["amounts"] = amounts
         return clean_data
@@ -95,9 +95,9 @@ class DietCreateForm(forms.ModelForm):
         model = Diet
         fields = ("name", "public", "description", "date")
 
-    def clean(self):
+    def clean(self, *args, **kwargs):
         """Make sure we don't have two slugs which are the same"""
-        clean_data = super().clean()
+        clean_data = super().clean(*args, **kwargs)
         name = clean_data.get("name")
 
         if Diet.objects.filter(slug=slugify(name)).exists():
@@ -119,8 +119,7 @@ class DietImportForm(forms.Form):
 
     def clean(self, *args, **kwargs):
         """make sure that the slug corresponds to a diet"""
-        super().clean(*args, **kwargs)
-        clean_data = self.cleaned_data
+        clean_data = super().clean(*args, **kwargs)
         diet = Diet.objects.filter(slug=clean_data["slug"]).first()
         if not diet:
             raise ValidationError("No diet with that slug")
