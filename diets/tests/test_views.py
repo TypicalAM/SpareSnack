@@ -14,7 +14,6 @@ from diets.models import (
     Ingredient,
     Meal,
     ThroughDayMeal,
-    get_sentinel,
 )
 
 
@@ -23,16 +22,17 @@ class TestMealViews(TestCase):
 
     def setUp(self) -> None:
         self.client = Client()
-        self.user = User.objects.create(username="testuser", password="12345")
+        self.usera = User.objects.create(username="testusera", password="12345")
+        self.userb = User.objects.create(username="testuserb", password="12345")
         self.meal = Meal.objects.create(
             name="Potato soup",
             description="Quick soup",
             recipe="Put potato in broth",
-            author=self.user,
+            author=self.usera,
         )
         self.ingr1 = Ingredient.objects.create(name="Potato")
         self.ingr2 = Ingredient.objects.create(name="Chicken Broth")
-        self.day = Day.objects.create(author=self.user)
+        self.day = Day.objects.create(author=self.usera)
         ThroughDayMeal(meal=self.meal, day=self.day, meal_num=2).save()
 
     def test_nologin_redirect(self) -> None:
@@ -40,13 +40,13 @@ class TestMealViews(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
 
     def test_meal_create_get_noargs(self) -> None:
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         response = self.client.get(reverse("meal-create"))
         self.assertTemplateUsed(response, "meal/create.html")
         self.assertTrue("form" in response.context)
 
     def test_meal_create_get_search(self) -> None:
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         response = self.client.get(
             reverse("meal-create"),
             {"q": "Chicken"},
@@ -56,7 +56,7 @@ class TestMealViews(TestCase):
         self.assertIsInstance(response, JsonResponse)
 
     def test_meal_create_post_right(self) -> None:
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         response = self.client.post(
             reverse("meal-create"),
             {
@@ -97,7 +97,7 @@ class TestMealViews(TestCase):
         self.assertRedirects(response, reverse("day-create"))
 
     def test_meal_create_post_nonexistent_ingr(self) -> None:
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         # Check the response with a non-existent ingredient 'Ptato'
         response = self.client.post(
             reverse("meal-create"),
@@ -133,7 +133,7 @@ class TestMealViews(TestCase):
         )
 
     def test_meal_create_post_no_amounts(self) -> None:
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         # Check the response with a non-existent ingredient 'Ptato'
         response = self.client.post(
             reverse("meal-create"),
@@ -184,7 +184,7 @@ class TestMealViews(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     def test_meal_delete_GET_right(self) -> None:
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         meal = Meal.objects.all()[0]
         response = self.client.get(
             reverse("meal-delete", kwargs={"pk": meal.pk})
@@ -195,7 +195,7 @@ class TestMealViews(TestCase):
         self.assertTemplateUsed(response, "meal/delete.html")
 
     def test_meal_delete_GET_bad_user(self) -> None:
-        self.client.force_login(get_sentinel())
+        self.client.force_login(self.userb)
         meal = Meal.objects.all()[0]
         response = self.client.get(
             reverse("meal-delete", kwargs={"pk": meal.pk})
@@ -208,14 +208,15 @@ class TestDayViews(TestCase):
 
     def setUp(self) -> None:
         self.client = Client()
-        self.user = User.objects.create(username="testuser", password="12345")
+        self.usera = User.objects.create(username="testusera", password="12345")
+        self.userb = User.objects.create(username="testuserb", password="12345")
         self.meal = Meal.objects.create(
             name="Potato soup",
             description="Quick soup",
             recipe="Put potato in broth",
-            author=self.user,
+            author=self.usera,
         )
-        self.day = Day.objects.create(author=self.user)
+        self.day = Day.objects.create(author=self.usera)
         ThroughDayMeal(meal=self.meal, day=self.day, meal_num=2).save()
 
     def test_nologin_redirect(self) -> None:
@@ -223,12 +224,12 @@ class TestDayViews(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
 
     def test_day_create_get_noargs(self) -> None:
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         response = self.client.get(reverse("day-create"))
         self.assertTemplateUsed(response, "day/create.html")
 
     def test_day_create_get_search(self) -> None:
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         response = self.client.get(
             reverse("day-create"),
             {"q": "Potato soup"},
@@ -239,7 +240,7 @@ class TestDayViews(TestCase):
 
     def test_day_create_get_nonexisting_day(self) -> None:
         fake_date = "2000-01-01"
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         response = self.client.get(
             reverse("day-create"),
             {"d": fake_date},
@@ -250,7 +251,7 @@ class TestDayViews(TestCase):
         self.assertTrue(Day.objects.filter(date=fake_date))
 
     def test_day_create_get_existing_day(self) -> None:
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         response = self.client.get(
             reverse("day-create"),
             {"d": datetime.strftime(self.day.date, "%Y-%m-%d")},
@@ -259,10 +260,10 @@ class TestDayViews(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertIsInstance(response, JsonResponse)
         self.assertTrue(len(response.content) > 20)
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
 
     def test_day_create_post_right(self) -> None:
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         response = self.client.post(
             reverse("day-create"),
             {
@@ -291,7 +292,7 @@ class TestDayViews(TestCase):
         self.assertTrue(len(self.day.meals.all()))
 
     def test_day_create_post_nonexistent_meal(self) -> None:
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         response = self.client.post(
             reverse("day-create"),
             {
@@ -320,7 +321,7 @@ class TestDayViews(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
 
     def test_day_create_post_no_mealnums(self) -> None:
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         response = self.client.post(
             reverse("day-create"),
             {
@@ -353,24 +354,25 @@ class TestDietViews(TestCase):
 
     def setUp(self) -> None:
         self.client = Client()
-        self.user = User.objects.create(username="testuser", password="12345")
+        self.usera = User.objects.create(username="testusera", password="12345")
+        self.userb = User.objects.create(username="testuserb", password="12345")
         self.meal = Meal.objects.create(
             name="Potato soup",
             description="Quick soup",
             recipe="Put potato in broth",
-            author=self.user,
+            author=self.usera,
         )
-        self.day = Day.objects.create(author=self.user, date="2000-01-01")
+        self.day = Day.objects.create(author=self.usera, date="2000-01-01")
         ThroughDayMeal(meal=self.meal, day=self.day, meal_num=2).save()
         self.diet = Diet.objects.create(
             name="An exmple diet",
             description="An example description of the diet",
-            author=self.user,
+            author=self.usera,
         )
         self.diet2 = Diet.objects.create(
             name="An exmple diet 2",
             description="An example description of the diet",
-            author=get_sentinel(),
+            author=self.userb,
         )
         self.diet.save(["2000-01-01", "2022-05-19", "2022-05-21"])
 
@@ -389,7 +391,7 @@ class TestDietViews(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
 
     def test_diet_create_get(self) -> None:
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         response = self.client.get(reverse("diet-create"))
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -406,7 +408,7 @@ class TestDietViews(TestCase):
         self.assertEqual(response.context["diets"].first(), self.diet)
 
     def test_diet_import_get_right(self) -> None:
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         response = self.client.get(
             reverse("diet-import", kwargs={"slug": self.diet.slug})
         )
@@ -417,12 +419,12 @@ class TestDietViews(TestCase):
         self.assertIn("diet", response.context)
 
     def test_diet_import_get_noslug(self) -> None:
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         with self.assertRaises(NoReverseMatch):
             self.client.get(reverse("diet-import"))
 
     def test_diet_delete_get_right(self) -> None:
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         response = self.client.get(
             reverse("diet-delete", kwargs={"slug": self.diet.slug})
         )
@@ -433,7 +435,7 @@ class TestDietViews(TestCase):
         self.assertIn("diet", response.context)
 
     def test_diet_delete_get_baduser(self) -> None:
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         response = self.client.get(
             reverse("diet-delete", kwargs={"slug": self.diet2.slug})
         )
@@ -441,7 +443,7 @@ class TestDietViews(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     def test_diet_delete_get_nodiet(self) -> None:
-        self.client.force_login(self.user)
+        self.client.force_login(self.usera)
         response = self.client.get(
             reverse("diet-delete", kwargs={"slug": "nodiet"})
         )

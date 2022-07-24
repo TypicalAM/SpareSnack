@@ -34,7 +34,7 @@ class Meal(models.Model):
     image = models.ImageField(
         default="meal_thumb/default.jpg", upload_to="meal_thumb"
     )
-    author = models.ForeignKey(User, on_delete=models.SET(get_sentinel))
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     ingredients = models.ManyToManyField(Ingredient, through="ThroughMealIngr")
     url = models.URLField(null=True)
 
@@ -71,7 +71,7 @@ class Day(models.Model):
     """The main field used to connect meals to users."""
 
     date = models.DateField(default=datetime.date.today)
-    author = models.ForeignKey(User, on_delete=models.SET(get_sentinel))
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     meals = models.ManyToManyField(Meal, through="ThroughDayMeal")
     backup = models.BooleanField(default=False)
 
@@ -95,7 +95,7 @@ class Diet(models.Model):
 
     name = models.CharField(max_length=100)
     public = models.BooleanField(default=True)
-    author = models.ForeignKey(User, on_delete=models.SET(get_sentinel))
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField(default=datetime.date.today)
     description = models.TextField(max_length=200)
     days = models.ManyToManyField(Day)
