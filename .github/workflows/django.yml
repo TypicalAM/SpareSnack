@@ -5,8 +5,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Build docker
+    - name: Build the docker image
       run: docker-compose up -d
+    - name: Make migrations
+      run: docker-compose run web python manage.py makemigrations
     - name: Run migrations
       run: docker-compose run web python manage.py migrate
     - name: Run tests
