@@ -1,11 +1,12 @@
 """Views for creating/browsisng meals and managing the day"""
 from http import HTTPStatus
 
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core import serializers
 from django.http.response import Http404, JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -53,6 +54,12 @@ class MealCreate(LoginRequiredMixin, SuccessMessageMixin, FormView):
         """Save the form if the request was valid"""
         form.save(self.request.user)
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        """Return the view with errors"""
+        for _, error in form.errors.items():
+            messages.error(self.request, ", ".join(error))
+        return render(self.request, self.template_name)
 
 
 @method_decorator(csrf_exempt, name="dispatch")

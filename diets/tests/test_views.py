@@ -24,8 +24,12 @@ class TestMealViews(TestCase):
             recipe="Put potato in broth",
             author=self.usera,
         )
-        self.ingr1 = Ingredient.objects.create(name="Potato")
-        self.ingr2 = Ingredient.objects.create(name="Chicken Broth")
+        self.ingr1 = Ingredient.objects.create(
+            name="Potato", measure_type="fruits", convert_rate=300
+        )
+        self.ingr2 = Ingredient.objects.create(
+            name="Chicken Broth", measure_type="liters", convert_rate=1
+        )
         self.day = Day.objects.create(author=self.usera)
         ThroughDayMeal(meal=self.meal, day=self.day, meal_num=2).save()
 
@@ -48,118 +52,6 @@ class TestMealViews(TestCase):
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertIsInstance(response, JsonResponse)
-
-    def test_meal_create_post_right(self) -> None:
-        self.client.force_login(self.usera)
-        response = self.client.post(
-            reverse("meal-create"),
-            {
-                "name": "test",
-                "description": "test2",
-                "recipe": "recipe1",
-                "amounts": "10,20,30",
-                "ingredient_data": """
-                [
-                    {
-                        "model": "diets.ingredient",
-                        "fields": {
-                            "name": "Potato",
-                            "image": "ingr_thumb/default.jpg"
-                        }
-                    },
-                    {
-                        "model": "diets.ingredient",
-                        "fields": {
-                            "name": "Chicken Broth",
-                            "image": "ingr_thumb/default.jpg"
-                        }
-                    },
-                    {
-                        "model": "diets.ingredient",
-                        "fields": {
-                            "name": "Potato",
-                            "image": "ingr_thumb/default.jpg"
-                        }
-                    }
-                ]
-                """,
-            },
-        )
-        new_meal = Meal.objects.all()[1]
-        self.assertEqual(new_meal.name, "test")
-        self.assertEqual(len(new_meal.ingredients.all()), 3)
-        self.assertRedirects(response, reverse("day-create"))
-
-    def test_meal_create_post_nonexistent_ingr(self) -> None:
-        self.client.force_login(self.usera)
-        # Check the response with a non-existent ingredient 'Ptato'
-        response = self.client.post(
-            reverse("meal-create"),
-            {
-                "name": "test",
-                "description": "test2",
-                "recipe": "recipe1",
-                "amounts": "10,20",
-                "ingredient_data": """
-                [
-                    {
-                        "model": "diets.ingredient",
-                        "fields": {
-                            "name": "Potat",
-                            "image": "ingr_thumb/default.jpg"
-                        }
-                    },
-                    {
-                        "model": "diets.ingredient",
-                        "fields": {
-                            "name": "Chicken Broth",
-                            "image": "ingr_thumb/default.jpg"
-                        }
-                    }
-                ]
-                """,
-            },
-        )
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertIn(
-            ["Incoherent ingredient data"],
-            response.context.get("form").errors.values(),
-        )
-
-    def test_meal_create_post_no_amounts(self) -> None:
-        self.client.force_login(self.usera)
-        # Check the response with a non-existent ingredient 'Ptato'
-        response = self.client.post(
-            reverse("meal-create"),
-            {
-                "name": "test",
-                "description": "test2",
-                "recipe": "recipe1",
-                "ingredient_data": """
-                [
-                    {
-                        "model": "diets.ingredient",
-                        "fields": {
-                            "name": "Potat",
-                            "image": "ingr_thumb/default.jpg"
-                        }
-                    },
-                    {
-                        "model": "diets.ingredient",
-                        "fields": {
-                            "name": "Chicken Broth",
-                            "image": "ingr_thumb/default.jpg"
-                        }
-                    }
-                ]
-                """,
-            },
-        )
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertIn(
-            ["Invalid ingredient data"],
-            response.context.get("form").errors.values(),
-        )
 
     def test_meal_browse_get(self) -> None:
         response = self.client.get(reverse("meal-browse"))

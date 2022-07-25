@@ -13,8 +13,12 @@ class TestForms(TestCase):
     """Test the forms functionality for the diets app"""
 
     def setUp(self) -> None:
-        self.ingr1 = Ingredient.objects.create(name="Potato")
-        self.ingr2 = Ingredient.objects.create(name="Chicken Broth")
+        self.ingr1 = Ingredient.objects.create(
+            name="Potato", measure_type="fruits", convert_rate=300
+        )
+        self.ingr2 = Ingredient.objects.create(
+            name="Chicken Broth", measure_type="liters", convert_rate=1
+        )
 
         self.user = User.objects.create(username="testuser", password="12345")
         self.diet = Diet.objects.create(

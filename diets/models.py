@@ -20,9 +20,37 @@ class Ingredient(models.Model):
     image = models.ImageField(
         default="ingr_thumb/default.jpg", upload_to="ingr_thumb"
     )
+    measure_type = models.CharField(max_length=50)
+    convert_rate = models.FloatField()
+
+    def convert_from_grams(self, grams):
+        """Display to the user the amount of the item, having the item in grams
+
+        Example:    Mango.measure_type = FRUITS
+                    Mango.convert_rate = 300
+                    if grams is 600 we are returning '2 FRUITS'
+
+                    Sugar.measure_type = TBSP
+                    Sugar.convert_rate = 15
+                    if grams is 45 we are returning '3 TBSP'
+        """
+        return round(grams / self.convert_rate, 2)
+
+    def convert_to_grams(self, quantity):
+        """A function analogous to `convert_from_grams`
+
+        Example:    Mango.measure_type = FRUITS
+                    Mango.convert_rate = 300
+                    if quantity is 2 we are returning '600 grams'
+
+                    Sugar.measure_type = TBSP
+                    Sugar.convert_rate = 15
+                    if quantity is 4 we are returning '60 grams'
+        """
+        return round(quantity * self.convert_rate)
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.name} measured with {self.measure_type} at {self.convert_rate}g per 1 item"
 
 
 class Meal(models.Model):
@@ -61,10 +89,16 @@ class ThroughMealIngr(models.Model):
 
     meal = models.ForeignKey(Meal, on_delete=CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=CASCADE)
-    amount = models.PositiveIntegerField()
+    amount = models.FloatField()
+    grams = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.meal},{self.ingredient}"
+
+    def save(self, *args, **kwargs):
+        """Convert from native to grams"""
+        self.grams = self.ingredient.convert_to_grams(self.amount)
+        super().save(*args, **kwargs)
 
 
 class Day(models.Model):

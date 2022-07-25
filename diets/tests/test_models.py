@@ -1,18 +1,18 @@
 """Test models for the diets app"""
 import datetime
+
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
 from django.test import TestCase
 from django.urls.base import reverse
-from django.utils import timezone
 
 from diets.models import (
     Day,
     Diet,
     Ingredient,
+    Meal,
     ThroughDayMeal,
     ThroughMealIngr,
-    Meal,
 )
 
 
@@ -27,8 +27,12 @@ class TestModels(TestCase):
             recipe="Put potato in broth",
             author=self.user,
         )
-        self.ingr1 = Ingredient.objects.create(name="Potato")
-        self.ingr2 = Ingredient.objects.create(name="Chicken Broth")
+        self.ingr1 = Ingredient.objects.create(
+            name="Potato", measure_type="fruits", convert_rate=300
+        )
+        self.ingr2 = Ingredient.objects.create(
+            name="Chicken Broth", measure_type="liters", convert_rate=1
+        )
         self.day = Day.objects.create(date="2022-05-18", author=self.user)
         ThroughDayMeal.objects.create(
             meal=self.meal, day=self.day, meal_num=1
@@ -58,7 +62,7 @@ class TestModels(TestCase):
         self.assertEqual(self.meal.image.url, "/media/meal_thumb/default.jpg")
 
     def test_meal_intermediary_no_amount(self) -> None:
-        with self.assertRaises(IntegrityError):
+        with self.assertRaises(TypeError):
             ThroughMealIngr.objects.create(
                 meal=self.meal, ingredient=self.ingr1
             )

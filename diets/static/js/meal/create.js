@@ -132,9 +132,6 @@ function addIngredient(result)
 	small_KuESt.style.color = '#757575';
 	div_FOLJX.appendChild(small_KuESt);
 	small_KuESt.textContent += `100g`;
-	small_KuESt.onkeyup =function() {
-		amounts[index] = small_KuESt.value
-	}
 	const textarea_zTyxd = document.createElement('textarea');
 	textarea_zTyxd.classList.add('form-control', 'grams');
 	textarea_zTyxd.style.textAlign = 'center';
@@ -149,13 +146,17 @@ function addIngredient(result)
 	textarea_zTyxd.style.overflow = 'hidden!important';
 	textarea_zTyxd.style.padding = '1%';
 	textarea_zTyxd.style.color = '#757575';
-	textarea_zTyxd.setAttribute(`placeholder`, `100`);
+	textarea_zTyxd.setAttribute(`placeholder`, ``);
+	textarea_zTyxd.onkeyup =function() {
+		amounts[index] = textarea_zTyxd.value
+	}
+
 	div_glsxM.appendChild(textarea_zTyxd);
 	const span_Irlvd = document.createElement('span');
 	span_Irlvd.style.marginLeft = '1%';
 	span_Irlvd.style.color = '#757575';
 	div_glsxM.appendChild(span_Irlvd);
-	span_Irlvd.textContent += `G`;
+	span_Irlvd.textContent += result.fields['measure_type'];
 	const i_WxUia = document.createElement('i');
 	i_WxUia.classList.add('fa', 'fa-close');
 	i_WxUia.style.fontSize = 'x-large';
@@ -164,7 +165,7 @@ function addIngredient(result)
 	i_WxUia.onclick = function() {
 		items_added = delete items_added[index]
 		amounts 		= delete amounts[index]
-		console.log(small_KuESt.value)
+		console.log(textarea_zTyxd.value)
 		ingredients.removeChild(div_KViTv)
 	}
 

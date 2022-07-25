@@ -1,5 +1,4 @@
 """Forms for the diets app"""
-import datetime
 import json
 from json.decoder import JSONDecodeError
 
@@ -38,9 +37,6 @@ class MealCreateForm(forms.ModelForm):
 
         model = Meal
         fields = ("name", "description", "recipe", "image")
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def verify_ingredients(self):
         """Verify that the ingredient data was correct"""
@@ -83,7 +79,7 @@ class MealCreateForm(forms.ModelForm):
                 meal=my_meal,
                 ingredient=clean_data["ingredients"][k],
                 amount=clean_data["amounts"][k],
-            ).save()
+            )
 
 
 class DietCreateForm(forms.ModelForm):

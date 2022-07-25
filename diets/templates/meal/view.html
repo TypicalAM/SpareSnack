@@ -19,7 +19,7 @@
 											<div class="info" style="align-items: center;display: flex;height: 70px;"><img style="margin-right: 3%;margin-left: 2%;height: 60px;width: 60px;" src="{{ relation.ingredient.image.url }}">
 												<div style="width: 60%;display: grid;"><span style="font-family: 'Josefin Sans', sans-serif;font-size: 25px;">{{ relation.ingredient.name }}</span>
                                                 <div><i class="fa fa-fire" style="color: #ff9900;margin-right: 3%;"></i><small style="color: #757575;margin-right: 4%;font-family: 'Josefin Sans', sans-serif;font-size: 14.8px;">113 kcal</small><i class="fa fa-balance-scale" style="margin-right: 3%;color: rgb(255,29,124);"></i><small style="color: #757575;font-family: 'Josefin Sans', sans-serif;font-size: 14.8px;">100g</small></div>
-												</div><textarea class="grams" style="color: #757575;padding: 1%;overflow: hidden!important;resize: none!important;height: 35px;border-radius: 13px;background-color: white;border: hidden;width: 15%;font-family: 'Josefin Sans', sans-serif;font-size: 21px;text-align: center;" readonly="">{{ relation.amount }}</textarea><span style="color: #757575;margin-left: 3%;">G</span>
+												</div><textarea class="grams" style="color: #757575;padding: 1%;overflow: hidden!important;resize: none!important;height: 35px;border-radius: 13px;background-color: white;border: hidden;width: 15%;font-family: 'Josefin Sans', sans-serif;font-size: 21px;text-align: center;" readonly="">{{ relation.amount }}</textarea><span style="color: #757575;margin-left: 3%;">{{ relation.ingredient.measure_type }}</span>
                                         </div>
                                     </div>
                                 </div>
