@@ -1,4 +1,4 @@
-name: Django application
+name: Django app
 on: [push]
 jobs:
   django_build:
@@ -12,3 +12,4 @@ jobs:
     - name: Run migrations
       run: docker-compose run web python manage.py migrate
     - name: Run tests
+      run: docker-compose run web python manage.py test
