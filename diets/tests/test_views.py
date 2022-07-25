@@ -1,5 +1,5 @@
 """Test views for the diets app"""
-from datetime import datetime
+import datetime
 from http import HTTPStatus
 
 from django.contrib.auth.models import User
@@ -8,13 +8,7 @@ from django.test import Client, TestCase
 from django.urls.base import reverse
 from django.urls.exceptions import NoReverseMatch
 
-from diets.models import (
-    Day,
-    Diet,
-    Ingredient,
-    Meal,
-    ThroughDayMeal,
-)
+from diets.models import Day, Diet, Ingredient, Meal, ThroughDayMeal
 
 
 class TestMealViews(TestCase):
@@ -254,7 +248,7 @@ class TestDayViews(TestCase):
         self.client.force_login(self.usera)
         response = self.client.get(
             reverse("day-create"),
-            {"d": datetime.strftime(self.day.date, "%Y-%m-%d")},
+            {"d": datetime.datetime.strftime(self.day.date, "%Y-%m-%d")},
             HTTP_ACCEPT="application/json",
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -268,7 +262,7 @@ class TestDayViews(TestCase):
             reverse("day-create"),
             {
                 "meal_nums": "[0]",
-                "date": datetime.strftime(self.day.date, "%Y-%m-%d"),
+                "date": datetime.datetime.strftime(self.day.date, "%Y-%m-%d"),
                 "meals": """
                 [
                     {
@@ -297,7 +291,7 @@ class TestDayViews(TestCase):
             reverse("day-create"),
             {
                 "meal_nums": "[0]",
-                "date": datetime.strftime(self.day.date, "%Y-%m-%d"),
+                "date": datetime.datetime.strftime(self.day.date, "%Y-%m-%d"),
                 "meals": """
                 [
                     {
@@ -325,7 +319,7 @@ class TestDayViews(TestCase):
         response = self.client.post(
             reverse("day-create"),
             {
-                "date": datetime.strftime(self.day.date, "%Y-%m-%d"),
+                "date": datetime.datetime.strftime(self.day.date, "%Y-%m-%d"),
                 "meals": """
                 [
                     {
@@ -368,13 +362,17 @@ class TestDietViews(TestCase):
             name="An exmple diet",
             description="An example description of the diet",
             author=self.usera,
+            date=datetime.date(2022, 5, 19),
+            end_date=datetime.date(2022, 5, 21),
         )
+        self.diet.save()
         self.diet2 = Diet.objects.create(
             name="An exmple diet 2",
             description="An example description of the diet",
             author=self.userb,
+            date=datetime.date(2022, 5, 19),
+            end_date=datetime.date(2022, 5, 21),
         )
-        self.diet.save(["2000-01-01", "2022-05-19", "2022-05-21"])
 
     def test_nologin_redirect(self) -> None:
         response = self.client.get(reverse("diet-create"))

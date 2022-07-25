@@ -93,7 +93,7 @@ class DietCreateForm(forms.ModelForm):
         """Don't include the auhtor as he will be added in the save() method"""
 
         model = Diet
-        fields = ("name", "public", "description", "date")
+        fields = ("name", "public", "description", "date", "end_date")
 
     def clean(self, *args, **kwargs):
         """Make sure we don't have two slugs which are the same"""
@@ -102,13 +102,23 @@ class DietCreateForm(forms.ModelForm):
 
         if Diet.objects.filter(slug=slugify(name)).exists():
             raise ValidationError("A diet with a similar name already exists")
+
+        start_date = clean_data.get("date")
+        end_date = clean_data.get("end_date")
+
+        if start_date and end_date:
+            if end_date <= start_date:
+                raise ValidationError(
+                    "End date should be greater than start date."
+                )
+            if (end_date - start_date).days > 14:
+                raise ValidationError("Diets should have less than 15 days.")
         return clean_data
 
     def save(self, author):
         """Save the diet and create the day backups & relations"""
-        my_diet = Diet.objects.create(**self.cleaned_data, author=author)
-        dates = [my_diet.date + datetime.timedelta(days=i) for i in range(7)]
-        my_diet.save(dates)
+        # For some reason, when i put .save() here, it calls save twice
+        Diet.objects.create(**self.cleaned_data, author=author)
 
 
 class DietImportForm(forms.Form):

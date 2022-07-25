@@ -1,8 +1,11 @@
 """Test forms for the diets app"""
+import datetime
+
 from django.contrib.auth.models import User
 from django.core import serializers
 from django.test import TestCase
-from diets.forms import DietImportForm, MealCreateForm, DietCreateForm
+
+from diets.forms import DietCreateForm, DietImportForm, MealCreateForm
 from diets.models import Diet, Ingredient
 
 
@@ -15,9 +18,13 @@ class TestForms(TestCase):
 
         self.user = User.objects.create(username="testuser", password="12345")
         self.diet = Diet.objects.create(
-            name="Example diet", author=self.user, description="test"
+            name="Example diet",
+            author=self.user,
+            description="test",
+            date=datetime.date(2020, 2, 10),
+            end_date=datetime.date(2020, 2, 10),
         )
-        self.diet.save(["2020-02-10"])
+        self.diet.save()
 
     def test_meal_create_basic_fields(self) -> None:
         data = []
@@ -86,6 +93,7 @@ class TestForms(TestCase):
             "name": "My diet",
             "public": False,
             "description": "example diet",
+            "end_date": "2020-10-10",
         }
 
         form = DietCreateForm(data=data)
@@ -101,11 +109,56 @@ class TestForms(TestCase):
             "public": False,
             "description": "example diet",
             "date": "2020-02-10",
+            "end_date": "2020-02-11",
         }
 
         form = DietCreateForm(data=data)
         self.assertIn(
             ["A diet with a similar name already exists"], form.errors.values()
+        )
+
+    def test_diet_create_end_date_bigger(self) -> None:
+        data = {
+            "name": "My diet",
+            "public": False,
+            "description": "example diet",
+            "date": "2020-02-10",
+            "end_date": "2020-02-09",
+        }
+
+        form = DietCreateForm(data=data)
+        self.assertIn(
+            ["End date should be greater than start date."],
+            form.errors.values(),
+        )
+
+    def test_diet_create_dates_same(self) -> None:
+        data = {
+            "name": "My diet",
+            "public": False,
+            "description": "example diet",
+            "date": "2020-02-10",
+            "end_date": "2020-02-10",
+        }
+
+        form = DietCreateForm(data=data)
+        self.assertIn(
+            ["End date should be greater than start date."],
+            form.errors.values(),
+        )
+
+    def test_diet_create_dates_diff_more_than_12(self) -> None:
+        data = {
+            "name": "My diet",
+            "public": False,
+            "description": "example diet",
+            "date": "2020-02-10",
+            "end_date": "2020-02-25",
+        }
+
+        form = DietCreateForm(data=data)
+        self.assertIn(
+            ["Diets should have less than 15 days."], form.errors.values()
         )
 
     def test_diet_create_right(self) -> None:
@@ -114,6 +167,7 @@ class TestForms(TestCase):
             "public": False,
             "description": "example diet",
             "date": "2020-02-10",
+            "end_date": "2020-02-11",
         }
 
         form = DietCreateForm(data=data)

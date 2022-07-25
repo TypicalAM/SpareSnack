@@ -1,4 +1,5 @@
 """Test models for the diets app"""
+import datetime
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
 from django.test import TestCase
@@ -36,8 +37,10 @@ class TestModels(TestCase):
             name="An exmple diet",
             description="An example description of the diet",
             author=self.user,
+            date=datetime.date(2022, 5, 18),
+            end_date=datetime.date(2022, 5, 21),
         )
-        self.diet.save(["2022-05-18", "2022-05-19", "2022-05-21"])
+        self.diet.save()
 
     def test_ingredient_default_fields(self) -> None:
         self.assertEqual(self.ingr1.image.url, "/media/ingr_thumb/default.jpg")
@@ -92,7 +95,6 @@ class TestModels(TestCase):
 
     def test_diet_default_fields(self) -> None:
         self.assertTrue(self.diet.public)
-        self.assertEqual(self.diet.date.day, timezone.now().day)
 
     def test_diet_save_backups(self) -> None:
         self.assertIsInstance(self.diet.days.all().first(), Day)

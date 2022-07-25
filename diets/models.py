@@ -96,19 +96,20 @@ class Diet(models.Model):
     name = models.CharField(max_length=100)
     public = models.BooleanField(default=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateField(default=datetime.date.today)
+    date = models.DateField()
+    end_date = models.DateField()
     description = models.TextField(max_length=200)
     days = models.ManyToManyField(Day)
     slug = models.SlugField(null=False, unique=True)
 
-    def save(self, dates=None, *args, **kwargs):
+    def save(self, *args, **kwargs):
         """Set the slug field, create days or the backups of the days"""
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)
-        # TODO, this is a patch for basic saving,
-        # normally a diet should always have a date range supplied
-        if not dates:
-            return
+
+        delta = (self.end_date - self.date).days + 1
+        dates = (self.date + datetime.timedelta(days=i) for i in range(delta))
+
         for date in dates:
             instance, created = Day.objects.get_or_create(
                 date=date, author=self.author, backup=False
