@@ -120,7 +120,8 @@ function addIngredient(result)
 	small_ldxfa.style.marginRight = '4%';
 	small_ldxfa.style.color = '#757575';
 	div_FOLJX.appendChild(small_ldxfa);
-	small_ldxfa.textContent += `113 kcal`;
+	calories_per_100 = result.fields['fats']*8+result.fields['carbs']*4+result.fields['protein']*4
+	small_ldxfa.textContent += calories + ' cal';
 	const i_IPNxO = document.createElement('i');
 	i_IPNxO.classList.add('fa', 'fa-balance-scale');
 	i_IPNxO.style.color = 'rgb(255,29,124)';
@@ -131,7 +132,7 @@ function addIngredient(result)
 	small_KuESt.style.fontFamily = "'Josefin Sans', sans-serif";
 	small_KuESt.style.color = '#757575';
 	div_FOLJX.appendChild(small_KuESt);
-	small_KuESt.textContent += `100g`;
+	small_KuESt.textContent += '100g';
 	const textarea_zTyxd = document.createElement('textarea');
 	textarea_zTyxd.classList.add('form-control', 'grams');
 	textarea_zTyxd.style.textAlign = 'center';

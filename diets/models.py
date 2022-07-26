@@ -20,8 +20,13 @@ class Ingredient(models.Model):
     image = models.ImageField(
         default="ingr_thumb/default.jpg", upload_to="ingr_thumb"
     )
+
     measure_type = models.CharField(max_length=50)
     convert_rate = models.FloatField()
+
+    fats = models.FloatField(default=0)
+    protein = models.FloatField(default=0)
+    carbs = models.FloatField(default=0)
 
     def convert_from_grams(self, grams):
         """Display to the user the amount of the item, having the item in grams
@@ -92,12 +97,19 @@ class ThroughMealIngr(models.Model):
     amount = models.FloatField()
     grams = models.PositiveIntegerField(default=0)
 
+    fats = models.FloatField(default=0)
+    protein = models.FloatField(default=0)
+    carbs = models.FloatField(default=0)
+
     def __str__(self):
         return f"{self.meal},{self.ingredient}"
 
     def save(self, *args, **kwargs):
         """Convert from native to grams"""
         self.grams = self.ingredient.convert_to_grams(self.amount)
+        self.fats = self.ingredient.fats / 100 * self.grams
+        self.protein = self.ingredient.protein / 100 * self.grams
+        self.carbs = self.ingredient.carbs / 100 * self.grams
         super().save(*args, **kwargs)
 
 
