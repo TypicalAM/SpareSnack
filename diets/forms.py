@@ -73,7 +73,6 @@ class MealCreateForm(forms.ModelForm):
             image=clean_data["image"],
             author=author,
         )
-        my_meal.save()
         for k in range(len(clean_data["ingredients"])):
             ThroughMealIngr.objects.create(
                 meal=my_meal,
@@ -113,7 +112,6 @@ class DietCreateForm(forms.ModelForm):
 
     def save(self, author):
         """Save the diet and create the day backups & relations"""
-        # For some reason, when i put .save() here, it calls save twice
         Diet.objects.create(**self.cleaned_data, author=author)
 
 

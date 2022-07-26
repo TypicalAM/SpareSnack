@@ -34,9 +34,7 @@ class TestModels(TestCase):
             name="Chicken Broth", measure_type="liters", convert_rate=1
         )
         self.day = Day.objects.create(date="2022-05-18", author=self.user)
-        ThroughDayMeal.objects.create(
-            meal=self.meal, day=self.day, meal_num=1
-        ).save()
+        ThroughDayMeal.objects.create(meal=self.meal, day=self.day, meal_num=1)
         self.diet = Diet.objects.create(
             name="An exmple diet",
             description="An example description of the diet",
@@ -44,7 +42,6 @@ class TestModels(TestCase):
             date=datetime.date(2022, 5, 18),
             end_date=datetime.date(2022, 5, 21),
         )
-        self.diet.save()
 
     def test_ingredient_default_fields(self) -> None:
         self.assertEqual(self.ingr1.image.url, "/media/ingr_thumb/default.jpg")

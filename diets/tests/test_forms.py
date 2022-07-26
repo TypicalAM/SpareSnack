@@ -28,7 +28,6 @@ class TestForms(TestCase):
             date=datetime.date(2020, 2, 10),
             end_date=datetime.date(2020, 2, 10),
         )
-        self.diet.save()
 
     def test_meal_create_basic_fields(self) -> None:
         data = []

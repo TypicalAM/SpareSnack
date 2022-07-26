@@ -31,7 +31,7 @@ class TestMealViews(TestCase):
             name="Chicken Broth", measure_type="liters", convert_rate=1
         )
         self.day = Day.objects.create(author=self.usera)
-        ThroughDayMeal(meal=self.meal, day=self.day, meal_num=2).save()
+        ThroughDayMeal(meal=self.meal, day=self.day, meal_num=2)
 
     def test_nologin_redirect(self) -> None:
         response = self.client.get(reverse("meal-create"))
@@ -249,7 +249,7 @@ class TestDietViews(TestCase):
             author=self.usera,
         )
         self.day = Day.objects.create(author=self.usera, date="2000-01-01")
-        ThroughDayMeal(meal=self.meal, day=self.day, meal_num=2).save()
+        ThroughDayMeal(meal=self.meal, day=self.day, meal_num=2)
         self.diet = Diet.objects.create(
             name="An exmple diet",
             description="An example description of the diet",
@@ -257,7 +257,6 @@ class TestDietViews(TestCase):
             date=datetime.date(2022, 5, 19),
             end_date=datetime.date(2022, 5, 21),
         )
-        self.diet.save()
         self.diet2 = Diet.objects.create(
             name="An exmple diet 2",
             description="An example description of the diet",
