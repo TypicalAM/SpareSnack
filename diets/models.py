@@ -71,6 +71,13 @@ class Meal(models.Model):
     ingredients = models.ManyToManyField(Ingredient, through="ThroughMealIngr")
     url = models.URLField(null=True)
 
+    def save_ingredients(self, ingredients, amounts):
+        """Create the necessary relations for ingredients"""
+        for relation in zip(ingredients, amounts):
+            ThroughMealIngr.objects.create(
+                meal=self, ingredient=relation[0], amount=relation[1]
+            )
+
     def save(self, *args, **kwargs):
         """Set the url for the meal"""
         self.url = self.get_absolute_url()
@@ -148,11 +155,8 @@ class Diet(models.Model):
     days = models.ManyToManyField(Day)
     slug = models.SlugField(null=False, unique=True)
 
-    def save(self, *args, **kwargs):
-        """Set the slug field, create days or the backups of the days"""
-        self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
-
+    def save_days(self):
+        """Create days or the backups of the days"""
         delta = (self.end_date - self.date).days + 1
         dates = (self.date + datetime.timedelta(days=i) for i in range(delta))
 
@@ -174,6 +178,11 @@ class Diet(models.Model):
                     relation.save()
 
             self.days.add(instance)
+
+    def save(self, *args, **kwargs):
+        """Set the slug field, create days or the backups of the days"""
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         """Delete the diet and the associated backup days"""

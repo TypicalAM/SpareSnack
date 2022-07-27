@@ -42,6 +42,7 @@ class TestModels(TestCase):
             date=datetime.date(2022, 5, 18),
             end_date=datetime.date(2022, 5, 21),
         )
+        self.diet.save_days()
 
     def test_ingredient_default_fields(self) -> None:
         self.assertEqual(self.ingr1.image.url, "/media/ingr_thumb/default.jpg")

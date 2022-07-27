@@ -56,9 +56,9 @@ class TestForms(TestCase):
         )
         for mydata in data:
             form = MealCreateForm(data=mydata)
-            self.assertIn(
-                ["Invalid ingredient data"],
-                form.errors.values(),
+            self.assertTrue(
+                "Incoherent ingredient data" in arr
+                for arr in form.errors.values()
             )
 
     def test_meal_create_wrong_amounts(self) -> None:

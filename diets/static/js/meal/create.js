@@ -121,7 +121,7 @@ function addIngredient(result)
 	small_ldxfa.style.color = '#757575';
 	div_FOLJX.appendChild(small_ldxfa);
 	calories_per_100 = result.fields['fats']*8+result.fields['carbs']*4+result.fields['protein']*4
-	small_ldxfa.textContent += calories + ' cal';
+	small_ldxfa.textContent += calories_per_100 + ' cal';
 	const i_IPNxO = document.createElement('i');
 	i_IPNxO.classList.add('fa', 'fa-balance-scale');
 	i_IPNxO.style.color = 'rgb(255,29,124)';

@@ -32,53 +32,53 @@ def validate_day_post_save(request):
 class MealCreateForm(forms.ModelForm):
     """Form for creating meals with searched and selected ingredients"""
 
+    ingredient_data = forms.CharField()
+    amounts = forms.CharField()
+
     class Meta:
         """We don't include the author field, it will be mentioned in `save`"""
 
         model = Meal
         fields = ("name", "description", "recipe", "image")
 
-    def verify_ingredients(self):
+    def clean_ingredients(self, ingredients, amounts):
         """Verify that the ingredient data was correct"""
-        ingr_data = self.data.get("ingredient_data")
-        amounts = self.data.get("amounts")
-        if not ingr_data or not amounts:
-            raise ValidationError("Invalid ingredient data")
+        msg = "Incoherent ingredient data"
         try:
-            ingr_arr = [
+            ingredients_array = [
                 Ingredient.objects.get(name=obj.object.name)
-                for obj in serializers.deserialize("json", ingr_data)
+                for obj in serializers.deserialize("json", ingredients)
             ]
-            amounts_arr = [int(obj) for obj in amounts.split(",")]
-            assert len(ingr_arr) == len(amounts_arr)
-        except Exception as exc:
-            raise ValidationError("Incoherent ingredient data") from exc
-        return ingr_arr, amounts_arr
+            amounts_array = [float(obj) for obj in amounts.split(",")]
+        except (KeyError, ValueError, Ingredient.DoesNotExist):
+            self.add_error("ingredient_data", ValidationError(msg))
+        else:
+            if len(ingredients_array) != len(amounts_array):
+                self.add_error("ingredient_data", ValidationError(msg))
+            return {
+                "ingredient_data": ingredients_array,
+                "amounts": amounts_array,
+            }
+        return {}
 
-    def clean(self, *args, **kwargs):
+    def clean(self):
         """Clean ingredients and amounts to the cleaned data"""
-        ingredient_data, amounts = self.verify_ingredients()
-        clean_data = super().clean(*args, **kwargs)
-        clean_data["ingredients"] = ingredient_data
-        clean_data["amounts"] = amounts
-        return clean_data
+        super().clean()
+        result = self.clean_ingredients(
+            self.cleaned_data.get("ingredient_data"),
+            self.cleaned_data.get("amounts"),
+        )
+        if result:
+            self.cleaned_data.update(result)
 
     def save(self, author):
         """Save data with additional and create ingredient relations"""
-        clean_data = self.cleaned_data
-        my_meal = Meal.objects.create(
-            name=clean_data["name"],
-            description=clean_data["description"],
-            recipe=clean_data["recipe"],
-            image=clean_data["image"],
-            author=author,
-        )
-        for k in range(len(clean_data["ingredients"])):
-            ThroughMealIngr.objects.create(
-                meal=my_meal,
-                ingredient=clean_data["ingredients"][k],
-                amount=clean_data["amounts"][k],
-            )
+        ingredients = self.cleaned_data.pop("ingredient_data")
+        amounts = self.cleaned_data.pop("amounts")
+
+        Meal.objects.create(
+            **self.cleaned_data, author=author
+        ).save_ingredients(ingredients, amounts)
 
 
 class DietCreateForm(forms.ModelForm):
@@ -90,29 +90,34 @@ class DietCreateForm(forms.ModelForm):
         model = Diet
         fields = ("name", "public", "description", "date", "end_date")
 
-    def clean(self, *args, **kwargs):
-        """Make sure we don't have two slugs which are the same"""
-        clean_data = super().clean(*args, **kwargs)
-        name = clean_data.get("name")
-
-        if Diet.objects.filter(slug=slugify(name)).exists():
-            raise ValidationError("A diet with a similar name already exists")
-
-        start_date = clean_data.get("date")
-        end_date = clean_data.get("end_date")
+    def clean_dates(self, start_date, end_date):
+        """Verify that the date data was correct"""
+        msg = "End date should be greater than start date."
+        msg2 = "Diets should have less than 15 days."
 
         if start_date and end_date:
             if end_date <= start_date:
-                raise ValidationError(
-                    "End date should be greater than start date."
-                )
+                self.add_error("end_date", ValidationError(msg))
             if (end_date - start_date).days > 14:
-                raise ValidationError("Diets should have less than 15 days.")
-        return clean_data
+                self.add_error("end_date", ValidationError(msg2))
+
+    def clean(self):
+        """Make sure we don't have two slugs which are the same"""
+        msg = "A diet with a similar name already exists"
+        super().clean()
+
+        if Diet.objects.filter(
+            slug=slugify(self.cleaned_data.get("name", ""))
+        ).exists():
+            self.add_error("name", ValidationError(msg))
+
+        self.clean_dates(
+            self.cleaned_data.get("date"), self.cleaned_data.get("end_date")
+        )
 
     def save(self, author):
         """Save the diet and create the day backups & relations"""
-        Diet.objects.create(**self.cleaned_data, author=author)
+        Diet.objects.create(**self.cleaned_data, author=author).save_days()
 
 
 class DietImportForm(forms.Form):
@@ -121,16 +126,20 @@ class DietImportForm(forms.Form):
     date = fields.DateField()
     slug = fields.SlugField()
 
-    def clean(self, *args, **kwargs):
+    def clean(self):
         """make sure that the slug corresponds to a diet"""
-        clean_data = super().clean(*args, **kwargs)
-        diet = Diet.objects.filter(slug=clean_data["slug"]).first()
-        if not diet:
-            raise ValidationError("No diet with that slug")
-        clean_data["diet"] = diet
-        return clean_data
+        msg = "No diet with that slug"
+
+        super().clean()
+        diet = Diet.objects.filter(slug=self.cleaned_data.get("slug")).first()
+
+        if diet:
+            self.cleaned_data.update({"diet": diet})
+        else:
+            self.add_error("__all__", ValidationError(msg))
 
     def save(self, user):
         """Fill the days of the user with the days from the selected diet"""
-        clean_data = self.cleaned_data
-        clean_data["diet"].fill_days(user, clean_data["date"])
+        self.cleaned_data.get("diet").fill_days(
+            user, self.cleaned_data.get("date")
+        )
