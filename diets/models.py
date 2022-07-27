@@ -8,11 +8,6 @@ from django.template.defaultfilters import slugify
 from django.urls.base import reverse
 
 
-def get_sentinel() -> User:
-    """Get the sentinel user (in case data gets deleted but needs to remain)"""
-    return User.objects.get_or_create(username="[deleted]")[0]
-
-
 class Ingredient(models.Model):
     """Ingredients are intertwined with meals"""
 
@@ -71,12 +66,20 @@ class Meal(models.Model):
     ingredients = models.ManyToManyField(Ingredient, through="ThroughMealIngr")
     url = models.URLField(null=True)
 
+    fats = models.FloatField(default=0)
+    protein = models.FloatField(default=0)
+    carbs = models.FloatField(default=0)
+
     def save_ingredients(self, ingredients, amounts):
         """Create the necessary relations for ingredients"""
-        for relation in zip(ingredients, amounts):
-            ThroughMealIngr.objects.create(
-                meal=self, ingredient=relation[0], amount=relation[1]
+        for items in zip(ingredients, amounts):
+            relation = ThroughMealIngr.objects.create(
+                meal=self, ingredient=items[0], amount=items[1]
             )
+            self.fats += relation.fats
+            self.carbs += relation.carbs
+            self.protein += relation.protein
+        self.save()
 
     def save(self, *args, **kwargs):
         """Set the url for the meal"""
