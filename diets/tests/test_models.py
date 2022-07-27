@@ -28,10 +28,20 @@ class TestModels(TestCase):
             author=self.user,
         )
         self.ingr1 = Ingredient.objects.create(
-            name="Potato", measure_type="fruits", convert_rate=300
+            name="Potato",
+            measure_type="fruits",
+            convert_rate=300,
+            fats=0.1,
+            carbs=21,
+            protein=2.5,
         )
         self.ingr2 = Ingredient.objects.create(
-            name="Chicken Broth", measure_type="liters", convert_rate=1
+            name="Chicken Broth",
+            measure_type="liters",
+            convert_rate=1,
+            fats=1.0,
+            carbs=1.0,
+            protein=1.0,
         )
         self.day = Day.objects.create(date="2022-05-18", author=self.user)
         ThroughDayMeal.objects.create(meal=self.meal, day=self.day, meal_num=1)
@@ -58,6 +68,9 @@ class TestModels(TestCase):
             self.meal.url, reverse("meal-detail", kwargs={"pk": self.meal.pk})
         )
         self.assertEqual(self.meal.image.url, "/media/meal_thumb/default.jpg")
+        self.assertEqual(self.meal.fats, 0)
+        self.assertEqual(self.meal.protein, 0)
+        self.assertEqual(self.meal.carbs, 0)
 
     def test_meal_intermediary_no_amount(self) -> None:
         with self.assertRaises(TypeError):
@@ -68,17 +81,26 @@ class TestModels(TestCase):
                 meal=self.meal, ingredient=self.ingr1
             )
 
-    def test_meal_intermediary(self) -> None:
+    def test_meal_intermediary_conversion(self) -> None:
         inter = ThroughMealIngr.objects.create(
-            meal=self.meal, ingredient=self.ingr1, amount=200
+            meal=self.meal, ingredient=self.ingr1, amount=2
         )
         inter2 = ThroughMealIngr.objects.create(
             meal=self.meal, ingredient=self.ingr2, amount=300
         )
-        self.assertEquals(self.ingr1, self.meal.ingredients.all()[0])
-        self.assertEquals(self.ingr2, self.meal.ingredients.all()[1])
-        self.assertEquals(inter.amount, 200)
-        self.assertEquals(inter2.amount, 300)
+        self.assertEquals(inter.grams, 600)
+        self.assertEquals(inter2.grams, 300)
+        [rel.delete() for rel in ThroughMealIngr.objects.all()]
+
+    def test_meal_save_ingredients(self) -> None:
+        ingredients = [self.ingr1, self.ingr2]
+        amounts = [2, 300]
+        self.meal.save_ingredients(ingredients, amounts)
+        self.assertEqual(len(ingredients), len(ThroughMealIngr.objects.all()))
+
+        self.assertEqual(self.meal.fats, 3.6)
+        self.assertEqual(self.meal.protein, 18.0)
+        self.assertEqual(self.meal.carbs, 129.0)
 
     def test_day_default_fields(self) -> None:
         self.assertFalse(self.day.backup)
