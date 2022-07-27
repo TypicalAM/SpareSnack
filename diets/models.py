@@ -131,6 +131,18 @@ class Day(models.Model):
     meals = models.ManyToManyField(Meal, through="ThroughDayMeal")
     backup = models.BooleanField(default=False)
 
+    def get_macros(self) -> list[float]:
+        """Get the total calories from the meals"""
+        relations = ThroughDayMeal.objects.filter(day=self)
+        macros = [0.0, 0.0, 0.0, 0.0]
+        for relation in relations:
+            macros[0] += relation.meal.fats
+            macros[1] += relation.meal.protein
+            macros[2] += relation.meal.carbs
+
+        macros[3] = macros[0] * 8 + macros[1] * 4 + macros[2] * 4
+        return macros
+
     def __str__(self):
         return f"{self.date},{self.author}"
 
