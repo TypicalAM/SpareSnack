@@ -10,6 +10,12 @@
                             <div class="card mb-3">
 									<div class="card-body text-center shadow"><img class="mb-3 mt-4" src="{{ meal.image.url }}" style="height: 216px;width: 385px;"></div>
                             </div>
+                            <div class="card" style="margin-bottom: 5%;border: none;">
+                                <div class="card-body shadow">
+                                    <h4 class="card-title" style="font-family: Alata, sans-serif;">Macros</h4>
+																		<div><canvas data-bss-chart="{&quot;type&quot;:&quot;pie&quot;,&quot;data&quot;:{&quot;labels&quot;:[&quot;Protein&quot;,&quot;Fats&quot;,&quot;Carbs&quot;],&quot;datasets&quot;:[{&quot;label&quot;:&quot;Calories&quot;,&quot;backgroundColor&quot;:[&quot;rgb(158,0,255)&quot;,&quot;#f58f42&quot;,&quot;rgb(114,178,32)&quot;],&quot;borderColor&quot;:[&quot;rgba(190,190,190,0.4)&quot;,&quot;rgba(190,190,190,0.4)&quot;,&quot;rgba(190,190,190,0.4)&quot;],&quot;data&quot;:[&quot;{{ meal.protein }}&quot;,&quot;{{ meal.fats }}&quot;,&quot;{{ meal.carbs }}&quot;]}]},&quot;options&quot;:{&quot;maintainAspectRatio&quot;:true,&quot;legend&quot;:{&quot;display&quot;:true,&quot;position&quot;:&quot;left&quot;},&quot;title&quot;:{&quot;display&quot;:false,&quot;text&quot;:&quot;Total calories - 2000&quot;}}}"></canvas></div>
+                                </div>
+                            </div>
                             <div id="ingredients-div" style="margin-bottom: 3%;box-shadow: 6px 6px 4px #eeeeee;display: grid;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;">
                                 <h1 style="width: 100%;font-size: 26px;font-family: 'Josefin Sans', sans-serif;color: #242e37;">Ingredients</h1>
 
@@ -18,7 +24,7 @@
                                     <div id="ingredient-2" style="border: hidden;padding: 3%;display: grid;background: #e9f4f4;border-radius: 9px;">
 											<div class="info" style="align-items: center;display: flex;height: 70px;"><img style="margin-right: 3%;margin-left: 2%;height: 60px;width: 60px;" src="{{ relation.ingredient.image.url }}">
 												<div style="width: 60%;display: grid;"><span style="font-family: 'Josefin Sans', sans-serif;font-size: 25px;">{{ relation.ingredient.name }}</span>
-                                                <div><i class="fa fa-fire" style="color: #ff9900;margin-right: 3%;"></i><small style="color: #757575;margin-right: 4%;font-family: 'Josefin Sans', sans-serif;font-size: 14.8px;">113 kcal</small><i class="fa fa-balance-scale" style="margin-right: 3%;color: rgb(255,29,124);"></i><small style="color: #757575;font-family: 'Josefin Sans', sans-serif;font-size: 14.8px;">100g</small></div>
+                                                <div><i class="fa fa-fire" style="color: #ff9900;margin-right: 3%;"></i><small style="color: #757575;margin-right: 4%;font-family: 'Josefin Sans', sans-serif;font-size: 14.8px;">... kcal</small><i class="fa fa-balance-scale" style="margin-right: 3%;color: rgb(255,29,124);"></i><small style="color: #757575;font-family: 'Josefin Sans', sans-serif;font-size: 14.8px;">100g</small></div>
 												</div><textarea class="grams" style="color: #757575;padding: 1%;overflow: hidden!important;resize: none!important;height: 35px;border-radius: 13px;background-color: white;border: hidden;width: 15%;font-family: 'Josefin Sans', sans-serif;font-size: 21px;text-align: center;" readonly="">{{ relation.amount }}</textarea><span style="color: #757575;margin-left: 3%;">{{ relation.ingredient.measure_type }}</span>
                                         </div>
                                     </div>
@@ -26,6 +32,8 @@
 																{% endfor %}
 
                             </div>
+
+
                         </div>
                         <div class="col-lg-8">
                             <div class="row mb-3 d-none">
@@ -60,6 +68,7 @@
                             </div>
                             <div class="row">
                                 <div class="col">
+
 										<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">{{ meal.name }}</span><i class="fa fa-check" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
                                     <div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">{{ meal.description }}</span><i class="fa fa-file-text" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
                                     <div class="card shadow">
@@ -71,9 +80,14 @@
                                         </div>
 											<div style="border-radius: 10px;margin-top: 3%;min-height: 200px;background-color: white;border: 1px solid #f2f2f2;"><textarea id="id_description" style="padding: 2%;border-radius: 5px;border: hidden;width: 100%;height: 100%;background: #fff2f2;" type="text" name="description" maxlength="200" readonly="">{{ meal.recipe }}</textarea></div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+{%endblock%}
+{%block js%}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+<script src="{% static '/js/meal/detail.js' %}"></script>
 {%endblock%}
