@@ -4,10 +4,11 @@ from json.decoder import JSONDecodeError
 
 from django import forms
 from django.core import serializers
+from django.core.serializers.base import DeserializationError
 from django.forms import ValidationError, fields
 from django.template.defaultfilters import slugify
 
-from diets.models import Diet, Ingredient, Meal, ThroughMealIngr
+from diets.models import Diet, Ingredient, Meal
 
 
 def validate_day_post_save(request):
@@ -22,7 +23,14 @@ def validate_day_post_save(request):
             int(x) for x in (json_object["meal_nums"][1:-1].split(","))
         ]
         date = json_object["date"]
-    except (JSONDecodeError, KeyError, ValueError, Meal.DoesNotExist):
+    except (
+        JSONDecodeError,
+        KeyError,
+        ValueError,
+        Meal.DoesNotExist,
+        AttributeError,
+        DeserializationError,
+    ):
         return False
     if len(meals) != len(meal_nums) or not (meals and meal_nums and date):
         return False
@@ -32,8 +40,8 @@ def validate_day_post_save(request):
 class MealCreateForm(forms.ModelForm):
     """Form for creating meals with searched and selected ingredients"""
 
-    ingredient_data = forms.CharField()
-    amounts = forms.CharField()
+    ingredient_data = forms.CharField(required=True)
+    amounts = forms.CharField(required=True)
 
     class Meta:
         """We don't include the author field, it will be mentioned in `save`"""
@@ -44,22 +52,30 @@ class MealCreateForm(forms.ModelForm):
     def clean_ingredients(self, ingredients, amounts):
         """Verify that the ingredient data was correct"""
         msg = "Incoherent ingredient data"
+        result = {}
         try:
             ingredients_array = [
                 Ingredient.objects.get(name=obj.object.name)
                 for obj in serializers.deserialize("json", ingredients)
             ]
             amounts_array = [float(obj) for obj in amounts.split(",")]
-        except (KeyError, ValueError, Ingredient.DoesNotExist):
+        except (
+            ValueError,
+            Ingredient.DoesNotExist,
+            AttributeError,
+            DeserializationError,
+        ):
             self.add_error("ingredient_data", ValidationError(msg))
         else:
             if len(ingredients_array) != len(amounts_array):
                 self.add_error("ingredient_data", ValidationError(msg))
-            return {
-                "ingredient_data": ingredients_array,
-                "amounts": amounts_array,
-            }
-        return {}
+            result.update(
+                {
+                    "ingredient_data": ingredients_array,
+                    "amounts": amounts_array,
+                }
+            )
+        return result
 
     def clean(self):
         """Clean ingredients and amounts to the cleaned data"""

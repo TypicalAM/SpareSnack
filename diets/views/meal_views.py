@@ -108,9 +108,7 @@ class DayCreate(LoginRequiredMixin, View):
         for rel in ThroughDayMeal.objects.filter(day=day):
             rel.delete()
         for meal, meal_num in zip(meals, meal_nums):
-            ThroughDayMeal.objects.create(
-                day=day, meal=meal, meal_num=meal_num
-            ).save()
+            ThroughDayMeal.objects.create(day=day, meal=meal, meal_num=meal_num)
         return JsonResponse({}, status=HTTPStatus.CREATED)
 
 
