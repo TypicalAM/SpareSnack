@@ -1,4 +1,0 @@
-<form method="POST">
-{% csrf_token %}
-{{ form }}
-<button type="submit" style="background: rgb(242,127,204);border-color: rgb(255,113,208);">REGISTER NOW</button>

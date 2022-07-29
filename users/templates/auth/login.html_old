@@ -1,5 +1,0 @@
-<form method="POST">
-{% csrf_token %}
-{{ form }}
-<button class="btn btn-primary btn-block btn-lg shadow-sm" type="submit" style="background: rgb(242,127,204);border-color: rgb(255,113,208);">Log in</button>
-</form>

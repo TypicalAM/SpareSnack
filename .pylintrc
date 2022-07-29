@@ -12,4 +12,5 @@ disable=unused-argument,
 				arguments-renamed,
 				unused-import,
 				import-outside-toplevel,
-				keyword-arg-before-vararg
+				keyword-arg-before-vararg,
+				import-error

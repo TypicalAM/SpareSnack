@@ -1,4 +1,5 @@
 {% load static %}
+{% load account %}
 <!DOCTYPE html>
 <html>
 
@@ -50,7 +51,7 @@
                             <li class="nav-item dropdown no-arrow">
                                 <div class="nav-item dropdown no-arrow">
 										{% if request.user.is_authenticated %}
-										<a class="dropdown-toggle nav-link" aria-expanded="false" data-toggle="dropdown" href="#"><span class="d-none d-lg-inline mr-2 text-gray-600 small">{{ request.user.username }}</span>
+										<a class="dropdown-toggle nav-link" aria-expanded="false" data-toggle="dropdown" href="#"><span class="d-none d-lg-inline mr-2 text-gray-600 small">{% user_display user %}</span>
 											<img class="border rounded-circle img-profile" src="{{ request.user.profile.image.url }}"></a>
 										{% else %}
 										<a class="dropdown-toggle nav-link" aria-expanded="false" href="/accounts/login"><span class="d-none d-lg-inline mr-2 text-gray-600 small">Not logged in</span>
