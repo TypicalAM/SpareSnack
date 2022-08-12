@@ -13,7 +13,7 @@ from users.views import ProperLogoutView, UserProfileView
 
 
 urlpatterns = [
-    path("profile/", UserProfileView.as_view(), name="profile"),
+    path("profile/", UserProfileView.as_view(), name="account_profile"),
     path("signup/", auth_views.signup, name="account_signup"),
     path("login/", auth_views.login, name="account_login"),
     path("logout/", ProperLogoutView.as_view(), name="account_logout"),

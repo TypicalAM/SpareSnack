@@ -76,9 +76,11 @@ class DayCreate(LoginRequiredMixin, View):
 
         if not search_query and not day_query:
             return JsonResponse({}, status=HTTPStatus.BAD_REQUEST)
+
         if search_query:
             recipes = Meal.objects.filter(name__icontains=search_query)[:5]
             data_dict["search_results"] = serializers.serialize("json", recipes)
+
         if day_query:
             day, _ = Day.objects.get_or_create(
                 date=day_query, author=self.request.user, backup=False
@@ -88,6 +90,7 @@ class DayCreate(LoginRequiredMixin, View):
             meal_nums = [obj.meal_num for obj in inter]
             data_dict["meals"] = serializers.serialize("json", meals)
             data_dict["meal_nums"] = str(meal_nums)
+
         return JsonResponse(data_dict)
 
     def get(self, *_):

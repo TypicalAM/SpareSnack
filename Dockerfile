@@ -25,5 +25,5 @@ RUN chmod +x /usr/src/app/entrypoint.sh
 # copy project
 COPY . .
 
-# run entrypoint.sh
+# run entrypoint.sh to make sure that postgres starts before we do
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
