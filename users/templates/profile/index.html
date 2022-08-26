@@ -55,11 +55,14 @@
                     <div class="row mb-3">
                         <div class="col-lg-4">
                             <div class="card mb-3">
-                                <div class="card-body text-center shadow"><img class="rounded-circle mb-3 mt-4" src="{{ request.user.profile.image.url }}" width="160" height="160" style="width: 160px;height: 160px;"></div>
+                                <div class="card-body text-center shadow">
+																	<img class="rounded-circle mb-3 mt-4" src="{{ request.user.profile.image.url }}" width="160" height="160" style="width: 160px;height: 160px;">
+																	<div class="mb-3"><a href="/accounts/password/change/" class="btn btn-primary btn-sm" type="button" style="background: var(--purple);">Change Password</a></div>
+																</div>
                             </div>
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="text-primary font-weight-bold m-0" style="color: var(--p)!important;">Projects</h6>
+                                    <h6 class="text-primary font-weight-bold m-0" style="color: var(--p)!important;">Goals</h6>
                                 </div>
                                 <div class="card-body">
                                     <h4 class="small font-weight-bold">Fats<span class="float-right">20%</span></h4>

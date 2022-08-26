@@ -10,4 +10,4 @@ from users.models import Profile
 def create_profile(sender, instance, created, **kwargs):
     """Create a profile for the user who just created his account"""
     if created:
-        Profile.objects.create(user=instance).save()
+        Profile.objects.create(user=instance)
