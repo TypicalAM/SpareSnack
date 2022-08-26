@@ -2,12 +2,12 @@
 from django.contrib import admin
 
 from diets.models import (
-    Ingredient,
-    Meal,
-    ThroughMealIngr,
-    ThroughDayMeal,
     Day,
     Diet,
+    Ingredient,
+    Meal,
+    ThroughDayMeal,
+    ThroughMealIngr,
 )
 
 admin.site.register(Ingredient)

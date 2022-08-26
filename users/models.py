@@ -10,6 +10,10 @@ class Profile(models.Model):
     image = models.ImageField(default="avatar.png", upload_to="profile_pics")
     is_metric = models.BooleanField(default=True)
 
+    fats = models.FloatField(default=0)
+    protein = models.FloatField(default=0)
+    carbs = models.FloatField(default=0)
+
     def __str__(self):
         """Additional data for debugging"""
         return f"{self.user.username} Profile"

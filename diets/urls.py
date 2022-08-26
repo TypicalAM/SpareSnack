@@ -13,12 +13,12 @@ from diets.views.diet_views import (
     DietImport,
 )
 from diets.views.meal_views import (
-    homepage_view,
     DayCreate,
     MealBrowse,
     MealCreate,
     MealDelete,
     MealDetail,
+    homepage_view,
 )
 
 urlpatterns = [

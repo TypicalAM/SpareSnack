@@ -9,8 +9,7 @@ from allauth.socialaccount import providers
 from django.conf import settings
 from django.urls import include, path
 
-from users.views import ProperLogoutView, UserProfileView
-
+from users.views import ChangePreferencesView, ProperLogoutView, UserProfileView
 
 urlpatterns = [
     path("profile/", UserProfileView.as_view(), name="account_profile"),
@@ -21,6 +20,11 @@ urlpatterns = [
         "password/change/",
         auth_views.password_change,
         name="account_change_password",
+    ),
+    path(
+        "profile/preferences",
+        ChangePreferencesView.as_view(),
+        name="preferences_change",
     ),
 ]
 
