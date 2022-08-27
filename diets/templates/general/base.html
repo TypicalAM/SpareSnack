@@ -30,8 +30,10 @@
 						<li class="nav-item"><a class="nav-link {% block day %}{% endblock %}" href="/day/create"><i class="fa fa-home"></i><span style="font-family: Alata, sans-serif;">My day</span></a></li>
                     <li class="nav-item"><a class="nav-link {% block meals %}{% endblock %}" href="/meals/browse"><i class="fas fa-table"></i><span style="font-family: Alata, sans-serif;">Meals</span></a></li>
                     <li class="nav-item"><a class="nav-link {% block diets %}{% endblock %}" href="/diet/browse"><i class="fa fa-th-list"></i><span style="font-family: Alata, sans-serif;">Diets</span></a></li>
+										{% if not request.user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link {% block login %}{% endblock %}" href="/accounts/login"><i class="far fa-user-circle"></i><span style="font-family: Alata, sans-serif;">Login</span></a></li>
-                    <li class="nav-item"><a class="nav-link {% block register %}{% endblock %}" href="/accounts/register"><i class="fas fa-user-circle"></i><span style="font-family: Alata, sans-serif;">Register</span></a></li>
+                    <li class="nav-item"><a class="nav-link {% block register %}{% endblock %}" href="/accounts/signup"><i class="fas fa-user-circle"></i><span style="font-family: Alata, sans-serif;">Register</span></a></li>
+										{% endif %}
                 </ul>
                 <div class="text-center d-none d-md-inline"></div>
             </div>

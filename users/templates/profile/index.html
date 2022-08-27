@@ -29,8 +29,6 @@
                     <li class="nav-item"><a class="nav-link" href="/day/create"><i class="fa fa-home"></i><span style="font-family: Alata, sans-serif;">My day</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="/meals/browse"><i class="fas fa-table"></i><span style="font-family: Alata, sans-serif;">Meals</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="/diet/browse"><i class="fa fa-th-list"></i><span style="font-family: Alata, sans-serif;">Diets</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="/accounts/login"><i class="far fa-user-circle"></i><span style="font-family: Alata, sans-serif;">Login</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="/accounts/register"><i class="fas fa-user-circle"></i><span style="font-family: Alata, sans-serif;">Register</span></a></li>
                 </ul>
                 <div class="text-center d-none d-md-inline"></div>
             </div>
@@ -51,70 +49,27 @@
                     </div>
                 </nav>
                 <div class="container-fluid">
-						<h3 class="text-dark mb-4">Profile - {{ request.user.username }}</h3>
+                    <h3 class="text-dark mb-4">Profile - {{ user.username }}</h3>
                     <div class="row mb-3">
                         <div class="col-lg-4">
                             <div class="card mb-3">
-                                <div class="card-body text-center shadow">
-																	<img class="rounded-circle mb-3 mt-4" src="{{ request.user.profile.image.url }}" width="160" height="160" style="width: 160px;height: 160px;">
-																	<div class="mb-3"><a href="/accounts/password/change/" class="btn btn-primary btn-sm" type="button" style="background: var(--purple);">Change Password</a></div>
-																</div>
+                                <div class="card-body text-center shadow"><img class="rounded-circle mb-3 mt-4" src="{{ user.profile.image.url }}" width="160" height="160" style="width: 160px;height: 160px;">
+                                    <div class="mb-3"><a class="btn btn-primary btn-sm" href="{% url 'account_change_password' %}" style="background: var(--purple);">Change Password</a></div>
+                                </div>
                             </div>
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="text-primary font-weight-bold m-0" style="color: var(--p)!important;">Goals</h6>
+                                    <h6 class="text-primary font-weight-bold m-0" style="color: var(--p)!important;">My current goals</h6>
                                 </div>
                                 <div class="card-body">
-                                    <h4 class="small font-weight-bold">Fats<span class="float-right">20%</span></h4>
-                                    <div class="progress progress-sm mb-3">
-                                        <div class="progress-bar bg-danger" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%;"><span class="sr-only">20%</span></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Carbohydrates<span class="float-right">40%</span></h4>
-                                    <div class="progress progress-sm mb-3">
-                                        <div class="progress-bar bg-warning" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%;"><span class="sr-only">40%</span></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Protein<span class="float-right">60%</span></h4>
-                                    <div class="progress progress-sm mb-3">
-                                        <div class="progress-bar bg-primary" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"><span class="sr-only">60%</span></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Account setup<span class="float-right">Complete!</span></h4>
-                                    <div class="progress progress-sm mb-3">
-                                        <div class="progress-bar bg-success" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;"><span class="sr-only">100%</span></div>
-                                    </div>
+                                    <h4 class="small font-weight-bold">Fats<span class="float-right">{{ user.profile.fats }}kcal</span></h4>
+                                    <h4 class="small font-weight-bold">Carbohydrates<span class="float-right"><strong>{{ user.profile.carbs }}kcal</strong></span></h4>
+                                    <h4 class="small font-weight-bold">Protein<span class="float-right"><strong>{{ user.profile.protein }}kcal</strong></span></h4>
+                                    <div class="mb-3" style="margin-top: 7%;text-align: center;"><a class="btn btn-primary btn-sm" href="{% url 'preferences_change' %}" style="background: var(--purple);">Change Preferences</a></div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-8">
-                            <div class="row mb-3 d-none">
-                                <div class="col">
-                                    <div class="card text-white bg-primary shadow">
-                                        <div class="card-body">
-                                            <div class="row mb-2">
-                                                <div class="col">
-                                                    <p class="m-0">Peformance</p>
-                                                    <p class="m-0"><strong>65.2%</strong></p>
-                                                </div>
-                                                <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
-                                            </div>
-                                            <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i>&nbsp;5% since last month</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card text-white bg-success shadow">
-                                        <div class="card-body">
-                                            <div class="row mb-2">
-                                                <div class="col">
-                                                    <p class="m-0">Peformance</p>
-                                                    <p class="m-0"><strong>65.2%</strong></p>
-                                                </div>
-                                                <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
-                                            </div>
-                                            <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i>&nbsp;5% since last month</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="row">
                                 <div class="col">
                                     <div class="card shadow mb-3">
@@ -126,11 +81,9 @@
                                             <li class="list-group-item">
                                                 <div class="row align-items-center no-gutters">
                                                     <div class="col mr-2">
-															<h6 class="mb-0"><strong>{{ diet.name }}</strong></h6><span class="text-xs">{{ diet.description }}</span>
+                                                        <h6 class="mb-0"><strong>{{ diet.name }}</strong></h6><a class="text-dark text-xs" href="{{ diet.get_absolute_url }}">{{ diet.description }}</a>
                                                     </div>
-                                                    <div class="col-auto">
-                                                        <div class="custom-control custom-checkbox"><input class="custom-control-input" type="checkbox" id="formCheck-1"><label class="custom-control-label" for="formCheck-1"></label></div>
-                                                    </div>
+                                                    <div class="col-auto"><a class="text-dark" href="{{ diet.get_absolute_url }}"><i class="far fa-star"></i></a></div>
                                                 </div>
                                             </li>
 																						{% endfor %}
@@ -141,15 +94,13 @@
                                             <p class="text-primary m-0 font-weight-bold" style="color: var(--p)!important;">My meals</p>
                                         </div>
                                         <ul class="list-group list-group-flush">
- 																						{% for meal in meals %}
+																						{% for meal in meals %}
                                             <li class="list-group-item">
                                                 <div class="row align-items-center no-gutters">
                                                     <div class="col mr-2">
-															<h6 class="mb-0"><strong>{{ meal.name }}</strong></h6><span class="text-xs">{{ meal.description }} </span>
+                                                        <h6 class="mb-0"><strong>{{ meal.name }}</strong></h6><a class="text-dark text-xs" href="{{ meal.get_absolute_url }}">{{ meal.description }}</a>
                                                     </div>
-                                                    <div class="col-auto">
-                                                        <div class="custom-control custom-checkbox"><input class="custom-control-input" type="checkbox" id="formCheck-1"><label class="custom-control-label" for="formCheck-1"></label></div>
-                                                    </div>
+                                                    <div class="col-auto"><a class="text-dark" href="{{ meal.get_absolute_url }}"><i class="far fa-star"></i></a></div>
                                                 </div>
                                             </li>
 																						{% endfor %}
