@@ -2,7 +2,7 @@
 from http import HTTPStatus
 
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core import serializers
 from django.http.response import Http404, JsonResponse
@@ -23,7 +23,7 @@ def homepage_view(request):
     return render(request, "general/index.html")
 
 
-class MealCreate(LoginRequiredMixin, SuccessMessageMixin, FormView):
+class MealCreate(SuccessMessageMixin, FormView):
     """View for creating meals"""
 
     form_class = MealCreateForm
@@ -62,8 +62,11 @@ class MealCreate(LoginRequiredMixin, SuccessMessageMixin, FormView):
         return render(self.request, self.template_name)
 
 
+create = login_required(MealCreate.as_view())
+
+
 @method_decorator(csrf_exempt, name="dispatch")
-class DayCreate(LoginRequiredMixin, View):
+class DayCreate(View):
     """View for creating days"""
 
     template_name = "day/create.html"
@@ -115,6 +118,9 @@ class DayCreate(LoginRequiredMixin, View):
         return JsonResponse({}, status=HTTPStatus.CREATED)
 
 
+day_create = login_required(DayCreate.as_view())
+
+
 class MealBrowse(ListView):
     """Browse different meals"""
 
@@ -122,6 +128,9 @@ class MealBrowse(ListView):
     context_object_name = "meals"
     template_name = "meal/browse.html"
     paginate_by = 10
+
+
+browse = MealBrowse.as_view()
 
 
 class MealDetail(DetailView):
@@ -141,7 +150,10 @@ class MealDetail(DetailView):
         return context
 
 
-class MealDelete(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+detail = MealDetail.as_view()
+
+
+class MealDelete(SuccessMessageMixin, DeleteView):
     """Delete a meal that you have created"""
 
     model = Meal
@@ -158,3 +170,6 @@ class MealDelete(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
             raise Http404
         context["ingredients"] = ThroughMealIngr.objects.filter(meal=meal)
         return context
+
+
+delete = login_required(MealDelete.as_view())

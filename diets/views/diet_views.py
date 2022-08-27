@@ -1,6 +1,6 @@
 """Views concerning diet creation & browsing"""
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http.response import Http404
 from django.shortcuts import render
@@ -26,6 +26,9 @@ class DietBrowse(ListView):
         return queryset.filter(public=True)
 
 
+browse = DietBrowse.as_view()
+
+
 class DietDetail(DetailView):
     """DetailView for viewing a certain diet"""
 
@@ -34,7 +37,10 @@ class DietDetail(DetailView):
     template_name = "diet/view.html"
 
 
-class DietCreate(LoginRequiredMixin, SuccessMessageMixin, FormView):
+detail = DietDetail.as_view()
+
+
+class DietCreate(SuccessMessageMixin, FormView):
     """FormView for creating a diet using the DietCreateForm"""
 
     form_class = DietCreateForm
@@ -54,7 +60,10 @@ class DietCreate(LoginRequiredMixin, SuccessMessageMixin, FormView):
         return render(self.request, self.template_name)
 
 
-class DietImport(LoginRequiredMixin, SuccessMessageMixin, FormView):
+create = login_required(DietCreate.as_view())
+
+
+class DietImport(SuccessMessageMixin, FormView):
     """A view for importing the diet, usually from a redirect with a slug"""
 
     form_class = DietImportForm
@@ -78,7 +87,10 @@ class DietImport(LoginRequiredMixin, SuccessMessageMixin, FormView):
         return super().form_valid(form)
 
 
-class DietDelete(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+imprt = login_required(DietImport.as_view())
+
+
+class DietDelete(SuccessMessageMixin, DeleteView):
     """A view for deleting a diet, usually from a redirect with a slug"""
 
     model = Diet
@@ -94,3 +106,6 @@ class DietDelete(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         if not diet or self.request.user != diet.author:
             raise Http404
         return context
+
+
+delete = login_required(DietDelete.as_view())

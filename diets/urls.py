@@ -5,32 +5,18 @@ for example the link to browse would be 'example.com/diet/browse'
 
 from django.urls import path
 
-from diets.views.diet_views import (
-    DietBrowse,
-    DietCreate,
-    DietDelete,
-    DietDetail,
-    DietImport,
-)
-from diets.views.meal_views import (
-    DayCreate,
-    MealBrowse,
-    MealCreate,
-    MealDelete,
-    MealDetail,
-    homepage_view,
-)
+from diets.views import diet_views, meal_views
 
 urlpatterns = [
-    path("", homepage_view, name="home"),
-    path("day/create/", DayCreate.as_view(), name="day-create"),
-    path("meals/create/", MealCreate.as_view(), name="meal-create"),
-    path("meals/browse/", MealBrowse.as_view(), name="meal-browse"),
-    path("meals/<pk>/", MealDetail.as_view(), name="meal-detail"),
-    path("meals/<pk>/delete/", MealDelete.as_view(), name="meal-delete"),
-    path("diet/create/", DietCreate.as_view(), name="diet-create"),
-    path("diet/browse/", DietBrowse.as_view(), name="diet-browse"),
-    path("diet/<slug>/import/", DietImport.as_view(), name="diet-import"),
-    path("diet/<slug>/", DietDetail.as_view(), name="diet-detail"),
-    path("diet/<slug>/delete/", DietDelete.as_view(), name="diet-delete"),
+    path("", meal_views.homepage_view, name="home"),
+    path("day/create/", meal_views.day_create, name="day-create"),
+    path("meals/create/", meal_views.create, name="meal-create"),
+    path("meals/browse/", meal_views.browse, name="meal-browse"),
+    path("meals/<pk>/", meal_views.detail, name="meal-detail"),
+    path("meals/<pk>/delete/", meal_views.delete, name="meal-delete"),
+    path("diet/create/", diet_views.create, name="diet-create"),
+    path("diet/browse/", diet_views.browse, name="diet-browse"),
+    path("diet/<slug>/import/", diet_views.imprt, name="diet-import"),
+    path("diet/<slug>/", diet_views.detail, name="diet-detail"),
+    path("diet/<slug>/delete/", diet_views.delete, name="diet-delete"),
 ]

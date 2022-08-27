@@ -1,6 +1,6 @@
 """Views concerning the user"""
 from allauth.account.views import LogoutView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render
 from django.urls.base import reverse_lazy
@@ -11,7 +11,7 @@ from diets.models import Diet, Meal
 from users.models import Profile
 
 
-class UserProfileView(LoginRequiredMixin, View):
+class UserProfileView(View):
     """View for showing the user his/her profile"""
 
     template_name = "profile/index.html"
@@ -26,6 +26,9 @@ class UserProfileView(LoginRequiredMixin, View):
         return render(request, self.template_name, context=context)
 
 
+profile = login_required(UserProfileView.as_view())
+
+
 class ProperLogoutView(LogoutView):
     """Override the default redirect url for the logout view"""
 
@@ -34,9 +37,10 @@ class ProperLogoutView(LogoutView):
         return reverse_lazy("meal-browse")
 
 
-class ChangePreferencesView(
-    LoginRequiredMixin, SuccessMessageMixin, UpdateView
-):
+logout = login_required(ProperLogoutView.as_view())
+
+
+class ChangePreferencesView(SuccessMessageMixin, UpdateView):
     """Change preferred amounts of fats, sugars and carbs"""
 
     model = Profile
@@ -48,3 +52,6 @@ class ChangePreferencesView(
     def get_object(self):
         """Return the user profile instance"""
         return self.request.user.profile
+
+
+change_preferences = login_required(ChangePreferencesView.as_view())
