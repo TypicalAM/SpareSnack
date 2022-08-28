@@ -5,7 +5,7 @@ for example the link to browse would be 'example.com/diet/browse'
 
 from django.urls import path
 
-from diets.views import diet_views, meal_views
+from foods.views import diet_views, meal_views
 
 urlpatterns = [
     path("", meal_views.homepage_view, name="home"),

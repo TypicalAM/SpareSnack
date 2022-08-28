@@ -1,4 +1,4 @@
-"""Test views for the diets app"""
+"""Test views for the foods app"""
 import datetime
 from http import HTTPStatus
 
@@ -8,7 +8,7 @@ from django.test import Client, TestCase
 from django.urls.base import reverse
 from django.urls.exceptions import NoReverseMatch
 
-from diets.models import Day, Diet, Ingredient, Meal, ThroughDayMeal
+from foods.models import Day, Diet, Ingredient, Meal, ThroughDayMeal
 
 
 class TestMealViews(TestCase):
@@ -158,7 +158,7 @@ class TestDayViews(TestCase):
                 "meals": """
                 [
                     {
-                        "model": "diets.meal",
+                        "model": "foods.meal",
                         "pk": 1,
                         "fields": {
                             "name": "Potato soup",
@@ -187,7 +187,7 @@ class TestDayViews(TestCase):
                 "meals": """
                 [
                     {
-                        "model": "diets.meal",
+                        "model": "foods.meal",
                         "pk": 1,
                         "fields": {
                             "name": "Tomato soup",
@@ -215,7 +215,7 @@ class TestDayViews(TestCase):
                 "meals": """
                 [
                     {
-                        "model": "diets.meal",
+                        "model": "foods.meal",
                         "pk": 1,
                         "fields": {
                             "name": "Potato soup",

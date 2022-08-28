@@ -1,4 +1,4 @@
-"""Models for the diets app"""
+"""Models for the foods app"""
 import datetime
 
 from django.contrib.auth.models import User

@@ -1,9 +1,9 @@
-"""Appconfig for the diets app"""
+"""Appconfig for the foods app"""
 from django.apps import AppConfig
 
 
-class DietsConfig(AppConfig):
+class FoodsConfig(AppConfig):
     """Configure the app"""
 
     default_auto_field = "django.db.models.BigAutoField"
-    name = "diets"
+    name = "foods"

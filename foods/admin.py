@@ -1,7 +1,7 @@
-"""Admin configuration for the diets app"""
+"""Admin configuration for the foods app"""
 from django.contrib import admin
 
-from diets.models import (
+from foods.models import (
     Day,
     Diet,
     Ingredient,

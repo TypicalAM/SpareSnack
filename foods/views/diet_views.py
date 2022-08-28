@@ -8,8 +8,8 @@ from django.urls.base import reverse_lazy
 from django.views.generic import DetailView, FormView, ListView
 from django.views.generic.edit import DeleteView
 
-from diets.forms import DietCreateForm, DietImportForm
-from diets.models import Diet
+from foods.forms import DietCreateForm, DietImportForm
+from foods.models import Diet
 
 
 class DietBrowse(ListView):

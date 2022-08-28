@@ -7,7 +7,7 @@ from django.urls.base import reverse_lazy
 from django.views.generic.base import View
 from django.views.generic.edit import UpdateView
 
-from diets.models import Diet, Meal
+from foods.models import Diet, Meal
 from users.models import Profile
 
 

@@ -14,8 +14,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView, FormView
 
-from diets.forms import MealCreateForm, validate_day_post_save
-from diets.models import Day, Ingredient, Meal, ThroughDayMeal, ThroughMealIngr
+from foods.forms import MealCreateForm, validate_day_post_save
+from foods.models import Day, Ingredient, Meal, ThroughDayMeal, ThroughMealIngr
 
 
 def homepage_view(request):

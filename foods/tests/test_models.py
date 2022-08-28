@@ -1,4 +1,4 @@
-"""Test models for the diets app"""
+"""Test models for the foods app"""
 import datetime
 
 from django.contrib.auth.models import User
@@ -6,7 +6,7 @@ from django.db.utils import IntegrityError
 from django.test import TestCase
 from django.urls.base import reverse
 
-from diets.models import (
+from foods.models import (
     Day,
     Diet,
     Ingredient,
@@ -17,7 +17,7 @@ from diets.models import (
 
 
 class TestModels(TestCase):
-    """Test the models functionality for the diets app"""
+    """Test the models functionality for the foods app"""
 
     def setUp(self) -> None:
         self.user = User.objects.create(username="testuser", password="12345")

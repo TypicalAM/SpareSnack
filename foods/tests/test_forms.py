@@ -1,16 +1,16 @@
-"""Test forms for the diets app"""
+"""Test forms for the foods app"""
 import datetime
 
 from django.contrib.auth.models import User
 from django.core import serializers
 from django.test import TestCase
 
-from diets.forms import DietCreateForm, DietImportForm, MealCreateForm
-from diets.models import Diet, Ingredient
+from foods.forms import DietCreateForm, DietImportForm, MealCreateForm
+from foods.models import Diet, Ingredient
 
 
 class TestForms(TestCase):
-    """Test the forms functionality for the diets app"""
+    """Test the forms functionality for the foods app"""
 
     def setUp(self) -> None:
         self.ingr1 = Ingredient.objects.create(

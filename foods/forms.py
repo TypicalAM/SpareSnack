@@ -1,4 +1,4 @@
-"""Forms for the diets app"""
+"""Forms for the foods app"""
 import json
 from json.decoder import JSONDecodeError
 
@@ -8,7 +8,7 @@ from django.core.serializers.base import DeserializationError
 from django.forms import ValidationError, fields
 from django.template.defaultfilters import slugify
 
-from diets.models import Diet, Ingredient, Meal
+from foods.models import Diet, Ingredient, Meal
 
 
 def validate_day_post_save(request):
