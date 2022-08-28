@@ -55,3 +55,20 @@ class ChangeGoalsView(SuccessMessageMixin, UpdateView):
 
 
 change_goals = login_required(ChangeGoalsView.as_view())
+
+
+class ChangeAvatarView(SuccessMessageMixin, UpdateView):
+    """Change the avatar of the user"""
+
+    model = Profile
+    template_name = "profile/change_avatar.html"
+    fields = ("image",)
+    success_url = reverse_lazy("account_profile")
+    success_message = "The avatar image has been changed"
+
+    def get_object(self):
+        """Return the user profile instance"""
+        return self.request.user.profile
+
+
+change_avatar = login_required(ChangeAvatarView.as_view())

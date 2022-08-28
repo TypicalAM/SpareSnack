@@ -26,6 +26,11 @@ urlpatterns = [
         views.change_goals,
         name="account_change_goals",
     ),
+    path(
+        "profile/avatar",
+        views.change_avatar,
+        name="account_change_avatar",
+    ),
 ]
 
 if "allauth.socialaccount" in settings.INSTALLED_APPS:

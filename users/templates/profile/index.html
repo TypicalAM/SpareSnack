@@ -52,7 +52,10 @@
 							<div class="col-lg-4">
 								<div class="card mb-3">
 									<div class="card-body text-center shadow"><img class="rounded-circle mb-3 mt-4" src="{{ user.profile.image.url }}" width="160" height="160" style="width: 160px;height: 160px;">
-										<div class="mb-3"><a class="btn btn-primary btn-sm" href="{% url 'account_change_password' %}" style="background: var(--purple);">Change Password</a></div>
+										<div class="mb-3">
+											<a class="btn btn-primary btn-sm" href="{% url 'account_change_password' %}" style="background: var(--purple);">Change Password</a>
+											<a class="btn btn-primary btn-sm" href="{% url 'account_change_avatar' %}" style="background: var(--purple);">Change Avatar</a>
+										</div>
 									</div>
 								</div>
 								<div class="card shadow mb-4">

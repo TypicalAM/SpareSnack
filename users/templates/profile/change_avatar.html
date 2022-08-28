@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+		<link rel="icon" href="{% static '/img/favicon.ico' %}">
+		<title>Avatar - SpareSnack</title>
+		<link rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alata">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin:400,700">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="{% static '/fonts/fontawesome5-overrides.min.css' %}">
+		<link rel="stylesheet" href="{% static '/css/first.css' %}">
+	</head>
+	<body class="bg-gradient-primary" style="background-image: linear-gradient(180deg, var(--bg1) 10%, var(--vector__tertiary));background-color: var(--bg1);">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-9 col-lg-12 col-xl-10">
+					<div class="card shadow-lg o-hidden border-0 my-5">
+						<div class="card-body p-0">
+							<div class="row">
+								<div class="col-lg-6 d-none d-lg-flex">
+									<div class="flex-grow-1 bg-login-image" style="background-image: url(&quot;{% static '/img/login.jpg' %}&quot;);");"></div>
+								</div>
+								<div class="col-lg-6">
+									<div class="p-5">
+										<div class="text-center">
+											<h4 class="text-dark mb-4">Change your avatar</h4>
+										</div>
+										<form class="user" method="POST" enctype="multipart/form-data">
+											{% csrf_token %}
+											<div class="row">
+												<div class="col-lg-6 mx-auto">
+													<!-- Upload image input-->
+													<div class="input-group mb-3 rounded-pill bg-white">
+														<input id="upload" name="image" type="file" class="form-control border-0">
+													</div>
+												</div>
+											</div>
+											<hr><button class="btn btn-primary btn-block text-white btn-google btn-user" type="submit" style="background: var(--purple);"><i class="fas fa-user-tie"></i>&nbsp;Change avatar</button>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
+		<script src="{% static '/js/general/theme.js' %}"></script>
+	</body>
+</html>
