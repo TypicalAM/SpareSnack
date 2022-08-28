@@ -89,8 +89,8 @@ class TestModels(TestCase):
         inter2 = ThroughMealIngr.objects.create(
             meal=self.meal, ingredient=self.ingr2, amount=300
         )
-        self.assertEquals(inter.grams, 600)
-        self.assertEquals(inter2.grams, 300)
+        self.assertEqual(inter.grams, 600)
+        self.assertEqual(inter2.grams, 300)
         [rel.delete() for rel in ThroughMealIngr.objects.all()]
 
     def test_meal_save_ingredients(self) -> None:
