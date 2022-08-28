@@ -1,74 +1,43 @@
-{%extends 'general/base.html'%}
-{%load static%}
-{%block title%}Diet Import{%endblock%}
-{%block diets%}active{%endblock%}
-{%block content%}
-                <div class="container-fluid">
-                    <h3 class="text-dark mb-4">Diet Importing</h3>
-                    <div class="row mb-3">
-                        <div class="col-lg-4">
-								<form action="/diet/{{ diet.slug }}/import/" method="POST" enctype="multipart/form-data" autocomplete="OFF">
-									{% csrf_token %}
-									<input type="hidden" name="slug" value="{{ diet.slug }}">
-                                <div class="card mb-3">
-                                    <div class="card-body text-center shadow"><img class="mb-3 mt-4" src="{% static '/img/Cabbage.jpg' %}" style="max-height: 216px;max-width: 385px;width: 100%;height: 100%;"></div>
-                                </div>
-																<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">{{ diet.name }}</span><i class="fa fa-check" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
-																<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">{{ diet.description }}</span><i class="fa fa-file-text" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
-                                <div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 65%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;" >Since when?</span><input required="" class="form-control text-muted" name="date" type="date" style="width: 12rem;padding: 0.5rem;font-family: 'Alata';font-size: 18px;outline: none;background-color: white;border: none;"></div>
-<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">Import this diet</span>
-										<button type="submit" class="btn btn-secondary" type="button">Import</button>
-									</div>
-                            </form>
-                        </div>
-                        <div class="col-lg-8">
-                            <div class="row mb-3 d-none">
-                                <div class="col">
-                                    <div class="card text-white bg-primary shadow">
-                                        <div class="card-body">
-                                            <div class="row mb-2">
-                                                <div class="col">
-                                                    <p class="m-0">Peformance</p>
-                                                    <p class="m-0"><strong>65.2%</strong></p>
-                                                </div>
-                                                <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
-                                            </div>
-                                            <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i>&nbsp;5% since last month</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card text-white bg-success shadow">
-                                        <div class="card-body">
-                                            <div class="row mb-2">
-                                                <div class="col">
-                                                    <p class="m-0">Peformance</p>
-                                                    <p class="m-0"><strong>65.2%</strong></p>
-                                                </div>
-                                                <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
-                                            </div>
-                                            <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i>&nbsp;5% since last month</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-														{% for day in diet.days.all %}
-														<div class="dropdown">
-															<button class="btn btn-primary dropdown-toggle" aria-expanded="false" data-toggle="dropdown" type="button" 
-															style="
-															{% if forloop.counter|divisibleby:2 %}
-															background: linear-gradient(104deg, #a47ff3, rgb(101,31,249)), #c5aef6;
-															height: 70px;
-															box-shadow: 6px 6px 4px #e5e5e5;
-															margin-bottom: 3%;
-															display: flex;
-															align-items: center;
-															padding: 3%;
-															border-radius: 10px;
-															width: 100%;
-															font-family: 'Merriweather Sans', sans-serif;
-															border: 1px solid #f2f2f2;
-															{% else %}
+{% extends 'general/base.html' %}
+{% load static %}
+{% block title %}Diet Import{% endblock %}
+{% block diets %}active{% endblock %}
+{% block content %}
+<div class="container-fluid">
+	<h3 class="text-dark mb-4">Diet Importing</h3>
+	<div class="row mb-3">
+		<div class="col-lg-4">
+			<form method="POST" enctype="multipart/form-data" autocomplete="OFF">
+				{% csrf_token %}
+				<input type="hidden" name="slug" value="{{ diet.slug }}">
+				<div class="card mb-3">
+					<div class="card-body text-center shadow"><img class="mb-3 mt-4" src="{%  static '/img/Cabbage.jpg'  %}" style="max-height: 216px;max-width: 385px;width: 100%;height: 100%;"></div>
+				</div>
+				<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">{{ diet.name }}</span><i class="fa fa-check" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
+				<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">{{ diet.description }}</span><i class="fa fa-file-text" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
+				<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 65%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;" >Since when?</span><input required="" class="form-control text-muted" name="date" type="date" style="width: 12rem;padding: 0.5rem;font-family: 'Alata';font-size: 18px;outline: none;background-color: white;border: none;"></div>
+				<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">Import this diet</span>
+					<button type="submit" class="btn btn-secondary">Import</button>
+				</div>
+			</form>
+		</div>
+		<div class="col-lg-8">
+			{% for day in diet.days.all %}
+			<div class="dropdown">
+				<button class="btn btn-primary dropdown-toggle" aria-expanded="false" data-toggle="dropdown" type="button" style="
+{% if forloop.counter|divisibleby:2 %}
+background: linear-gradient(104deg, #a47ff3, rgb(101,31,249)), #c5aef6;
+height: 70px;
+box-shadow: 6px 6px 4px #e5e5e5;
+margin-bottom: 3%;
+display: flex;
+align-items: center;
+padding: 3%;
+border-radius: 10px;
+width: 100%;
+font-family: 'Merriweather Sans', sans-serif;
+border: 1px solid #f2f2f2;
+{% else %}
 color: black;
 background: white;
 height: 70px;
@@ -81,16 +50,16 @@ border-radius: 10px;
 width: 100%;
 font-family: 'Merriweather Sans', sans-serif;
 border: 3px solid #a47ff3;
-															{% endif %}
-															">{{ day.date }}</button>
-                                <div class="dropdown-menu">
-																	{% for meal in day.meals.all %}
-																	<a class="dropdown-item" href="{{ meal.get_absolute_url }}">{{ meal.name }}</a>
-																	{% endfor %}
-																</div>
-                            </div>
-														{% endfor %}
-                        </div>
-                    </div>
-                </div>
-{%endblock%}
+{% endif %}
+">{{ day.date }}</button>
+				<div class="dropdown-menu">
+					{% for meal in day.meals.all %}
+					<a class="dropdown-item" href="{{ meal.get_absolute_url }}">{{ meal.name }}</a>
+					{% endfor %}
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+{% endblock %}

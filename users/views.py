@@ -34,7 +34,7 @@ class ProperLogoutView(LogoutView):
 
     def get_redirect_url(self):  # pylint: disable=no-self-use
         """Let's redirect to our logout_done view"""
-        return reverse_lazy("meal-browse")
+        return reverse_lazy("foods_meal_browse")
 
 
 logout = login_required(ProperLogoutView.as_view())

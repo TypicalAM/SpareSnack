@@ -1,39 +1,39 @@
-{%extends 'general/base.html'%}
-{%load static%}
-{%block title%}New Diet{%endblock%}
-{%block diets%}active{%endblock%}
-{%block content%}
-                <div class="container" style="max-width: 100%;margin-top: 2%;">
-                    <form action="/diet/create/" method="POST" enctype="multipart/form-data" autocomplete="OFF"><input class="form-control" type="hidden" id="amounts_form" value="." name="amounts"><input class="form-control" type="hidden" id="ingredients_form" value="." name="ingredient_data">
-											{% csrf_token %}
-                        <div class="form-row">
-                            <div class="col-md-6" style="min-height: 800px;">
-                                <div id="info" style="box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;">
-                                    <div style="display: grid;max-width: 70%;">
-                                        <h1 style="font-size: 26px;font-family: 'Josefin Sans', sans-serif;color: #242e37;">Create a diet here!</h1><span style="font-family: 'Josefin Sans', sans-serif;font-size: 18px;color: #969393;">You can combine different days to create a diet! You can make it public for other people to see or just have it on your own. If you make it public, other people will be able to import it into their days.</span>
-										</div><img style="height: 35%;width: 35%;" src="{% static '/img/chef.png' %}">
-                                </div>
-                                <div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><input class="form-control" type="text" id="id_description-1" placeholder="Your diet's name" style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;" name="name" maxlength="100" required="."><i class="fa fa-check" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
-                                <div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><input class="form-control" type="text" id="id_description" placeholder="Your diet's description" style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;" name="description" maxlength="200" required="."><i class="fa fa-file-text" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
-                                <div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">Publicity</span><input type="checkbox" id="id_public" name="public" checked="." style="margin-left: 2%;margin-right: 2%;"></div>
-                            </div>
-                            <div class="col-md-6" style="min-height: 800px;">
-                                <div>
-                                    <div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;">
-											<span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">Select the start date</span>
-											<input class="text-muted" name="date" type="date" style="width: 12rem;padding: 0.5rem;font-family: 'Alata';font-size: 18px;outline: none;background-color: white;border: none;" /></div>
-              <div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;">
-											<span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">Select the end date</span>
-											<input class="text-muted" name="end_date" type="date" style="width: 12rem;padding: 0.5rem;font-family: 'Alata';font-size: 18px;outline: none;background-color: white;border: none;" /></div>
-																		<div class="section" style="padding-bottom: 3rem;display: flex;justify-content: center;">
-                                        <div>
-												</div>
-                                    </div>
+{% extends 'general/base.html' %}
+{% load static %}
+{% block title %}New Diet{% endblock %}
+{% block diets %}active{% endblock %}
+{% block content %}
+<div class="container" style="max-width: 100%;margin-top: 2%;">
+	<form action="{% url 'foods_diet_create' %}" method="POST" enctype="multipart/form-data" autocomplete="OFF"><input class="form-control" type="hidden" id="amounts_form" value="." name="amounts"><input class="form-control" type="hidden" id="ingredients_form" value="." name="ingredient_data">
+		{% csrf_token %}
+		<div class="form-row">
+			<div class="col-md-6" style="min-height: 800px;">
+				<div id="info" style="box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;">
+					<div style="display: grid;max-width: 70%;">
+						<h1 style="font-size: 26px;font-family: 'Josefin Sans', sans-serif;color: #242e37;">Create a diet here!</h1><span style="font-family: 'Josefin Sans', sans-serif;font-size: 18px;color: #969393;">You can combine different days to create a diet! You can make it public for other people to see or just have it on your own. If you make it public, other people will be able to import it into their days.</span>
+					</div><img style="height: 35%;width: 35%;" src="{% static '/img/chef.png' %}">
+				</div>
+				<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><input class="form-control" type="text" id="id_description-1" placeholder="Your diet's name" style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;" name="name" maxlength="100" required="."><i class="fa fa-check" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
+				<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><input class="form-control" type="text" id="id_description" placeholder="Your diet's description" style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;" name="description" maxlength="200" required="."><i class="fa fa-file-text" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
+				<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">Publicity</span><input type="checkbox" id="id_public" name="public" checked="." style="margin-left: 2%;margin-right: 2%;"></div>
+			</div>
+			<div class="col-md-6" style="min-height: 800px;">
+				<div>
+					<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;">
+						<span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">Select the start date</span>
+						<input class="text-muted" name="date" type="date" style="width: 12rem;padding: 0.5rem;font-family: 'Alata';font-size: 18px;outline: none;background-color: white;border: none;" /></div>
+					<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;">
+						<span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">Select the end date</span>
+						<input class="text-muted" name="end_date" type="date" style="width: 12rem;padding: 0.5rem;font-family: 'Alata';font-size: 18px;outline: none;background-color: white;border: none;" /></div>
+					<div class="section" style="padding-bottom: 3rem;display: flex;justify-content: center;">
+						<div>
+						</div>
+					</div>
 
-                                    <div class="text-center" style="margin-top: 3%;"><button class="btn btn-primary" type="submit" style="margin-bottom: 3%;background-color: #90c6c6;border-radius: 10px;min-width: 30%;font-family: Lato, sans-serif;font-size: 22px;border: 3px hidden rgb(255, 255, 255);" >Submit</button></div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div><!-- End: 1 Row 2 Columns -->
-{%endblock%}
+					<div class="text-center" style="margin-top: 3%;"><button class="btn btn-primary" type="submit" style="margin-bottom: 3%;background-color: #90c6c6;border-radius: 10px;min-width: 30%;font-family: Lato, sans-serif;font-size: 22px;border: 3px hidden rgb(255, 255, 255);" >Submit</button></div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div><!-- End: 1 Row 2 Columns -->
+{% endblock %}

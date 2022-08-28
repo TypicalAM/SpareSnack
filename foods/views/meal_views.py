@@ -28,7 +28,7 @@ class MealCreate(SuccessMessageMixin, FormView):
 
     form_class = MealCreateForm
     template_name = "meal/create.html"
-    success_url = reverse_lazy("day-create")
+    success_url = reverse_lazy("foods_day_create")
     success_message = "The meal has been created"
 
     def get_ingredient_data(self) -> JsonResponse:
@@ -159,7 +159,7 @@ class MealDelete(SuccessMessageMixin, DeleteView):
     model = Meal
     context_object_name = "meal"
     template_name = "meal/delete.html"
-    success_url = reverse_lazy("day-create")
+    success_url = reverse_lazy("foods_day_create")
     success_message = "The meal has been deleted"
 
     def get_context_data(self, **kwargs):

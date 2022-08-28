@@ -1,81 +1,81 @@
-{%extends 'general/base.html'%}
-{%load static%}
-{%block title%}Meal Delete{%endblock%}
-{%block meals%}active{%endblock%}
-{%block content%}
-                <div class="container-fluid">
-                    <h3 class="text-dark mb-4">Meal Details</h3>
-                    <div class="row mb-3">
-                        <div class="col-lg-4">
-                            <div class="card mb-3">
-									<div class="card-body text-center shadow"><img class="mb-3 mt-4" src="{{ meal.image.url }}" style="max-height: 216px;max-width: 385px;width: 100%;height: 100%;"></div>
-                            </div>
-                            <div id="ingredients-div" style="margin-bottom: 3%;box-shadow: 6px 6px 4px #eeeeee;display: grid;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;">
-                                <h1 style="width: 100%;font-size: 26px;font-family: 'Josefin Sans', sans-serif;color: #242e37;">Ingredients</h1>
-																{% for relation in ingredients %}
-                                <div id="ingredients" style="border-radius: 10px;margin-top: 3%;min-height: 100px;background-color: white;border: 1px solid #f2f2f2;">
-                                    <div id="ingredient-2" style="border: hidden;padding: 3%;display: grid;background: #e9f4f4;border-radius: 9px;">
-											<div class="info" style="align-items: center;display: flex;height: 70px;"><img style="margin-right: 3%;margin-left: 2%;height: 60px;width: 60px;" src="{{ relation.ingredient.image.url }}">
-												<div style="width: 60%;display: grid;"><span style="font-family: 'Josefin Sans', sans-serif;font-size: 25px;">{{ relation.ingredient.name }}</span>
-                                                <div><i class="fa fa-fire" style="color: #ff9900;margin-right: 3%;"></i><small style="color: #757575;margin-right: 4%;font-family: 'Josefin Sans', sans-serif;font-size: 14.8px;">113 kcal</small><i class="fa fa-balance-scale" style="margin-right: 3%;color: rgb(255,29,124);"></i><small style="color: #757575;font-family: 'Josefin Sans', sans-serif;font-size: 14.8px;">100g</small></div>
-												</div><textarea class="grams" style="color: #757575;padding: 1%;overflow: hidden!important;resize: none!important;height: 35px;border-radius: 13px;background-color: white;border: hidden;width: 15%;font-family: 'Josefin Sans', sans-serif;font-size: 21px;text-align: center;" readonly="">{{ relation.amount }}</textarea><span style="color: #757575;margin-left: 3%;">G</span>
-                                        </div>
-                                    </div>
-                                </div>
-																{% endfor %}
-                            </div>
-                        </div>
-                        <div class="col-lg-8">
-                            <div class="row mb-3 d-none">
-                                <div class="col">
-                                    <div class="card text-white bg-primary shadow">
-                                        <div class="card-body">
-                                            <div class="row mb-2">
-                                                <div class="col">
-                                                    <p class="m-0">Peformance</p>
-                                                    <p class="m-0"><strong>65.2%</strong></p>
-                                                </div>
-                                                <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
-                                            </div>
-                                            <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i>&nbsp;5% since last month</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card text-white bg-success shadow">
-                                        <div class="card-body">
-                                            <div class="row mb-2">
-                                                <div class="col">
-                                                    <p class="m-0">Peformance</p>
-                                                    <p class="m-0"><strong>65.2%</strong></p>
-                                                </div>
-                                                <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
-                                            </div>
-                                            <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i>&nbsp;5% since last month</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-										<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">{{ meal.name }}</span><i class="fa fa-check" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
-                                    <div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">{{ meal.description }}</span><i class="fa fa-file-text" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
-                                    <div class="card shadow">
-                                        <ul class="list-group list-group-flush"></ul>
-                                    </div>
-                                    <div id="Recipe" style="box-shadow: 6px 6px 4px #eeeeee;display: grid;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;">
-                                        <div style="display: grid;max-width: 70%;">
-                                            <h1 style="padding-left: 1%;font-size: 26px;font-family: 'Josefin Sans', sans-serif;color: #242e37;">The recipe content</h1>
-                                        </div>
-											<div style="border-radius: 10px;margin-top: 3%;min-height: 200px;background-color: white;border: 1px solid #f2f2f2;"><textarea id="id_description" style="padding: 2%;border-radius: 5px;border: hidden;width: 100%;height: 100%;background: #fff2f2;" type="text" name="description" maxlength="200" readonly="">{{ meal.recipe }}</textarea></div>
-                                        <form action="/meals/{{ meal.pk }}/delete/" method="POST" autocomplete="OFF">
-																	{% csrf_token %}
-                                    <div class="text-center" style="margin-top: 3%;"><button class="btn btn-primary" type="submit" href="/diet/{{ diet.slug }}/delete" style="margin-bottom: 3%;background-color: #90c6c6;border-radius: 10px;min-width: 30%;font-family: Lato, sans-serif;font-size: 22px;border: 3px hidden rgb(255, 255, 255);">Delete this meal</a></div>
-																		</form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-{%endblock%}
+{% extends 'general/base.html' %}
+{% load static %}
+{% block title %}Meal Delete{%endblock%}
+{% block meals %}active{%endblock%}
+{% block content %}
+<div class="container-fluid">
+	<h3 class="text-dark mb-4">Meal Details</h3>
+	<div class="row mb-3">
+		<div class="col-lg-4">
+			<div class="card mb-3">
+				<div class="card-body text-center shadow"><img class="mb-3 mt-4" src="{{ meal.image.url }}" style="max-height: 216px;max-width: 385px;width: 100%;height: 100%;"></div>
+			</div>
+			<div id="ingredients-div" style="margin-bottom: 3%;box-shadow: 6px 6px 4px #eeeeee;display: grid;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;">
+				<h1 style="width: 100%;font-size: 26px;font-family: 'Josefin Sans', sans-serif;color: #242e37;">Ingredients</h1>
+				{%  for relation in ingredients  %}
+				<div id="ingredients" style="border-radius: 10px;margin-top: 3%;min-height: 100px;background-color: white;border: 1px solid #f2f2f2;">
+					<div id="ingredient-2" style="border: hidden;padding: 3%;display: grid;background: #e9f4f4;border-radius: 9px;">
+						<div class="info" style="align-items: center;display: flex;height: 70px;"><img style="margin-right: 3%;margin-left: 2%;height: 60px;width: 60px;" src="{{ relation.ingredient.image.url }}">
+							<div style="width: 60%;display: grid;"><span style="font-family: 'Josefin Sans', sans-serif;font-size: 25px;">{{ relation.ingredient.name }}</span>
+								<div><i class="fa fa-fire" style="color: #ff9900;margin-right: 3%;"></i><small style="color: #757575;margin-right: 4%;font-family: 'Josefin Sans', sans-serif;font-size: 14.8px;">113 kcal</small><i class="fa fa-balance-scale" style="margin-right: 3%;color: rgb(255,29,124);"></i><small style="color: #757575;font-family: 'Josefin Sans', sans-serif;font-size: 14.8px;">100g</small></div>
+							</div><textarea class="grams" style="color: #757575;padding: 1%;overflow: hidden!important;resize: none!important;height: 35px;border-radius: 13px;background-color: white;border: hidden;width: 15%;font-family: 'Josefin Sans', sans-serif;font-size: 21px;text-align: center;" readonly="">{{ relation.amount }}</textarea><span style="color: #757575;margin-left: 3%;">G</span>
+						</div>
+					</div>
+				</div>
+				{%  endfor  %}
+			</div>
+		</div>
+		<div class="col-lg-8">
+			<div class="row mb-3 d-none">
+				<div class="col">
+					<div class="card text-white bg-primary shadow">
+						<div class="card-body">
+							<div class="row mb-2">
+								<div class="col">
+									<p class="m-0">Peformance</p>
+									<p class="m-0"><strong>65.2%</strong></p>
+								</div>
+								<div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
+							</div>
+							<p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i>&nbsp;5% since last month</p>
+						</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="card text-white bg-success shadow">
+						<div class="card-body">
+							<div class="row mb-2">
+								<div class="col">
+									<p class="m-0">Peformance</p>
+									<p class="m-0"><strong>65.2%</strong></p>
+								</div>
+								<div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
+							</div>
+							<p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i>&nbsp;5% since last month</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">{{ meal.name }}</span><i class="fa fa-check" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
+					<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">{{ meal.description }}</span><i class="fa fa-file-text" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
+					<div class="card shadow">
+						<ul class="list-group list-group-flush"></ul>
+					</div>
+					<div id="Recipe" style="box-shadow: 6px 6px 4px #eeeeee;display: grid;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;">
+						<div style="display: grid;max-width: 70%;">
+							<h1 style="padding-left: 1%;font-size: 26px;font-family: 'Josefin Sans', sans-serif;color: #242e37;">The recipe content</h1>
+						</div>
+						<div style="border-radius: 10px;margin-top: 3%;min-height: 200px;background-color: white;border: 1px solid #f2f2f2;"><textarea id="id_description" style="padding: 2%;border-radius: 5px;border: hidden;width: 100%;height: 100%;background: #fff2f2;" type="text" name="description" maxlength="200" readonly="">{{ meal.recipe }}</textarea></div>
+						<form method="POST" autocomplete="OFF">
+							{% csrf_token %}
+							<div class="text-center" style="margin-top: 3%;"><button class="btn btn-primary" type="submit" style="margin-bottom: 3%;background-color: #90c6c6;border-radius: 10px;min-width: 30%;font-family: Lato, sans-serif;font-size: 22px;border: 3px hidden rgb(255, 255, 255);">Delete this meal</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

@@ -1,45 +1,45 @@
-{%extends 'general/base.html'%}
-{%load static%}
-{%block title%}New Meal{%endblock%}
-{%block meals%}active{%endblock%}
-{%block content%}
-                <div class="container" style="max-width: 100%;margin-top: 2%;">
-                    <form action="/meals/create/" method="POST" enctype="multipart/form-data" autocomplete="OFF"><input class="form-control" type="hidden" id="amounts_form" value="" name="amounts"><input class="form-control" type="hidden" id="ingredients_form" value="" name="ingredient_data">
-												{% csrf_token %}
-                        <div class="form-row">
-                            <div class="col-md-6" style="min-height: 800px;">
-                                <div id="info" style="box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;">
-                                    <div style="display: grid;max-width: 70%;">
-                                        <h1 style="font-size: 26px;font-family: 'Josefin Sans', sans-serif;color: #242e37;">Add a recipe here!</h1><span style="font-family: 'Josefin Sans', sans-serif;font-size: 18px;color: #969393;">Here you can create a meal which you can later use in different days and diets, have fun creating your own thing!</span>
-																		</div><img style="height: 35%;width: 35%;" src="{% static '/img/chef.png' %}">
-                                </div>
-                                <div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><input class="form-control" type="text" id="id_name" placeholder="Name your dish" style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;" name="name "maxlength="100" required=""><i class="fa fa-check" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
-                                <div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><input class="form-control" type="text" id="id_description" placeholder="A short description" style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;" name="description" maxlength="200" required=""><i class="fa fa-file-text" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
-                                <div>
-                                    <div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><input id="search__input" class="form-control" type="text" placeholder="Search for ingredients" style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;" onkeyup="searchKeyUp()" onkeydown="searchKeyDown()">
-                                        <div></div><i class="fa fa-search" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i>
-                                    </div>
-                                    <div id="search_results" style="width: 95%;position: absolute;">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6" style="min-height: 800px;">
-                                <div id="ingredients-div" style="margin-bottom: 2%;box-shadow: 6px 6px 4px #eeeeee;display: grid;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;">
-                                    <h1 style="width: 100%;font-size: 26px;font-family: 'Josefin Sans', sans-serif;color: #242e37;">Ingredients</h1>
-                                    <div id="ingredients" style="border-radius: 10px;margin-top: 3%;min-height: 100px;background-color: white;border: 1px solid #f2f2f2;">
-                                    </div>
-                                </div>
-                                <div id="Recipe" style="box-shadow: 6px 6px 4px #eeeeee;display: grid;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;">
-                                    <div style="display: grid;max-width: 70%;">
-                                        <h1 style="padding-left: 1%;font-size: 26px;font-family: 'Josefin Sans', sans-serif;color: #242e37;">The recipe content</h1>
-                                    </div>
-                                    <div style="border-radius: 10px;margin-top: 3%;min-height: 200px;background-color: white;border: 1px solid #f2f2f2;"><textarea class="form-control" id="id_recipe" style="padding: 2%;border-radius: 5px;border: hidden;width: 100%;height: 100%;background: #fff2f2;" placeholder="Whisk the eggs, comibne it with flour and dry yeast in a bowl. Mix it and let it sit for around 30 minutes (or just when it doubles in size). Then you will need to cut it into...." type="text" name="recipe" maxlength="200" required=""></textarea></div>
-                                </div>
-                                <div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-top: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><input class="form-control-file" type="file" id="id_image" style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;color: #242e37;width: 95%;font-family: 'Merriweather Sans', sans-serif;font-size: 14px;" name="image" accept="image/*"><i class="fa fa-upload" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
-                                <div class="text-center" style="margin-top: 3%;"><button class="btn btn-primary" type="submit" style="margin-bottom: 3%;background-color: #90c6c6;border-radius: 10px;min-width: 30%;font-family: Lato, sans-serif;font-size: 22px;border: 3px hidden rgb(255, 255, 255);" onclick="fillFields()">Submit</button></div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-{%endblock%}
-{%block js%}<script src="{% static '/js/meal/create.js' %}"></script>{%endblock%}
+{% extends 'general/base.html' %}
+{% load static %}
+{% block title %}New Meal{% endblock %}
+{% block meals %}active{% endblock %}
+{% block content %}
+<div class="container" style="max-width: 100%;margin-top: 2%;">
+	<form method="POST" enctype="multipart/form-data" autocomplete="OFF"><input class="form-control" type="hidden" id="amounts_form" value="" name="amounts"><input class="form-control" type="hidden" id="ingredients_form" value="" name="ingredient_data">
+		{% csrf_token %}
+		<div class="form-row">
+			<div class="col-md-6" style="min-height: 800px;">
+				<div id="info" style="box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;">
+					<div style="display: grid;max-width: 70%;">
+						<h1 style="font-size: 26px;font-family: 'Josefin Sans', sans-serif;color: #242e37;">Add a recipe here!</h1><span style="font-family: 'Josefin Sans', sans-serif;font-size: 18px;color: #969393;">Here you can create a meal which you can later use in different days and diets, have fun creating your own thing!</span>
+					</div><img style="height: 35%;width: 35%;" src="{% static '/img/chef.png' %}">
+				</div>
+				<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><input class="form-control" type="text" id="id_name" placeholder="Name your dish" style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;" name="name "maxlength="100" required=""><i class="fa fa-check" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
+				<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><input class="form-control" type="text" id="id_description" placeholder="A short description" style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;" name="description" maxlength="200" required=""><i class="fa fa-file-text" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
+				<div>
+					<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><input id="search__input" class="form-control" type="text" placeholder="Search for ingredients" style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;" onkeyup="searchKeyUp()" onkeydown="searchKeyDown()">
+						<div></div><i class="fa fa-search" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i>
+					</div>
+					<div id="search_results" style="width: 95%;position: absolute;">
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6" style="min-height: 800px;">
+				<div id="ingredients-div" style="margin-bottom: 2%;box-shadow: 6px 6px 4px #eeeeee;display: grid;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;">
+					<h1 style="width: 100%;font-size: 26px;font-family: 'Josefin Sans', sans-serif;color: #242e37;">Ingredients</h1>
+					<div id="ingredients" style="border-radius: 10px;margin-top: 3%;min-height: 100px;background-color: white;border: 1px solid #f2f2f2;">
+					</div>
+				</div>
+				<div id="Recipe" style="box-shadow: 6px 6px 4px #eeeeee;display: grid;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;">
+					<div style="display: grid;max-width: 70%;">
+						<h1 style="padding-left: 1%;font-size: 26px;font-family: 'Josefin Sans', sans-serif;color: #242e37;">The recipe content</h1>
+					</div>
+					<div style="border-radius: 10px;margin-top: 3%;min-height: 200px;background-color: white;border: 1px solid #f2f2f2;"><textarea class="form-control" id="id_recipe" style="padding: 2%;border-radius: 5px;border: hidden;width: 100%;height: 100%;background: #fff2f2;" placeholder="Whisk the eggs, comibne it with flour and dry yeast in a bowl. Mix it and let it sit for around 30 minutes (or just when it doubles in size). Then you will need to cut it into...." type="text" name="recipe" maxlength="200" required=""></textarea></div>
+				</div>
+				<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-top: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><input class="form-control-file" type="file" id="id_image" style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;color: #242e37;width: 95%;font-family: 'Merriweather Sans', sans-serif;font-size: 14px;" name="image" accept="image/*"><i class="fa fa-upload" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
+				<div class="text-center" style="margin-top: 3%;"><button class="btn btn-primary" type="submit" style="margin-bottom: 3%;background-color: #90c6c6;border-radius: 10px;min-width: 30%;font-family: Lato, sans-serif;font-size: 22px;border: 3px hidden rgb(255, 255, 255);" onclick="fillFields()">Submit</button></div>
+			</div>
+		</div>
+	</form>
+</div>
+{% endblock %}
+{% block js %}<script src="{% static '/js/meal/create.js' %}"></script>{% endblock %}

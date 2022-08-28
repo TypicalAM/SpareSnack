@@ -1,52 +1,49 @@
 {% load static %}
 <html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>SpareSnack</title>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+		<title>SpareSnack</title>
 		<link rel="icon" href="{% static '/img/favicon.ico' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Actor">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alata">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin:500,600,700">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Philosopher:700">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Actor">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alata">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin:500,600,700">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Philosopher:700">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="{% static '/css/first.css' %}">
-</head>
-
-<body>
-    <div class="col">
-			<div id="main-header-1" class="section" style="margin-bottom: 6rem;margin-top: 2rem;display: flex;align-items: center;"><img src="{% static '/img/pepper.svg' %}" style="margin-left: 3%;"><a class="main-header__text" href="/" style="margin-right: 50%;margin-left: 1%;">SpareSnack</a><a class="main-header__text" href="/day/create" style="margin-right: 10%;">Day</a><a class="main-header__text" href="/meals/browse">Recipes</a></div>
-        <div id="splash" class="section">
-            <div class="splash__component" style="margin-right: 10%;">
-                <h1 class="display-4 splash__component_text" style="font-family: Cabin, sans-serif;">Good diets, just for you.</h1>
-								<span class="splash__component_text" style="font-family: Actor, sans-serif;">This application is designed to make planning your meals easier and more conventient. It has a system of keeping your days and diets in place, for you to use them later in a different time.&nbsp;<br></span>
-								<a href="/diets/browse"><button class="btn btn-primary splash__component_text" id="splash__btn" type="button">Explore diets</button> </a>
-            </div>
-						<div class="splash__component" style="margin-left: 0;"><img src="{% static 'img/man-eating.png' %}" style="height: 100%;width: 100%;"></div>
-        </div>
-        <div style="margin-top: 10%;align-items: center;flex-direction: column;display: flex;background-color: var(--bg1);">
-            <h1 style="color: white;margin-bottom: 2rem;margin-top: 5%;">The purpose of this app</h1><span style="color: white;margin-bottom: 2rem;font-family: Actor, sans-serif;font-size: 19px;">Why was this app created and what features does it have</span>
-            <div style="margin-bottom: 2rem;justify-content: space-between;flex-wrap: wrap;display: flex;width: 70%;">
-                <div style="margin-bottom: 5%;flex-direction: column;padding: 3%;border-radius: 1rem;background-color: white;width: 24rem;height: 13rem;display: flex;">
-									<div style="align-items: center;display: flex;height: 4rem;"><img src="{% static '/img/cheese.svg' %}" style="margin-right: 1rem;">
-                        <h1 style="margin-top: 0.5rem;justify-self: flex-end;">Keep track</h1>
-                    </div><span class="splash__component_text" style="margin-top: 0.5rem;font-family: Actor, sans-serif;">Your meals are kept in your days, for you to use them later and form your unique day plans which you can use to learn to follow a schedule</span>
-                </div>
-                <div style="margin-bottom: 5%;flex-direction: column;padding: 3%;border-radius: 1rem;background-color: white;width: 24rem;height: 13rem;display: flex;">
-                    <div style="align-items: center;display: flex;height: 4rem;"><img src="{% static '/img/cheese.svg' %}" style="margin-right: 1rem;">
-                        <h1 style="margin-top: 0.5rem;justify-self: flex-end;">Save time</h1>
-                    </div><span class="splash__component_text" style="margin-top: 0.5rem;font-family: Actor, sans-serif;">This app allows you to save days, or even sequences of days in a diet - you can use them on your own or even share them with the world.</span>
-                </div>
-                <div style="margin-bottom: 5%;flex-direction: column;padding: 3%;border-radius: 1rem;background-color: white;width: 24rem;height: 13rem;display: flex;">
-                    <div style="align-items: center;display: flex;height: 4rem;"><img src="{% static '/img/cheese.svg' %}" style="margin-right: 1rem;">
-                        <h1 style="margin-top: 0.5rem;justify-self: flex-end;">Imagination</h1>
-                    </div><span class="splash__component_text" style="margin-top: 0.5rem;font-family: Actor, sans-serif;">Let go of artistic boundaries and make your plan creative, you can set goals for yourself to work towards being a better person overall!</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-
+	</head>
+	<body>
+		<div class="col">
+			<div id="main-header-1" class="section" style="margin-bottom: 6rem;margin-top: 2rem;display: flex;align-items: center;"><img src="{% static '/img/pepper.svg' %}" style="margin-left: 3%;"><a class="main-header__text" href="{% url 'foods_home' %}'" style="margin-right: 50%;margin-left: 1%;">SpareSnack</a><a class="main-header__text" href="{% url 'foods_day_create' %}" style="margin-right: 10%;">Day</a><a class="main-header__text" href="{% url 'foods_meal_browse' %}">Recipes</a></div>
+			<div id="splash" class="section">
+				<div class="splash__component" style="margin-right: 10%;">
+					<h1 class="display-4 splash__component_text" style="font-family: Cabin, sans-serif;">Good diets, just for you.</h1>
+					<span class="splash__component_text" style="font-family: Actor, sans-serif;">This application is designed to make planning your meals easier and more conventient. It has a system of keeping your days and diets in place, for you to use them later in a different time.&nbsp;<br></span>
+					<a href="{% url 'foods_diet_browse' %}"><button class="btn btn-primary splash__component_text" id="splash__btn" type="button">Explore diets</button> </a>
+				</div>
+				<div class="splash__component" style="margin-left: 0;"><img src="{% static 'img/man-eating.png' %}" style="height: 100%;width: 100%;"></div>
+			</div>
+			<div style="margin-top: 10%;align-items: center;flex-direction: column;display: flex;background-color: var(--bg1);">
+				<h1 style="color: white;margin-bottom: 2rem;margin-top: 5%;">The purpose of this app</h1><span style="color: white;margin-bottom: 2rem;font-family: Actor, sans-serif;font-size: 19px;">Why was this app created and what features does it have</span>
+				<div style="margin-bottom: 2rem;justify-content: space-between;flex-wrap: wrap;display: flex;width: 70%;">
+					<div style="margin-bottom: 5%;flex-direction: column;padding: 3%;border-radius: 1rem;background-color: white;width: 24rem;height: 13rem;display: flex;">
+						<div style="align-items: center;display: flex;height: 4rem;"><img src="{% static '/img/cheese.svg' %}" style="margin-right: 1rem;">
+							<h1 style="margin-top: 0.5rem;justify-self: flex-end;">Keep track</h1>
+						</div><span class="splash__component_text" style="margin-top: 0.5rem;font-family: Actor, sans-serif;">Your meals are kept in your days, for you to use them later and form your unique day plans which you can use to learn to follow a schedule</span>
+					</div>
+					<div style="margin-bottom: 5%;flex-direction: column;padding: 3%;border-radius: 1rem;background-color: white;width: 24rem;height: 13rem;display: flex;">
+						<div style="align-items: center;display: flex;height: 4rem;"><img src="{% static '/img/cheese.svg' %}" style="margin-right: 1rem;">
+							<h1 style="margin-top: 0.5rem;justify-self: flex-end;">Save time</h1>
+						</div><span class="splash__component_text" style="margin-top: 0.5rem;font-family: Actor, sans-serif;">This app allows you to save days, or even sequences of days in a diet - you can use them on your own or even share them with the world.</span>
+					</div>
+					<div style="margin-bottom: 5%;flex-direction: column;padding: 3%;border-radius: 1rem;background-color: white;width: 24rem;height: 13rem;display: flex;">
+						<div style="align-items: center;display: flex;height: 4rem;"><img src="{% static '/img/cheese.svg' %}" style="margin-right: 1rem;">
+							<h1 style="margin-top: 0.5rem;justify-self: flex-end;">Imagination</h1>
+						</div><span class="splash__component_text" style="margin-top: 0.5rem;font-family: Actor, sans-serif;">Let go of artistic boundaries and make your plan creative, you can set goals for yourself to work towards being a better person overall!</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>

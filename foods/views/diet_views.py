@@ -45,7 +45,7 @@ class DietCreate(SuccessMessageMixin, FormView):
 
     form_class = DietCreateForm
     template_name = "diet/create.html"
-    success_url = reverse_lazy("day-create")
+    success_url = reverse_lazy("foods_day_create")
     success_message = "The diet has been created"
 
     def form_valid(self, form):
@@ -68,7 +68,7 @@ class DietImport(SuccessMessageMixin, FormView):
 
     form_class = DietImportForm
     template_name = "diet/import.html"
-    success_url = reverse_lazy("diet-browse")
+    success_url = reverse_lazy("foods_diet_browse")
     success_message = "Successfully imported the diet!"
 
     def get(self, request, *, slug):
@@ -96,7 +96,7 @@ class DietDelete(SuccessMessageMixin, DeleteView):
     model = Diet
     context_object_name = "diet"
     template_name = "diet/delete.html"
-    success_url = reverse_lazy("diet-browse")
+    success_url = reverse_lazy("foods_diet_browse")
     success_message = "The diet has been deleted"
 
     def get_context_data(self, **kwargs):

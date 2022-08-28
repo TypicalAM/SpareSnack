@@ -3,68 +3,66 @@
 {% get_providers as socialaccount_providers %}
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 		<link rel="icon" href="{% static '/img/favicon.ico' %}">
-    <title>Login - SpareSnack</title>
+		<title>Login - SpareSnack</title>
 		<link rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alata">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin:400,700">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="{% static '/fonts/fontawesome5-overrides.min.css' %}">
-    <link rel="stylesheet" href="{% static '/css/first.css' %}">
-</head>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alata">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin:400,700">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="{% static '/fonts/fontawesome5-overrides.min.css' %}">
+		<link rel="stylesheet" href="{% static '/css/first.css' %}">
+	</head>
 
-<body class="bg-gradient-primary" style="background-image: linear-gradient(180deg, var(--bg1) 10%, var(--vector__tertiary));background-color: var(--bg1);">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-9 col-lg-12 col-xl-10">
-                <div class="card shadow-lg o-hidden border-0 my-5">
-                    <div class="card-body p-0">
-                        <div class="row">
-                            <div class="col-lg-6 d-none d-lg-flex">
-															<div class="flex-grow-1 bg-login-image" style="background-image: url(&quot;{% static '/img/login.jpg' %}&quot;);"></div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="p-5">
-                                    <div class="text-center">
-                                        <h4 class="text-dark mb-4">Welcome Back!</h4>
-                                    </div>
-                                    <form class="user" method="POST" action="{% url 'account_login' %}">
-																				{% csrf_token %}
-																			  {% if redirect_field_value %}
-																			  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-																			  {% endif %}
-                                        <div class="form-group row" style="width: 100%;"><input class="form-control form-control-user" type="text" id="id_username" placeholder="Username" autocomplete="username" name="login" maxlength="150" autocapitalize="none" autofocus="" required=""></div>
-                                        <div class="form-group row" style="width: 100%;"><input class="form-control form-control-user" type="password" id="id_password1" name="password" autocomplete="current-password" placeholder="Type password"></div>
-                                        <div class="form-group">
-                                            <div class="custom-control custom-checkbox small">
-                                                <div class="form-check"><input name="remember" class="form-check-input  custom-control-input" type="checkbox" id="formCheck-1"><label class="form-check-label custom-control-label" for="formCheck-1">Remember Me</label></div>
-                                            </div>
-                                        </div><button class="btn btn-primary btn-block text-white btn-user" type="submit" style="background-color: var(--btn);border-color: var(--btn);">Login</button>
-                                        <hr>
-																				{% if socialaccount_providers %}
-																				<a class="btn btn-primary btn-block text-white btn-google btn-user" href="/accounts/google/login/?process=login&next=%2Fday%2Fcreate%2F" role="button"><i class="fab fa-google"></i>&nbsp; Login with Google</a>
-                                        <hr>
-																				{% endif %}
-                                    </form>
-                                    <div class="text-center"><a class="small" href="/accounts/signup">Create an Account!</a></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
+	<body class="bg-gradient-primary" style="background-image: linear-gradient(180deg, var(--bg1) 10%, var(--vector__tertiary));background-color: var(--bg1);">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-9 col-lg-12 col-xl-10">
+					<div class="card shadow-lg o-hidden border-0 my-5">
+						<div class="card-body p-0">
+							<div class="row">
+								<div class="col-lg-6 d-none d-lg-flex">
+									<div class="flex-grow-1 bg-login-image" style="background-image: url(&quot;{% static '/img/login.jpg' %}&quot;);"></div>
+								</div>
+								<div class="col-lg-6">
+									<div class="p-5">
+										<div class="text-center">
+											<h4 class="text-dark mb-4">Welcome Back!</h4>
+										</div>
+										<form class="user" method="POST" action="{% url 'account_login' %}">
+											{% csrf_token %}
+											{% if redirect_field_value %}
+											<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+											{% endif %}
+											<div class="form-group row" style="width: 100%;"><input class="form-control form-control-user" type="text" id="id_username" placeholder="Username" autocomplete="username" name="login" maxlength="150" autocapitalize="none" autofocus="" required=""></div>
+											<div class="form-group row" style="width: 100%;"><input class="form-control form-control-user" type="password" id="id_password1" name="password" autocomplete="current-password" placeholder="Type password"></div>
+											<div class="form-group">
+												<div class="custom-control custom-checkbox small">
+													<div class="form-check"><input name="remember" class="form-check-input  custom-control-input" type="checkbox" id="formCheck-1"><label class="form-check-label custom-control-label" for="formCheck-1">Remember Me</label></div>
+												</div>
+											</div><button class="btn btn-primary btn-block text-white btn-user" type="submit" style="background-color: var(--btn);border-color: var(--btn);">Login</button>
+											<hr>
+											{% if socialaccount_providers %}
+											<a class="btn btn-primary btn-block text-white btn-google btn-user" href="/accounts/google/login/?process=login&next=%2Fday%2Fcreate%2F" role="button"><i class="fab fa-google"></i>&nbsp; Login with Google</a>
+											<hr>
+											{% endif %}
+										</form>
+										<div class="text-center"><a class="small" href="{% url 'account_signup' %}">Create an Account!</a></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
 		<script src="{% static '/js/general/theme.js' %}"></script>
-</body>
-
+	</body>
 </html>

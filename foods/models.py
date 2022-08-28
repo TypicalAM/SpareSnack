@@ -88,7 +88,7 @@ class Meal(models.Model):
 
     def get_absolute_url(self):
         """Generate the attribute url for the meal"""
-        return reverse("meal-detail", kwargs={"pk": self.pk})
+        return reverse("foods_meal_detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return f"{self.name}"
@@ -230,8 +230,12 @@ class Diet(models.Model):
                 relation.save()
 
     def get_absolute_url(self):
-        """Generate the url for diet-details"""
-        return reverse("diet-detail", kwargs={"slug": self.slug})
+        """Generate the url for foods_diet_details"""
+        return reverse("foods_diet_detail", kwargs={"slug": self.slug})
+
+    def get_import_url(self):
+        """Generate the url for diet imports"""
+        return reverse("foods_diet_import", kwargs={"slug": self.slug})
 
     def __str__(self):
         return f"{self.date},{self.author}"

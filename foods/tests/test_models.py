@@ -61,11 +61,12 @@ class TestModels(TestCase):
     def test_meal_default_fields(self) -> None:
         self.assertEqual(self.meal.author.username, "testuser")
         self.assertEqual(
-            self.meal.url, reverse("meal-detail", kwargs={"pk": None})
+            self.meal.url, reverse("foods_meal_detail", kwargs={"pk": None})
         )
         self.meal.save()
         self.assertEqual(
-            self.meal.url, reverse("meal-detail", kwargs={"pk": self.meal.pk})
+            self.meal.url,
+            reverse("foods_meal_detail", kwargs={"pk": self.meal.pk}),
         )
         self.assertEqual(self.meal.image.url, "/media/meal_thumb/default.jpg")
         self.assertEqual(self.meal.fats, 0)

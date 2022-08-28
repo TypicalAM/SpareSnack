@@ -1,59 +1,29 @@
-{%extends 'general/base.html'%}
-{%load static%}
-{%block title%}Diet Delete{%endblock%}
-{%block diets%}active{%endblock%}
-{%block content%}
-                <div class="container-fluid">
-                    <h3 class="text-dark mb-4">Diet Deletion</h3>
-                    <div class="row mb-3">
-                        <div class="col-lg-4">
-                            <div class="card mb-3">
-                                <div class="card-body text-center shadow"><img class="mb-3 mt-4" src="{% static '/img/Cabbage.jpg' %}" style="max-height: 216px;max-width: 385px;width: 100%;height: 100%;"></div>
-                            </div>
-                        </div>
-                        <div class="col-lg-8">
-                            <div class="row mb-3 d-none">
-                                <div class="col">
-                                    <div class="card text-white bg-primary shadow">
-                                        <div class="card-body">
-                                            <div class="row mb-2">
-                                                <div class="col">
-                                                    <p class="m-0">Peformance</p>
-                                                    <p class="m-0"><strong>65.2%</strong></p>
-                                                </div>
-                                                <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
-                                            </div>
-                                            <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i>&nbsp;5% since last month</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card text-white bg-success shadow">
-                                        <div class="card-body">
-                                            <div class="row mb-2">
-                                                <div class="col">
-                                                    <p class="m-0">Peformance</p>
-                                                    <p class="m-0"><strong>65.2%</strong></p>
-                                                </div>
-                                                <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
-                                            </div>
-                                            <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i>&nbsp;5% since last month</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-																	<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">{{ diet.name }} </span><i class="fa fa-check" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
-																	<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">{{ diet.description }}</span><i class="fa fa-file-text" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
-																	<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">{{ diet.days.all|length }} Days</span><i class="fa fa-calendar" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
-																	<form action="/diet/{{ diet.slug }}/delete/" method="POST" autocomplete="OFF">
-																	{% csrf_token %}
-                                    <div class="text-center" style="margin-top: 3%;"><button class="btn btn-primary" type="submit" href="/diet/{{ diet.slug }}/delete" style="margin-bottom: 3%;background-color: #90c6c6;border-radius: 10px;min-width: 30%;font-family: Lato, sans-serif;font-size: 22px;border: 3px hidden rgb(255, 255, 255);">Delete this diet</a></div>
-																		</form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-{%endblock%}
+{% extends 'general/base.html' %}
+{% load static %}
+{% block title %}Diet Delete{% endblock %}
+{% block diets %}active{% endblock %}
+{% block content %}
+<div class="container-fluid">
+	<h3 class="text-dark mb-4">Diet Deletion</h3>
+	<div class="row mb-3">
+		<div class="col-lg-4">
+			<div class="card mb-3">
+				<div class="card-body text-center shadow"><img class="mb-3 mt-4" src="{% static '/img/Cabbage.jpg' %} " style="max-height: 216px;max-width: 385px;width: 100%;height: 100%;"></div>
+			</div>
+		</div>
+		<div class="col-lg-8">
+			<div class="row">
+				<div class="col">
+					<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">{{ diet.name }} </span><i class="fa fa-check" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
+					<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">{{ diet.description }}</span><i class="fa fa-file-text" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
+					<div style="height: 70px;box-shadow: 6px 6px 4px #e5e5e5;margin-bottom: 3%;display: flex;align-items: center;padding: 3%;border-radius: 10px;background-color: white;width: 100%;font-family: 'Merriweather Sans', sans-serif;border: 1px solid #f2f2f2;"><span style="padding-left: 1%;width: 95%;font-family: 'Josefin Sans', sans-serif;text-align: left;border-style: none;border-bottom-style: none;font-size: 22px;color: #242e37;">{{ diet.days.all|length }} Days</span><i class="fa fa-calendar" style="margin-left: 2%;margin-right: 2%;font-size: 31px;"></i></div>
+					<form method="POST" autocomplete="OFF">
+						{% csrf_token %}
+						<div class="text-center" style="margin-top: 3%;"><button class="btn btn-primary" type="submit" style="margin-bottom: 3%;background-color: #90c6c6;border-radius: 10px;min-width: 30%;font-family: Lato, sans-serif;font-size: 22px;border: 3px hidden rgb(255, 255, 255);">Delete this diet</a></div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

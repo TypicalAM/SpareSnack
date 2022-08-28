@@ -1,73 +1,73 @@
-{%extends 'general/base.html'%}
-{%load static%}
-{%block title%}Meals{%endblock%}
-{%block meals%}active{%endblock%}
-{%block content%}
-                <div class="container-fluid">
-                    <h3 class="text-dark mb-4">Meals - <a href="/meals/create" style="color: inherit;">Create your own!</a></h3>
-                    <div class="card shadow">
-                        <div class="card-header py-3">
-                            <p class="text-primary m-0 font-weight-bold" style="color: var(--p)!important;">Available meals</p>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
-                                <table class="table my-0" id="dataTable">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Desription</th>
-                                            <th>Author</th>
-                                            <th>Link</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-																				{% for meal in meals %}
-                                        <tr>
-																					<td>
-																						<a href="{{ meal.get_absolute_url }}">
-																							<img class="rounded-circle mr-2" width="30" height="30" src="{{ meal.image.url }}" />{{ meal.name }}
-																						</a>
-																					</td>
-																					<td>{{ meal.description }}</td>
-																					<td>{{ meal.author.username }}</td>
-																					<td><a href="{{ meal.get_absolute_url }}" style="color: var(--btn);font-size: x-large;"><i class="fa fa-check-square"></i></a></td>
-																				</tr>
-																		{% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 align-self-center">
-                                    <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }}</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
-                                        <ul class="pagination">
-																						<a class="page-link" href="?page=1" aria-label="First"><span aria-hidden="true">⮜</span></a>
-                                            <li class="page-item">
-																						{% if page_obj.has_previous %}
-																							<a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous"><span aria-hidden="true">«</span></a>
-																						{% endif %}
-																						</li>
+{% extends 'general/base.html' %}
+{% load static %}
+{% block title %}Meals{%endblock%}
+{% block meals %}active{%endblock%}
+{% block content %}
+<div class="container-fluid">
+	<h3 class="text-dark mb-4">Meals - <a href="{% url 'foods_meal_create' %}" style="color: inherit;">Create your own!</a></h3>
+	<div class="card shadow">
+		<div class="card-header py-3">
+			<p class="text-primary m-0 font-weight-bold" style="color: var(--p)!important;">Available meals</p>
+		</div>
+		<div class="card-body">
+			<div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
+				<table class="table my-0" id="dataTable">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Desription</th>
+							<th>Author</th>
+							<th>Link</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for meal in meals %}
+						<tr>
+							<td>
+								<a href="{{ meal.get_absolute_url }}">
+									<img class="rounded-circle mr-2" width="30" height="30" src="{{ meal.image.url }}" />{{ meal.name }}
+								</a>
+							</td>
+							<td>{{ meal.description }}</td>
+							<td>{{ meal.author.username }}</td>
+							<td><a href="{{ meal.get_absolute_url }}" style="color: var(--btn);font-size: x-large;"><i class="fa fa-check-square"></i></a></td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			<div class="row">
+				<div class="col-md-6 align-self-center">
+					<p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }}</p>
+				</div>
+				<div class="col-md-6">
+					<nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+						<ul class="pagination">
+							<a class="page-link" href="?page=1" aria-label="First"><span aria-hidden="true">⮜</span></a>
+							<li class="page-item">
+								{% if page_obj.has_previous %}
+								<a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous"><span aria-hidden="true">«</span></a>
+								{% endif %}
+							</li>
 
-                                            <li class="page-item active"><a class="page-link" href="?page={{ page_obj.number }}">{{ page_obj.number }}</a></li>
-{% if page_obj.has_next %}
-  {% if page_obj.number|add:'1' <= page_obj.paginator.num_pages %}
-												<li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'1' }}">{{ page_obj.number|add:'1' }}</a></li>
-  {% endif %}
-  {% if page_obj.number|add:'2' <= page_obj.paginator.num_pages %}
-												<li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'2' }}">{{ page_obj.number|add:'2' }}</a></li>
-  {% endif %}
-{% endif %}
-																						{% if page_obj.has_next %}
-                                            	<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-																						{% endif %}
-																						<a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last"><span aria-hidden="true">⮞</span></a>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+							<li class="page-item active"><a class="page-link" href="?page={{ page_obj.number }}">{{ page_obj.number }}</a></li>
+							{% if page_obj.has_next %}
+							{% if page_obj.number|add:'1' <= page_obj.paginator.num_pages %}
+							<li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'1' }}">{{ page_obj.number|add:'1' }}</a></li>
+							{% endif  %}
+							{% if page_obj.number|add:'2' <= page_obj.paginator.num_pages %}
+							<li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'2' }}">{{ page_obj.number|add:'2' }}</a></li>
+							{% endif %}
+							{% endif %}
+							{% if page_obj.has_next %}
+							<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+							{% endif %}
+							<a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last"><span aria-hidden="true">⮞</span></a>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock content %}
