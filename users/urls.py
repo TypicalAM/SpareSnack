@@ -22,9 +22,9 @@ urlpatterns = [
         name="account_change_password",
     ),
     path(
-        "profile/preferences",
-        views.change_preferences,
-        name="preferences_change",
+        "profile/goals",
+        views.change_goals,
+        name="account_change_goals",
     ),
 ]
 

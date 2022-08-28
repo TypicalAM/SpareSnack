@@ -40,11 +40,11 @@ class ProperLogoutView(LogoutView):
 logout = login_required(ProperLogoutView.as_view())
 
 
-class ChangePreferencesView(SuccessMessageMixin, UpdateView):
+class ChangeGoalsView(SuccessMessageMixin, UpdateView):
     """Change preferred amounts of fats, sugars and carbs"""
 
     model = Profile
-    template_name = "profile/change_preferences.html"
+    template_name = "profile/change_goals.html"
     fields = ("fats", "protein", "carbs")
     success_url = reverse_lazy("account_profile")
     success_message = "The preferences have been changed"
@@ -54,4 +54,4 @@ class ChangePreferencesView(SuccessMessageMixin, UpdateView):
         return self.request.user.profile
 
 
-change_preferences = login_required(ChangePreferencesView.as_view())
+change_goals = login_required(ChangeGoalsView.as_view())
