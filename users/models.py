@@ -7,7 +7,9 @@ class Profile(models.Model):
     """A profile for the user to change his preferences"""
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(default="avatar.png", upload_to="profile_pics")
+    image = models.ImageField(
+        default="users/default_avatar.png", upload_to="users/profile_pictures"
+    )
     is_metric = models.BooleanField(default=True)
 
     fats = models.FloatField(default=0)

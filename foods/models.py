@@ -11,9 +11,10 @@ from django.urls.base import reverse
 class Ingredient(models.Model):
     """Ingredients are intertwined with meals"""
 
-    name = models.CharField(max_length=100, default="ingr")
+    name = models.CharField(max_length=100)
     image = models.ImageField(
-        default="ingr_thumb/default.jpg", upload_to="ingr_thumb"
+        default="foods/default_ingredient_thumbnail.jpg",
+        upload_to="foods/ingredient_thumbnails",
     )
 
     measure_type = models.CharField(max_length=50)
@@ -60,7 +61,8 @@ class Meal(models.Model):
     description = models.CharField(max_length=200, null=True)
     recipe = models.TextField(max_length=1000, null=True)
     image = models.ImageField(
-        default="meal_thumb/default.jpg", upload_to="meal_thumb"
+        default="foods/default_meal_thumbnail.jpg",
+        upload_to="foods/meal_thumbnails",
     )
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     ingredients = models.ManyToManyField(Ingredient, through="ThroughMealIngr")
