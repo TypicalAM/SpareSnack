@@ -37,17 +37,17 @@
 									{% csrf_token %}
 									<div class="form-group row" style="width: 100%;">
 										<label for="id_fats">Fats</label>
-										<input class="form-control form-control-user" id="id_fats" type="number" step="any" value="{{ object.fats }}" name="fats" placeholder="" required="" style="margin-left: 3%;">
+										<input class="form-control form-control-user" id="id_fats" type="number" step="any" value="{{ profile.fats }}" name="fats" placeholder="" required="" style="margin-left: 3%;">
 									</div>
 									<div class="form-group row" style="width: 100%;">
 
 										<label for="id_protein">Protein</label>
-										<input class="form-control form-control-user" id="id_protein" type="number" step="any" value="{{ object.protein }}" name="protein" placeholder="" required="" style="margin-left: 3%;">
+										<input class="form-control form-control-user" id="id_protein" type="number" step="any" value="{{ profile.protein }}" name="protein" placeholder="" required="" style="margin-left: 3%;">
 									</div>
 									<div class="form-group row" style="width: 100%;">
 
 										<label for="id_carbs">Carbs</label>
-										<input class="form-control form-control-user" id="id_carbs" type="number" step="any" value="{{ object.carbs }}" name="carbs" placeholder="" required="" style="margin-left: 3%;">
+										<input class="form-control form-control-user" id="id_carbs" type="number" step="any" value="{{ profile.carbs }}" name="carbs" placeholder="" required="" style="margin-left: 3%;">
 									</div>
 									<button class="btn btn-primary btn-block text-white btn-user" style="background-color: var(--btn);border-color: var(--btn);" type="submit" name="action">Change!</button>
 									<hr>

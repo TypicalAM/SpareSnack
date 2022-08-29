@@ -10,8 +10,10 @@ class TestModels(TestCase):
     """Test the models functionality"""
 
     def setUp(self) -> None:
+        """Create a test user"""
         self.username = "bob"
         self.user = User.objects.create_user(self.username)
+
         return super().setUp()
 
     def test_profile_automatic_creation(self) -> None:

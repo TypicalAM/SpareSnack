@@ -45,6 +45,7 @@ class ChangeGoalsView(SuccessMessageMixin, UpdateView):
 
     model = Profile
     template_name = "profile/change_goals.html"
+    context_object_name = "profile"
     fields = ("fats", "protein", "carbs")
     success_url = reverse_lazy("account_profile")
     success_message = "The preferences have been changed"
@@ -62,6 +63,7 @@ class ChangeAvatarView(SuccessMessageMixin, UpdateView):
 
     model = Profile
     template_name = "profile/change_avatar.html"
+    context_object_name = "profile"
     fields = ("image",)
     success_url = reverse_lazy("account_profile")
     success_message = "The avatar image has been changed"
