@@ -50,6 +50,10 @@ class Ingredient(models.Model):
         """
         return round(quantity * self.convert_rate)
 
+    def get_base_calories(self):
+        """Get the calories for 100 grams of a certain food"""
+        return round(self.fats * 8 + self.protein * 4 + self.carbs * 4)
+
     def __str__(self):
         return f"{self.name} measured with {self.measure_type} at {self.convert_rate}g per 1 item"
 
