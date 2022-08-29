@@ -55,8 +55,14 @@ class TestModels(TestCase):
         self.diet.save_days()
 
     def test_ingredient_default_fields(self) -> None:
-        self.assertEqual(self.ingr1.image.url, "/media/ingr_thumb/default.jpg")
-        self.assertEqual(self.ingr2.image.url, "/media/ingr_thumb/default.jpg")
+        self.assertEqual(
+            self.ingr1.image.url,
+            "/media/foods/default_ingredient_thumbnail.jpg",
+        )
+        self.assertEqual(
+            self.ingr2.image.url,
+            "/media/foods/default_ingredient_thumbnail.jpg",
+        )
 
     def test_meal_default_fields(self) -> None:
         self.assertEqual(self.meal.author.username, "testuser")
@@ -68,7 +74,9 @@ class TestModels(TestCase):
             self.meal.url,
             reverse("foods_meal_detail", kwargs={"pk": self.meal.pk}),
         )
-        self.assertEqual(self.meal.image.url, "/media/meal_thumb/default.jpg")
+        self.assertEqual(
+            self.meal.image.url, "/media/foods/default_meal_thumbnail.jpg"
+        )
         self.assertEqual(self.meal.fats, 0)
         self.assertEqual(self.meal.protein, 0)
         self.assertEqual(self.meal.carbs, 0)
