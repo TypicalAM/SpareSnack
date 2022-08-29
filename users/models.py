@@ -16,4 +16,4 @@ class Profile(models.Model):
 
     def __str__(self):
         """Additional data for debugging"""
-        return f"{self.user.username} Profile"
+        return f"{self.user.username}'s Profile"
