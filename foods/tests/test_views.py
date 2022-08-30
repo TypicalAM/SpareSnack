@@ -206,7 +206,7 @@ class TestDayViews(TestCase):
             content_type="application/json",
         )
         self.assertIsInstance(response, JsonResponse)
-        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        self.assertEqual(response.status_code, HTTPStatus.UNPROCESSABLE_ENTITY)
 
     def test_day_create_post_no_mealnums(self) -> None:
         self.client.force_login(self.usera)
@@ -233,7 +233,7 @@ class TestDayViews(TestCase):
             },
             content_type="application/json",
         )
-        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        self.assertEqual(response.status_code, HTTPStatus.UNPROCESSABLE_ENTITY)
         self.assertIsInstance(response, JsonResponse)
 
 

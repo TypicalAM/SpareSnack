@@ -78,7 +78,8 @@ class Meal(models.Model):
     protein = models.FloatField(default=0)
     carbs = models.FloatField(default=0)
     image = ResizedImageField(
-        size=[385, 216],
+        size=[1000, 1500],
+        crop=["middle", "center"],
         default="foods/default_meal_thumbnail.jpg",
         upload_to=UploadAndRename("foods/meal_thumbnails"),
     )

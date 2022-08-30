@@ -38,7 +38,7 @@ class MealCreate(SuccessMessageMixin, FormView):
         # Get ingredients
         query = self.request.GET.get("q")
         if not query:
-            return JsonResponse({}, status=HTTPStatus.BAD_REQUEST)
+            return JsonResponse({}, status=HTTPStatus.UNPROCESSABLE_ENTITY)
 
         ingredients = Ingredient.objects.filter(name__icontains=query)
         data = {"results": serializers.serialize("json", ingredients)}
@@ -85,7 +85,9 @@ class DayCreate(FormView):
 
     def form_invalid(self, form):
         """Inform the user that the form doesn't want his bad data"""
-        return JsonResponse({"Status": "Saved"}, status=HTTPStatus.BAD_REQUEST)
+        return JsonResponse(
+            {"Status": "Saved"}, status=HTTPStatus.UNPROCESSABLE_ENTITY
+        )
 
     def get_form_kwargs(self):
         """Make sure that request data is getting processed correctly"""
@@ -101,7 +103,7 @@ class DayCreate(FormView):
         day_query = self.request.GET.get("d")
 
         if not search_query and not day_query:
-            return JsonResponse({}, status=HTTPStatus.BAD_REQUEST)
+            return JsonResponse({}, status=HTTPStatus.UNPROCESSABLE_ENTITY)
 
         if search_query:
             recipes = Meal.objects.filter(name__icontains=search_query)[:5]
