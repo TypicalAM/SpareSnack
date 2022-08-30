@@ -1,7 +1,10 @@
 """Models for the users app"""
+
 from django.contrib.auth.models import User
 from django.db import models
 from django_resized import ResizedImageField
+
+from core.utils import UploadAndRename, image_clean_up
 
 
 class Profile(models.Model):
@@ -11,13 +14,18 @@ class Profile(models.Model):
     image = ResizedImageField(
         size=[160, 160],
         default="users/default_avatar.png",
-        upload_to="users/profile_pictures",
+        upload_to=UploadAndRename("users/profile_pictures"),
     )
     is_metric = models.BooleanField(default=True)
 
     fats = models.FloatField(default=0)
     protein = models.FloatField(default=0)
     carbs = models.FloatField(default=0)
+
+    def save(self, *args, **kwargs):
+        """Clean up after the old image if we have a new one"""
+        image_clean_up(self)
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         """Additional data for debugging"""

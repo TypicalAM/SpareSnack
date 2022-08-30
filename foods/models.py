@@ -8,6 +8,8 @@ from django.template.defaultfilters import slugify
 from django.urls.base import reverse
 from django_resized import ResizedImageField
 
+from core.utils import UploadAndRename, image_clean_up
+
 
 class Ingredient(models.Model):
     """Ingredients are intertwined with meals"""
@@ -16,7 +18,7 @@ class Ingredient(models.Model):
     image = ResizedImageField(
         size=[200, 200],
         default="foods/default_ingredient_thumbnail.jpg",
-        upload_to="foods/ingredient_thumbnails",
+        upload_to=UploadAndRename("foods/ingredient_thumbnails"),
     )
 
     measure_type = models.CharField(max_length=50)
@@ -56,6 +58,11 @@ class Ingredient(models.Model):
         """Get the calories for 100 grams of a certain food"""
         return round(self.fats * 8 + self.protein * 4 + self.carbs * 4)
 
+    def save(self, *args, **kwargs):
+        """Clean up after the old image if we have a new one"""
+        image_clean_up(self)
+        return super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.name} measured with {self.measure_type} at {self.convert_rate}g per 1 item"
 
@@ -69,7 +76,7 @@ class Meal(models.Model):
     image = ResizedImageField(
         size=[385, 216],
         default="foods/default_meal_thumbnail.jpg",
-        upload_to="foods/meal_thumbnails",
+        upload_to=UploadAndRename("foods/meal_thumbnails"),
     )
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     ingredients = models.ManyToManyField(Ingredient, through="ThroughMealIngr")
@@ -91,7 +98,8 @@ class Meal(models.Model):
         self.save()
 
     def save(self, *args, **kwargs):
-        """Set the url for the meal"""
+        """Set the url for the meal and clean up old images"""
+        image_clean_up(self)
         self.url = self.get_absolute_url()
         super().save(*args, **kwargs)
 
