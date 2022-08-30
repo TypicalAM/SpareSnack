@@ -147,6 +147,15 @@ class Day(models.Model):
     def __str__(self):
         return f"{self.date},{self.author}"
 
+    def save_meals(self, meals, meal_nums):
+        """Create the necessary relations for meals"""
+        for rel in ThroughDayMeal.objects.filter(day=self):
+            rel.delete()
+        for meal, meal_num in zip(meals, meal_nums):
+            ThroughDayMeal.objects.create(
+                day=self, meal=meal, meal_num=meal_num
+            )
+
     def get_macros(self):
         """Get the total calories from the meals"""
         relations = ThroughDayMeal.objects.filter(day=self)

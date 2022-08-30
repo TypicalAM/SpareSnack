@@ -1,40 +1,65 @@
 """Forms for the foods app"""
-import json
-from json.decoder import JSONDecodeError
-
 from django import forms
-from django.core import serializers
+from django.core.serializers import deserialize
 from django.core.serializers.base import DeserializationError
 from django.forms import ValidationError, fields
 from django.template.defaultfilters import slugify
 
-from foods.models import Diet, Ingredient, Meal
+from foods.models import Day, Diet, Ingredient, Meal
 
 
-def validate_day_post_save(request):
-    """Validate the POST save data from the day"""
-    try:
-        json_object = json.loads(request.body)
-        meals = [
-            Meal.objects.get(name=obj.object.name, pk=obj.object.pk)
-            for obj in serializers.deserialize("json", json_object["meals"])
-        ]
-        meal_nums = [
-            int(x) for x in (json_object["meal_nums"][1:-1].split(","))
-        ]
-        date = json_object["date"]
-    except (
-        JSONDecodeError,
-        KeyError,
-        ValueError,
-        Meal.DoesNotExist,
-        AttributeError,
-        DeserializationError,
-    ):
-        return False
-    if len(meals) != len(meal_nums) or not (meals and meal_nums and date):
-        return False
-    return meals, meal_nums, date
+class DayCreateForm(forms.Form):
+    """A form to make creating days easier"""
+
+    meals = fields.CharField()
+    meal_nums = fields.CharField()
+    date = fields.DateField()
+
+    def clean_meals(self):
+        """Ensure meal format"""
+        msg = "Incoherent meal data"
+        data = self.cleaned_data.get("meals")
+
+        try:
+            des = deserialize("json", data)
+            data = [
+                Meal.objects.get(name=obj.object.name, pk=obj.object.pk)
+                for obj in des
+            ]
+        except (Meal.DoesNotExist, DeserializationError) as exc:
+            raise ValidationError(msg) from exc
+        return data
+
+    def clean_meal_nums(self):
+        """Ensure meal_nums format"""
+        msg = "Incoherent meal numbers data"
+        data = self.cleaned_data.get("meal_nums")
+        data_split = data[1:-1].split(",")
+
+        if not all(x.isnumeric() for x in data_split):
+            raise ValidationError(msg)
+        return [int(x) for x in data_split]
+
+    def clean(self):
+        """Make sure that meals can be paired with meal_nums"""
+        msg = "Incoherent meals and meal_nums pairing"
+        cleaned_data = super().clean()
+        meals = cleaned_data.get("meals")
+        meal_nums = cleaned_data.get("meal_nums")
+
+        if meals and meal_nums:
+            if len(meal_nums) != len(meals):
+                raise ValidationError(msg)
+
+    def save(self, author):
+        """Save the day and create the relations"""
+        date = self.cleaned_data.pop("date")
+        meals = self.cleaned_data.pop("meals")
+        meal_nums = self.cleaned_data.pop("meal_nums")
+
+        Day.objects.get(date=date, author=author, backup=False).save_meals(
+            meals, meal_nums
+        )
 
 
 class MealCreateForm(forms.ModelForm):
@@ -56,7 +81,7 @@ class MealCreateForm(forms.ModelForm):
         try:
             ingredients_array = [
                 Ingredient.objects.get(name=obj.object.name)
-                for obj in serializers.deserialize("json", ingredients)
+                for obj in deserialize("json", ingredients)
             ]
             amounts_array = [float(obj) for obj in amounts.split(",")]
         except (

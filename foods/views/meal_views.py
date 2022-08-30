@@ -1,5 +1,6 @@
 """Views for creating/browsisng meals and managing the day"""
 from http import HTTPStatus
+import json
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -8,13 +9,11 @@ from django.core import serializers
 from django.http.response import Http404, JsonResponse
 from django.shortcuts import render
 from django.urls.base import reverse_lazy
-from django.utils.decorators import method_decorator
-from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView, FormView
 
-from foods.forms import MealCreateForm, validate_day_post_save
+from foods.forms import DayCreateForm, MealCreateForm
 from foods.models import Day, Ingredient, Meal, ThroughDayMeal, ThroughMealIngr
 
 
@@ -60,13 +59,42 @@ class MealCreate(SuccessMessageMixin, FormView):
 create = login_required(MealCreate.as_view())
 
 
-@method_decorator(csrf_exempt, name="dispatch")
-class DayCreate(View):
+class DayCreate(FormView):
     """View for creating days"""
 
+    form_class = DayCreateForm
     template_name = "day/create.html"
+    success_url = reverse_lazy("foods_day_create")
 
-    def get_data(self) -> JsonResponse:
+    @csrf_exempt
+    def dispatch(self, request, *args, **kwargs):
+        """Bypass csrf verification"""
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        """If the request is ajax get data"""
+        if not request.accepts("text/html"):
+            return self.get_search_data()
+
+        return super().get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        """Save the form and inform the user"""
+        form.save(self.request.user)
+        return JsonResponse({"Status": "Saved"}, status=HTTPStatus.OK)
+
+    def form_invalid(self, form):
+        """Inform the user that the form doesn't want his bad data"""
+        return JsonResponse({"Status": "Saved"}, status=HTTPStatus.BAD_REQUEST)
+
+    def get_form_kwargs(self):
+        """Make sure that request data is getting processed correctly"""
+        kwargs = {"initial": self.get_initial(), "prefix": self.get_prefix()}
+        if self.request.method == "POST":
+            kwargs.update({"data": json.loads(self.request.body)})
+        return kwargs
+
+    def get_search_data(self):
         """Get the searched meal or the selected day data"""
         data_dict = {}
         search_query = self.request.GET.get("q")
@@ -90,27 +118,6 @@ class DayCreate(View):
             data_dict["meal_nums"] = str(meal_nums)
 
         return JsonResponse(data_dict)
-
-    def get(self, *_):
-        """If the request is ajax get data, else return the template"""
-        if not self.request.accepts("text/html"):
-            return self.get_data()
-        return render(self.request, self.template_name)
-
-    def post(self, *_):
-        """Receive a day update"""
-        check = validate_day_post_save(self.request)
-        if not check:
-            return JsonResponse({}, status=HTTPStatus.BAD_REQUEST)
-
-        meals, meal_nums, date = check
-
-        day = Day.objects.get(date=date, author=self.request.user, backup=False)
-        for rel in ThroughDayMeal.objects.filter(day=day):
-            rel.delete()
-        for meal, meal_num in zip(meals, meal_nums):
-            ThroughDayMeal.objects.create(day=day, meal=meal, meal_num=meal_num)
-        return JsonResponse({}, status=HTTPStatus.CREATED)
 
 
 day_create = login_required(DayCreate.as_view())
