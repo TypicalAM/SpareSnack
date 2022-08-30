@@ -1,14 +1,17 @@
 """Models for the users app"""
 from django.contrib.auth.models import User
 from django.db import models
+from django_resized import ResizedImageField
 
 
 class Profile(models.Model):
     """A profile for the user to change his preferences"""
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(
-        default="users/default_avatar.png", upload_to="users/profile_pictures"
+    image = ResizedImageField(
+        size=[160, 160],
+        default="users/default_avatar.png",
+        upload_to="users/profile_pictures",
     )
     is_metric = models.BooleanField(default=True)
 

@@ -6,13 +6,15 @@ from django.db import models
 from django.db.models.deletion import CASCADE
 from django.template.defaultfilters import slugify
 from django.urls.base import reverse
+from django_resized import ResizedImageField
 
 
 class Ingredient(models.Model):
     """Ingredients are intertwined with meals"""
 
     name = models.CharField(max_length=100)
-    image = models.ImageField(
+    image = ResizedImageField(
+        size=[200, 200],
         default="foods/default_ingredient_thumbnail.jpg",
         upload_to="foods/ingredient_thumbnails",
     )
@@ -64,7 +66,8 @@ class Meal(models.Model):
     name = models.CharField(max_length=100, default="mymeal")
     description = models.CharField(max_length=200, null=True)
     recipe = models.TextField(max_length=1000, null=True)
-    image = models.ImageField(
+    image = ResizedImageField(
+        size=[385, 216],
         default="foods/default_meal_thumbnail.jpg",
         upload_to="foods/meal_thumbnails",
     )

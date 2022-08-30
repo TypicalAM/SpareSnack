@@ -147,6 +147,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 DEBUG_PROPAGATE_EXCEPTIONS = True
 CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
 
+# django-allauth related settings
 SITE_ID = 2
 
 LOGIN_REDIRECT_URL = "/day/create"
@@ -166,3 +167,7 @@ SOCIALACCOUNT_PROVIDERS = {
         },
     }
 }
+
+# django-resized related settings
+DJANGORESIZED_DEFAULT_QUALITY = 75
+DJANGORESIZED_DEFAULT_KEEP_META = False
