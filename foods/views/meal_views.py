@@ -31,24 +31,19 @@ class MealCreate(SuccessMessageMixin, FormView):
     success_url = reverse_lazy("foods_day_create")
     success_message = "The meal has been created"
 
-    def get_ingredient_data(self) -> JsonResponse:
-        """Get the ingredient data from the server by a query"""
+    def get(self, request, *args, **kwargs):
+        """If the request is ajax, get ingredients else generate the form"""
+        if self.request.accepts("text/html"):
+            return super().get(request, *args, **kwargs)
+
+        # Get ingredients
         query = self.request.GET.get("q")
         if not query:
             return JsonResponse({}, status=HTTPStatus.BAD_REQUEST)
 
         ingredients = Ingredient.objects.filter(name__icontains=query)
-        return JsonResponse(
-            {"results": serializers.serialize("json", ingredients)}
-        )
-
-    def get(self, request, *args, **kwargs):
-        """If the request is ajax, get ingredients else generate the form"""
-        return (
-            self.get_ingredient_data()
-            if not self.request.accepts("text/html")
-            else super().get(request, *args, **kwargs)
-        )
+        data = {"results": serializers.serialize("json", ingredients)}
+        return JsonResponse(data)
 
     def form_valid(self, form):
         """Save the form if the request was valid"""

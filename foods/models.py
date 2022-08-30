@@ -88,9 +88,9 @@ class Meal(models.Model):
 
     def save_ingredients(self, ingredients, amounts):
         """Create the necessary relations for ingredients"""
-        for items in zip(ingredients, amounts):
+        for ingredient, amount in zip(ingredients, amounts):
             relation = ThroughMealIngr.objects.create(
-                meal=self, ingredient=items[0], amount=items[1]
+                meal=self, ingredient=ingredient, amount=amount
             )
             self.fats += relation.fats
             self.carbs += relation.carbs
