@@ -180,60 +180,68 @@ function moveMeal(id, direction) {
 
 function fill_day() {
 	const meal_div = document.getElementById('meal__box')
+
+	let total_carbs = 0.0
+	let total_protein = 0.0
+	let total_fats = 0.0
+
 	for (i = 0; i < 5; i++)	{
 		text = meal_div.children[i].querySelector('.meal__name__div')
 		meal_div.children[i].textContent=''
 		meal_div.children[i].append(text)
-}
+	}
+
 	for (i = 0; i < meals.length; i++) {
-	var container = document.createDocumentFragment();
-	var recipe_div = document.createElement("div");
-	recipe_div.id = i
-	var e_1 = document.createElement("div");
-	e_1.setAttribute("class", "row d-xl-flex justify-content-xl-start align-items-xl-center drag");
-	e_1.setAttribute("style", "margin: 3%;background-color: #fff;");
-	var e_2 = document.createElement("div");
-	e_2.setAttribute("class", "col d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-center align-items-sm-center align-items-md-center justify-content-lg-center align-items-lg-center align-items-xl-center");
-	var e_3 = document.createElement("img");
-	e_3.setAttribute("class", "rounded-circle");
-	e_3.setAttribute("style", "object-fit: cover;margin: 2%;width: 66px;height: 66px;");
-		console.log(meals[i].fields['image'])
-	e_3.setAttribute("src", "/media/"+meals[i].fields['image']);
-	e_2.appendChild(e_3);
-	var e_4 = document.createElement("div");
-	e_4.setAttribute("style", "width: 45%;margin-left: 2%;");
-	var e_5 = document.createElement("span");
-	e_5.setAttribute("class", "meal_text");
-	e_5.appendChild(document.createTextNode(meals[i].fields['name']));
-	e_4.appendChild(e_5);
-	e_2.appendChild(e_4);
-	var e_6 = document.createElement("a");
-	e_6.setAttribute("style", "margin-right: 2%;margin-left: auto;");
-	var e_7 = document.createElement("i");
-	e_7.setAttribute("class", "fa fa-chevron-down meal__button");
-	e_7.setAttribute("style", "cursor: pointer;");
-e_7.onclick = function() { moveMeal(recipe_div.id,'down') }
-	e_6.appendChild(e_7);
-	e_2.appendChild(e_6);
-	var e_8 = document.createElement("a");
-	e_8.setAttribute("style", "margin-right: 2%;margin-left: 2%;");
-	var e_9 = document.createElement("i");
-	e_9.setAttribute("class", "fa fa-chevron-up meal__button");
-	e_9.setAttribute("style", "cursor: pointer;");
-		e_9.onclick 			= function() { moveMeal(recipe_div.id, 'up') }
-	e_8.appendChild(e_9);
-	e_2.appendChild(e_8);
-	var e_10 = document.createElement("a");
-	e_10.setAttribute("style", "margin-right: 2%;margin-left: 2%; cursor: pointer;");
-	var e_11 = document.createElement("i");
-	e_11.onclick = function() {removeMeal(recipe_div.id)}
-	e_11.setAttribute("class", "fa fa-remove meal_remove");
-	e_11.setAttribute("style", "cursor: pointer;");
-	e_10.appendChild(e_11);
-	e_2.appendChild(e_10);
-	e_1.appendChild(e_2);
-	recipe_div.appendChild(e_1);
-	container.appendChild(recipe_div);
+		var container = document.createDocumentFragment();
+		var recipe_div = document.createElement("div");
+		recipe_div.id = i
+		var e_1 = document.createElement("div");
+		e_1.setAttribute("class", "row d-xl-flex justify-content-xl-start align-items-xl-center drag");
+		e_1.setAttribute("style", "margin: 3%;background-color: #fff;");
+		var e_2 = document.createElement("div");
+		e_2.setAttribute("class", "col d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-center align-items-sm-center align-items-md-center justify-content-lg-center align-items-lg-center align-items-xl-center");
+		var e_3 = document.createElement("img");
+		e_3.setAttribute("class", "rounded-circle");
+		e_3.setAttribute("style", "object-fit: cover;margin: 2%;width: 66px;height: 66px;");
+			console.log(meals[i].fields['image'])
+		e_3.setAttribute("src", "/media/"+meals[i].fields['image']);
+		e_2.appendChild(e_3);
+		var e_4 = document.createElement("div");
+		e_4.setAttribute("style", "width: 45%;margin-left: 2%;");
+		var e_5 = document.createElement("span");
+		e_5.setAttribute("class", "meal_text");
+		e_5.appendChild(document.createTextNode(meals[i].fields['name']));
+		e_4.appendChild(e_5);
+		e_2.appendChild(e_4);
+		var e_6 = document.createElement("a");
+		e_6.setAttribute("style", "margin-right: 2%;margin-left: auto;");
+		var e_7 = document.createElement("i");
+		e_7.setAttribute("class", "fa fa-chevron-down meal__button");
+		e_7.setAttribute("style", "cursor: pointer;");
+		e_7.onclick = function() { moveMeal(recipe_div.id,'down') }
+		e_6.appendChild(e_7);
+		e_2.appendChild(e_6);
+		var e_8 = document.createElement("a");
+		e_8.setAttribute("style", "margin-right: 2%;margin-left: 2%;");
+		var e_9 = document.createElement("i");
+		e_9.setAttribute("class", "fa fa-chevron-up meal__button");
+		e_9.setAttribute("style", "cursor: pointer;");
+			e_9.onclick 			= function() { moveMeal(recipe_div.id, 'up') }
+		e_8.appendChild(e_9);
+		e_2.appendChild(e_8);
+		var e_10 = document.createElement("a");
+		e_10.setAttribute("style", "margin-right: 2%;margin-left: 2%; cursor: pointer;");
+		var e_11 = document.createElement("i");
+		e_11.onclick = function() {removeMeal(recipe_div.id)}
+		e_11.setAttribute("class", "fa fa-remove meal_remove");
+		e_11.setAttribute("style", "cursor: pointer;");
+		e_10.appendChild(e_11);
+		e_2.appendChild(e_10);
+		e_1.appendChild(e_2);
+
+		recipe_div.appendChild(e_1);
+		container.appendChild(recipe_div);
+
 		const text 				= document.createElement('h2')
 		const button_rem	= document.createElement('button')
 		const button_up		= document.createElement('button')
@@ -244,8 +252,32 @@ e_7.onclick = function() { moveMeal(recipe_div.id,'down') }
 		button_up.onclick 			= function() { moveMeal(recipe_div.id, 'up') }
 		button_down.onclick 		= function() { moveMeal(recipe_div.id, 'down') }
 
-meal_div.children[meal_nums[i]].append(container)
+		meal_div.children[meal_nums[i]].append(container)
+
+		total_carbs+=meals[i].fields['carbs']*4
+		total_protein+=meals[i].fields['protein']*4
+		total_fats+=meals[i].fields['fats']*8
 	}
+
+	console.log('Calories now')
+	console.table([total_carbs, total_fats, total_protein])
+	let total_calories = total_carbs+total_fats+total_protein
+	document.getElementById("fats").style.width = total_fats ? `${(total_fats/total_calories)*100}%` : "0%"
+	document.getElementById("carbs").style.width = total_carbs ? `${(total_carbs/total_calories)*100}%` : "0%"
+	document.getElementById("protein").style.width = total_protein ? `${(total_protein/total_calories)*100}%` : "0%"
+	document.getElementById("title").textContent = `Editor - You're looking at ${Math.round(total_calories)} calories`
+
+	for (i = 0; i < 5; i++)	{
+		console.log(meal_div.children[i])
+		if (meal_div.children[i].childElementCount==1) {
+			empty = document.createElement("div")
+			empty.innerHTML = '<div class="row d-xl-flex justify-content-xl-start align-items-xl-center" style="margin: 3%;" draggable="true"><div class="col" style="display: flex;justify-content: center;"><i class="fa fa-ellipsis-h" style="padding-left: 4%;color: rgba(160,160,160,0.51);font-size: 200%;"></i></div></div>'
+			console.log('onyl child')
+			meal_div.children[i].appendChild(empty)
+		}
+		console.log(meal_div.children[i].childElementCount)
+	}
+
 	post_day(now_day).then(response => {
 		console.log(response)
 	})
