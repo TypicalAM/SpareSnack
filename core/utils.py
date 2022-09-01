@@ -27,13 +27,23 @@ def image_clean_up(instance, image_field_name="image"):
     proxy = instance._meta.proxy_for_model  # pylint: disable=protected-access
     model = proxy if proxy else instance.__class__
 
+    image_field = getattr(model, image_field_name, None)
+    if image_field:
+        image_default = image_field.field.default
+
     try:
         image_old = getattr(
             model.objects.get(pk=instance.pk), image_field_name, None
         )
         image_new = getattr(instance, image_field_name, None)
         if image_old and image_new and image_old != image_new:
-            print("deleted an image")
+            if image_default and image_default == image_old:
+                print("not deleting because it is the default image")
+                # Not deleting the image (it is the default one) - don't save the model
+                return False
+            # Delete the old image, save the model
             image_old.delete(save=False)
+            return True
     except model.DoesNotExist:
         pass
+    return True
