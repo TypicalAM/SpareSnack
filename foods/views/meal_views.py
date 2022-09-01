@@ -40,7 +40,7 @@ class MealCreate(SuccessMessageMixin, FormView):
         if not query:
             return JsonResponse({}, status=HTTPStatus.UNPROCESSABLE_ENTITY)
 
-        ingredients = Ingredient.objects.filter(name__icontains=query)
+        ingredients = Ingredient.objects.filter(name__icontains=query)[:5]
         data = {"results": serializers.serialize("json", ingredients)}
         return JsonResponse(data)
 
