@@ -31,8 +31,8 @@ class Ingredient(models.Model):
 
     def save(self, *args, **kwargs):
         """Clean up after the old image if we have a new one"""
-        if image_clean_up(self):
-            super().save(*args, **kwargs)
+        image_clean_up(self)
+        super().save(*args, **kwargs)
 
     def get_base_calories(self):
         """Get the calories for 100 grams of a certain food"""
@@ -94,9 +94,9 @@ class Meal(models.Model):
 
     def save(self, *args, **kwargs):
         """Set the url for the meal and clean up old images"""
-        if image_clean_up(self):
-            self.url = self.get_absolute_url()
-            super().save(*args, **kwargs)
+        image_clean_up(self)
+        self.url = self.get_absolute_url()
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         """Generate the attribute url for the meal"""

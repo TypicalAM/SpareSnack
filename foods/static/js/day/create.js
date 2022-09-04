@@ -203,7 +203,6 @@ function fill_day() {
 		var e_3 = document.createElement("img");
 		e_3.setAttribute("class", "rounded-circle");
 		e_3.setAttribute("style", "object-fit: cover;margin: 2%;width: 66px;height: 66px;");
-			console.log(meals[i].fields['image'])
 		e_3.setAttribute("src", "/media/"+meals[i].fields['image']);
 		e_2.appendChild(e_3);
 		var e_4 = document.createElement("div");
@@ -259,8 +258,6 @@ function fill_day() {
 		total_fats+=meals[i].fields['fats']*8
 	}
 
-	console.log('Calories now')
-	console.table([total_carbs, total_fats, total_protein])
 	let total_calories = total_carbs+total_fats+total_protein
 	document.getElementById("fats").style.width = total_fats ? `${(total_fats/total_calories)*100}%` : "0%"
 	document.getElementById("carbs").style.width = total_carbs ? `${(total_carbs/total_calories)*100}%` : "0%"
@@ -268,14 +265,11 @@ function fill_day() {
 	document.getElementById("title").textContent = `Editor - You're looking at ${Math.round(total_calories)} calories`
 
 	for (i = 0; i < 5; i++)	{
-		console.log(meal_div.children[i])
 		if (meal_div.children[i].childElementCount==1) {
 			empty = document.createElement("div")
 			empty.innerHTML = '<div class="row d-xl-flex justify-content-xl-start align-items-xl-center" style="margin: 3%;" draggable="true"><div class="col" style="display: flex;justify-content: center;"><i class="fa fa-ellipsis-h" style="padding-left: 4%;color: rgba(160,160,160,0.51);font-size: 200%;"></i></div></div>'
-			console.log('onyl child')
 			meal_div.children[i].appendChild(empty)
 		}
-		console.log(meal_div.children[i].childElementCount)
 	}
 
 	post_day(now_day).then(response => {

@@ -27,5 +27,5 @@ class Profile(models.Model):
 
     def save(self, *args, **kwargs):
         """Clean up after the old image if we have a new one"""
-        if image_clean_up(self):
-            super().save(*args, **kwargs)
+        image_clean_up(self)
+        super().save(*args, **kwargs)
