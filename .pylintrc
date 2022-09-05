@@ -2,15 +2,7 @@
 jobs=4
 ignore-paths=.*/migrations, .*tests
 good-names= "setUp", "ALLOWED_HOSTS"
-disable=unused-argument,
-				too-few-public-methods,
-				invalid-name,
-				no-member,
-				arguments-differ,
+disable=no-member,
+				import-error,
 				too-many-ancestors,
-				fixme,
-				arguments-renamed,
-				unused-import,
-				import-outside-toplevel,
-				keyword-arg-before-vararg,
-				import-error
+				too-few-public-methods

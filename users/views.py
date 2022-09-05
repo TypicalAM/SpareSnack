@@ -50,7 +50,7 @@ class ChangeGoalsView(SuccessMessageMixin, UpdateView):
     success_url = reverse_lazy("account_profile")
     success_message = "The preferences have been changed"
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         """Return the user profile instance"""
         return self.request.user.profile
 
@@ -68,7 +68,7 @@ class ChangeAvatarView(SuccessMessageMixin, UpdateView):
     success_url = reverse_lazy("account_profile")
     success_message = "The avatar image has been changed"
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         """Return the user profile instance"""
         return self.request.user.profile
 

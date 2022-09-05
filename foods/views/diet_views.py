@@ -1,5 +1,4 @@
 """Views concerning diet creation & browsing"""
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http.response import Http404
@@ -8,6 +7,7 @@ from django.urls.base import reverse_lazy
 from django.views.generic import DetailView, FormView, ListView
 from django.views.generic.edit import DeleteView
 
+from core.utils import PassUserFormMixin
 from foods.forms import DietCreateForm, DietImportForm
 from foods.models import Diet
 
@@ -40,7 +40,7 @@ class DietDetail(DetailView):
 detail = DietDetail.as_view()
 
 
-class DietCreate(SuccessMessageMixin, FormView):
+class DietCreate(SuccessMessageMixin, PassUserFormMixin, FormView):
     """FormView for creating a diet using the DietCreateForm"""
 
     form_class = DietCreateForm
@@ -48,22 +48,11 @@ class DietCreate(SuccessMessageMixin, FormView):
     success_url = reverse_lazy("foods_day_create")
     success_message = "The diet has been created"
 
-    def form_valid(self, form):
-        """Save the form if the request was valid"""
-        form.save(self.request.user)
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        """Return the view with errors"""
-        for _, error in form.errors.items():
-            messages.error(self.request, ", ".join(error))
-        return render(self.request, self.template_name)
-
 
 create = login_required(DietCreate.as_view())
 
 
-class DietImport(SuccessMessageMixin, FormView):
+class DietImport(SuccessMessageMixin, PassUserFormMixin, FormView):
     """A view for importing the diet, usually from a redirect with a slug"""
 
     form_class = DietImportForm
@@ -71,20 +60,15 @@ class DietImport(SuccessMessageMixin, FormView):
     success_url = reverse_lazy("foods_diet_browse")
     success_message = "Successfully imported the diet!"
 
-    def get(self, request, *, slug):
+    def get(self, request, *args, **kwargs):
         """Get the slug from the url"""
-        diet = Diet.objects.filter(slug=slug).first()
+        diet = Diet.objects.filter(slug=kwargs.pop("slug")).first()
         if not diet:
             raise Http404
 
         context = self.get_context_data()
         context["diet"] = diet
         return render(request, self.template_name, context)
-
-    def form_valid(self, form):
-        """Save the form if the request was valid"""
-        form.save(self.request.user)
-        return super().form_valid(form)
 
 
 imprt = login_required(DietImport.as_view())

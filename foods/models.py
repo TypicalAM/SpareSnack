@@ -223,7 +223,9 @@ class Diet(models.Model):
     def save_days(self):
         """Create days or the backups of the days"""
         delta = (self.end_date - self.date).days + 1
-        dates = (self.date + datetime.timedelta(days=i) for i in range(delta))
+        dates = (
+            self.date + datetime.timedelta(days=date) for date in range(delta)
+        )
 
         for date in dates:
             instance, created = Day.objects.get_or_create(
@@ -252,15 +254,15 @@ class Diet(models.Model):
         else:
             origin = date
 
-        for i in range(len(self.days.all())):
-            date = origin + datetime.timedelta(days=i)
+        for delta in range(len(self.days.all())):
+            date = origin + datetime.timedelta(days=delta)
             day = Day.objects.filter(date=date, author=user).first()
             if day:
                 day.delete()
 
-        for i, day in enumerate(self.days.all()):
+        for idx, day in enumerate(self.days.all()):
             relations = ThroughDayMeal.objects.filter(day=day)
-            day.date = origin + datetime.timedelta(days=i)
+            day.date = origin + datetime.timedelta(days=idx)
             day.backup = False
             day.author = user
             day.save()

@@ -2,17 +2,18 @@
 from http import HTTPStatus
 import json
 
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core import serializers
 from django.http.response import Http404, JsonResponse
 from django.shortcuts import render
 from django.urls.base import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView, FormView
 
+from core.utils import PassUserFormMixin
 from foods.forms import DayCreateForm, MealCreateForm
 from foods.models import Day, Ingredient, Meal, ThroughDayMeal, ThroughMealIngr
 
@@ -22,7 +23,7 @@ def homepage_view(request):
     return render(request, "general/index.html")
 
 
-class MealCreate(SuccessMessageMixin, FormView):
+class MealCreate(SuccessMessageMixin, PassUserFormMixin, FormView):
     """View for creating meals"""
 
     form_class = MealCreateForm
@@ -44,32 +45,17 @@ class MealCreate(SuccessMessageMixin, FormView):
         data = {"results": serializers.serialize("json", ingredients)}
         return JsonResponse(data)
 
-    def form_valid(self, form):
-        """Save the form if the request was valid"""
-        form.save(self.request.user)
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        """Return the view with errors"""
-        for _, error in form.errors.items():
-            messages.error(self.request, ", ".join(error))
-        return render(self.request, self.template_name)
-
 
 create = login_required(MealCreate.as_view())
 
 
-class DayCreate(FormView):
+@method_decorator(csrf_exempt, "dispatch")
+class DayCreate(PassUserFormMixin, FormView):
     """View for creating days"""
 
     form_class = DayCreateForm
     template_name = "day/create.html"
     success_url = reverse_lazy("foods_day_create")
-
-    @csrf_exempt
-    def dispatch(self, request, *args, **kwargs):
-        """Bypass csrf verification"""
-        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         """If the request is ajax get data"""
@@ -80,7 +66,7 @@ class DayCreate(FormView):
 
     def form_valid(self, form):
         """Save the form and inform the user"""
-        form.save(self.request.user)
+        form.save()
         return JsonResponse({"Status": "Saved"}, status=HTTPStatus.OK)
 
     def form_invalid(self, form):
@@ -91,7 +77,7 @@ class DayCreate(FormView):
 
     def get_form_kwargs(self):
         """Make sure that request data is getting processed correctly"""
-        kwargs = {"initial": self.get_initial(), "prefix": self.get_prefix()}
+        kwargs = super().get_form_kwargs()
         if self.request.method == "POST":
             kwargs.update({"data": json.loads(self.request.body)})
         return kwargs

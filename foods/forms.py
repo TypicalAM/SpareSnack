@@ -15,6 +15,10 @@ class DayCreateForm(forms.Form):
     meal_nums = fields.CharField()
     date = fields.DateField()
 
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+        super().__init__(*args, **kwargs)
+
     def clean_meals(self):
         """Ensure meal format"""
         msg = "Incoherent meal data"
@@ -43,23 +47,24 @@ class DayCreateForm(forms.Form):
     def clean(self):
         """Make sure that meals can be paired with meal_nums"""
         msg = "Incoherent meals and meal_nums pairing"
-        cleaned_data = super().clean()
-        meals = cleaned_data.get("meals")
-        meal_nums = cleaned_data.get("meal_nums")
+        super().clean()
+        meals = self.cleaned_data.get("meals")
+        meal_nums = self.cleaned_data.get("meal_nums")
 
         if meals and meal_nums:
             if len(meal_nums) != len(meals):
                 raise ValidationError(msg)
 
-    def save(self, author):
+    def save(self, commit=True):
         """Save the day and create the relations"""
-        date = self.cleaned_data.pop("date")
-        meals = self.cleaned_data.pop("meals")
-        meal_nums = self.cleaned_data.pop("meal_nums")
+        date = self.cleaned_data.get("date")
+        meals = self.cleaned_data.get("meals")
+        meal_nums = self.cleaned_data.get("meal_nums")
 
-        Day.objects.get(date=date, author=author, backup=False).save_meals(
-            meals, meal_nums
-        )
+        if commit:
+            Day.objects.get(
+                date=date, author=self.user, backup=False
+            ).save_meals(meals, meal_nums)
 
 
 class MealCreateForm(forms.ModelForm):
@@ -73,6 +78,10 @@ class MealCreateForm(forms.ModelForm):
 
         model = Meal
         fields = ("name", "description", "recipe", "image")
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+        super().__init__(*args, **kwargs)
 
     def clean_ingredients(self, ingredients, amounts):
         """Verify that the ingredient data was correct"""
@@ -112,14 +121,14 @@ class MealCreateForm(forms.ModelForm):
         if result:
             self.cleaned_data.update(result)
 
-    def save(self, author):
+    def save(self, commit=True):
         """Save data with additional and create ingredient relations"""
-        ingredients = self.cleaned_data.pop("ingredient_data")
-        amounts = self.cleaned_data.pop("amounts")
-
-        Meal.objects.create(
-            **self.cleaned_data, author=author
-        ).save_ingredients(ingredients, amounts)
+        ingredients = self.cleaned_data.get("ingredient_data")
+        amounts = self.cleaned_data.get("amounts")
+        if commit:
+            Meal.objects.create(
+                **self.cleaned_data, author=self.user
+            ).save_ingredients(ingredients, amounts)
 
 
 class DietCreateForm(forms.ModelForm):
@@ -130,6 +139,10 @@ class DietCreateForm(forms.ModelForm):
 
         model = Diet
         fields = ("name", "public", "description", "date", "end_date")
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+        super().__init__(*args, **kwargs)
 
     def clean_dates(self, start_date, end_date):
         """Verify that the date data was correct"""
@@ -156,9 +169,12 @@ class DietCreateForm(forms.ModelForm):
             self.cleaned_data.get("date"), self.cleaned_data.get("end_date")
         )
 
-    def save(self, author):
+    def save(self, commit=True):
         """Save the diet and create the day backups & relations"""
-        Diet.objects.create(**self.cleaned_data, author=author).save_days()
+        if commit:
+            Diet.objects.create(
+                **self.cleaned_data, author=self.user
+            ).save_days()
 
 
 class DietImportForm(forms.Form):
@@ -166,6 +182,10 @@ class DietImportForm(forms.Form):
 
     date = fields.DateField()
     slug = fields.SlugField()
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+        super().__init__(*args, **kwargs)
 
     def clean(self):
         """make sure that the slug corresponds to a diet"""
@@ -175,12 +195,14 @@ class DietImportForm(forms.Form):
         diet = Diet.objects.filter(slug=self.cleaned_data.get("slug")).first()
 
         if diet:
-            self.cleaned_data.update({"diet": diet})
+            self.cleaned_data.update({"diet_instance": diet})
         else:
             self.add_error("__all__", ValidationError(msg))
 
-    def save(self, user):
+    def save(self, commit=True):
         """Fill the days of the user with the days from the selected diet"""
-        self.cleaned_data.get("diet").fill_days(
-            user, self.cleaned_data.get("date")
-        )
+        if commit:
+            diet = self.cleaned_data.get("diet_instance")
+            date = self.cleaned_data.get("date")
+            if isinstance(diet, Diet):
+                diet.fill_days(self.user, date)

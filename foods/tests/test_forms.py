@@ -55,7 +55,7 @@ class TestForms(TestCase):
             }
         )
         for mydata in data:
-            form = MealCreateForm(data=mydata)
+            form = MealCreateForm(data=mydata, user=self.user)
             self.assertTrue(
                 "Incoherent ingredient data" in arr
                 for arr in form.errors.values()
@@ -71,11 +71,11 @@ class TestForms(TestCase):
                 "json", Ingredient.objects.all()
             ),
         }
-        form = MealCreateForm(data=data)
+        form = MealCreateForm(data=data, user=self.user)
         self.assertIn(["Incoherent ingredient data"], form.errors.values())
 
         data["amounts"] = "10"
-        form = MealCreateForm(data=data)
+        form = MealCreateForm(data=data, user=self.user)
         self.assertIn(["Incoherent ingredient data"], form.errors.values())
 
     def test_meal_create_right(self) -> None:
@@ -88,7 +88,7 @@ class TestForms(TestCase):
                 "json", Ingredient.objects.all()
             ),
         }
-        form = MealCreateForm(data=data)
+        form = MealCreateForm(data=data, user=self.user)
         self.assertTrue(form.is_valid())
 
     def test_diet_create_wrong_date(self) -> None:
@@ -99,11 +99,11 @@ class TestForms(TestCase):
             "end_date": "2020-10-10",
         }
 
-        form = DietCreateForm(data=data)
+        form = DietCreateForm(data=data, user=self.user)
         self.assertEqual(form.errors.get("date"), ["This field is required."])
 
         data["date"] = "2020-20-20"
-        form = DietCreateForm(data=data)
+        form = DietCreateForm(data=data, user=self.user)
         self.assertEqual(form.errors.get("date"), ["Enter a valid date."])
 
     def test_diet_create_existing_slug(self) -> None:
@@ -115,7 +115,7 @@ class TestForms(TestCase):
             "end_date": "2020-02-11",
         }
 
-        form = DietCreateForm(data=data)
+        form = DietCreateForm(data=data, user=self.user)
         self.assertIn(
             ["A diet with a similar name already exists"], form.errors.values()
         )
@@ -129,7 +129,7 @@ class TestForms(TestCase):
             "end_date": "2020-02-09",
         }
 
-        form = DietCreateForm(data=data)
+        form = DietCreateForm(data=data, user=self.user)
         self.assertIn(
             ["End date should be greater than start date."],
             form.errors.values(),
@@ -144,7 +144,7 @@ class TestForms(TestCase):
             "end_date": "2020-02-10",
         }
 
-        form = DietCreateForm(data=data)
+        form = DietCreateForm(data=data, user=self.user)
         self.assertIn(
             ["End date should be greater than start date."],
             form.errors.values(),
@@ -159,7 +159,7 @@ class TestForms(TestCase):
             "end_date": "2020-02-25",
         }
 
-        form = DietCreateForm(data=data)
+        form = DietCreateForm(data=data, user=self.user)
         self.assertIn(
             ["Diets should have less than 15 days."], form.errors.values()
         )
@@ -173,7 +173,7 @@ class TestForms(TestCase):
             "end_date": "2020-02-11",
         }
 
-        form = DietCreateForm(data=data)
+        form = DietCreateForm(data=data, user=self.user)
         self.assertTrue(form.is_valid())
 
     def test_diet_import_wrong_date(self) -> None:
@@ -181,7 +181,7 @@ class TestForms(TestCase):
             "date": "2020-20-20",
             "slug": "example-diet",
         }
-        form = DietImportForm(data=data)
+        form = DietImportForm(data=data, user=self.user)
         self.assertEqual(form.errors.get("date"), ["Enter a valid date."])
 
     def test_diet_import_wrong_slug(self) -> None:
@@ -189,5 +189,5 @@ class TestForms(TestCase):
             "date": "2020-10-02",
             "slug": "bad-slug",
         }
-        form = DietImportForm(data=data)
+        form = DietImportForm(data=data, user=self.user)
         self.assertIn(["No diet with that slug"], form.errors.values())

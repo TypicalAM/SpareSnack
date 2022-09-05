@@ -3,6 +3,8 @@
 import os
 from uuid import uuid4
 
+from django.contrib import messages
+from django.shortcuts import render
 from django.utils.deconstruct import deconstructible
 
 
@@ -43,3 +45,24 @@ def image_clean_up(instance, image_field_name="image"):
     if image_old and image_new and image_old != image_new:
         if not image_default or image_default != image_old:
             image_old.delete(save=False)
+
+
+class PassUserFormMixin:
+    """A mixin made to pass the user as an additional kwargs to a form"""
+
+    def get_form_kwargs(self):
+        """Add the user as the author"""
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        """Save the form and inform the user"""
+        form.save()
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        """Inform the user that the form doesn't want his bad data"""
+        for _, error in form.errors.items():
+            messages.error(self.request, ", ".join(error))
+            return render(self.request, self.template_name)

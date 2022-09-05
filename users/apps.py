@@ -10,4 +10,4 @@ class UsersConfig(AppConfig):
 
     def ready(self):
         """Make sure that signals are loaded"""
-        import users.signals
+        import users.signals  # pylint: disable=import-outside-toplevel,unused-import

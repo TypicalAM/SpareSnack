@@ -9,5 +9,6 @@ from users.models import Profile
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
     """Create a profile for the user who just created his account"""
+    del sender, kwargs
     if created:
         Profile.objects.create(user=instance)
