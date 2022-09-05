@@ -1,29 +1,32 @@
 """Views for creating/browsisng meals and managing the day"""
 from http import HTTPStatus
 import json
+from typing import Any
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core import serializers
-from django.http.response import Http404, JsonResponse
+from django.forms.models import ModelForm
+from django.http.request import HttpRequest
+from django.http.response import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView
-from django.views.generic.edit import DeleteView, FormView
+from django.views.generic.edit import DeleteView
 
-from core.utils import PassUserFormMixin
+from core.utils import PassUserFormView
 from foods.forms import DayCreateForm, MealCreateForm
 from foods.models import Day, Ingredient, Meal, ThroughDayMeal, ThroughMealIngr
 
 
-def homepage_view(request):
+def homepage_view(request: HttpRequest) -> HttpResponse:
     """A basic view of the index page"""
     return render(request, "general/index.html")
 
 
-class MealCreate(SuccessMessageMixin, PassUserFormMixin, FormView):
+class MealCreate(SuccessMessageMixin, PassUserFormView):
     """View for creating meals"""
 
     form_class = MealCreateForm
@@ -31,7 +34,9 @@ class MealCreate(SuccessMessageMixin, PassUserFormMixin, FormView):
     success_url = reverse_lazy("foods_day_create")
     success_message = "The meal has been created"
 
-    def get(self, request, *args, **kwargs):
+    def get(
+        self, request: HttpRequest, *args: Any, **kwargs: Any
+    ) -> HttpResponse:
         """If the request is ajax, get ingredients else generate the form"""
         if self.request.accepts("text/html"):
             return super().get(request, *args, **kwargs)
@@ -50,39 +55,41 @@ create = login_required(MealCreate.as_view())
 
 
 @method_decorator(csrf_exempt, "dispatch")
-class DayCreate(PassUserFormMixin, FormView):
+class DayCreate(PassUserFormView):
     """View for creating days"""
 
     form_class = DayCreateForm
     template_name = "day/create.html"
     success_url = reverse_lazy("foods_day_create")
 
-    def get(self, request, *args, **kwargs):
+    def get(
+        self, request: HttpRequest, *args: Any, **kwargs: Any
+    ) -> HttpResponse:
         """If the request is ajax get data"""
         if not request.accepts("text/html"):
             return self.get_search_data()
 
         return super().get(request, *args, **kwargs)
 
-    def form_valid(self, form):
+    def form_valid(self, form: ModelForm) -> HttpResponse:
         """Save the form and inform the user"""
         form.save()
         return JsonResponse({"Status": "Saved"}, status=HTTPStatus.OK)
 
-    def form_invalid(self, form):
+    def form_invalid(self, form: ModelForm) -> HttpResponse:
         """Inform the user that the form doesn't want his bad data"""
         return JsonResponse(
             {"Status": "Saved"}, status=HTTPStatus.UNPROCESSABLE_ENTITY
         )
 
-    def get_form_kwargs(self):
+    def get_form_kwargs(self) -> dict[str, Any]:
         """Make sure that request data is getting processed correctly"""
         kwargs = super().get_form_kwargs()
         if self.request.method == "POST":
             kwargs.update({"data": json.loads(self.request.body)})
         return kwargs
 
-    def get_search_data(self):
+    def get_search_data(self) -> JsonResponse:
         """Get the searched meal or the selected day data"""
         data_dict = {}
         search_query = self.request.GET.get("q")
@@ -130,7 +137,7 @@ class MealDetail(DetailView):
     context_object_name = "meal"
     template_name = "meal/view.html"
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         """Get the ingredient amount data in addition to the meal"""
         context = super().get_context_data(**kwargs)
         meal = context.get("meal")
@@ -152,7 +159,7 @@ class MealDelete(SuccessMessageMixin, DeleteView):
     success_url = reverse_lazy("foods_day_create")
     success_message = "The meal has been deleted"
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         """If the person here isn't the author, it's fishy"""
         context = super().get_context_data(**kwargs)
         meal = context.get("meal")

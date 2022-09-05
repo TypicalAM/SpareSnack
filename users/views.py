@@ -1,7 +1,12 @@
 """Views concerning the user"""
+from typing import Any, Optional, cast
 from allauth.account.views import LogoutView
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models.query import QuerySet
+from django.http.request import HttpRequest
+from django.http.response import HttpResponse
 from django.shortcuts import render
 from django.urls.base import reverse_lazy
 from django.views.generic.base import View
@@ -16,12 +21,12 @@ class UserProfileView(View):
 
     template_name = "profile/index.html"
 
-    def get(self, request):
+    def get(self, request: HttpRequest) -> HttpResponse:
         """Update the request with the logged in user to display his data"""
         context = {
             "user": request.user,
-            "meals": Meal.objects.filter(author=self.request.user),
-            "diets": Diet.objects.filter(author=self.request.user),
+            "meals": Meal.objects.filter(author=cast(User, self.request.user)),
+            "diets": Diet.objects.filter(author=cast(User, self.request.user)),
         }
         return render(request, self.template_name, context=context)
 
@@ -32,7 +37,7 @@ profile = login_required(UserProfileView.as_view())
 class ProperLogoutView(LogoutView):
     """Override the default redirect url for the logout view"""
 
-    def get_redirect_url(self):  # pylint: disable=no-self-use
+    def get_redirect_url(self) -> str:  # pylint: disable=no-self-use
         """Let's redirect to our logout_done view"""
         return reverse_lazy("foods_meal_browse")
 
@@ -50,9 +55,10 @@ class ChangeGoalsView(SuccessMessageMixin, UpdateView):
     success_url = reverse_lazy("account_profile")
     success_message = "The preferences have been changed"
 
-    def get_object(self, queryset=None):
+    def get_object(self, queryset: Optional[QuerySet[Any]] = None) -> Profile:
         """Return the user profile instance"""
-        return self.request.user.profile
+        user = cast(User, self.request.user)
+        return Profile.objects.get(user=user)
 
 
 change_goals = login_required(ChangeGoalsView.as_view())
@@ -68,9 +74,10 @@ class ChangeAvatarView(SuccessMessageMixin, UpdateView):
     success_url = reverse_lazy("account_profile")
     success_message = "The avatar image has been changed"
 
-    def get_object(self, queryset=None):
+    def get_object(self, queryset: Optional[QuerySet[Any]] = None) -> Profile:
         """Return the user profile instance"""
-        return self.request.user.profile
+        user = cast(User, self.request.user)
+        return Profile.objects.get(user=user)
 
 
 change_avatar = login_required(ChangeAvatarView.as_view())

@@ -4,21 +4,25 @@ import os
 from uuid import uuid4
 
 from django.contrib import messages
+from django.db.models.base import Model
+from django.forms.models import ModelForm
+from django.http.response import HttpResponse
 from django.shortcuts import render
 from django.utils.deconstruct import deconstructible
+from django.views.generic.edit import FormView
 
 
 @deconstructible
 class UploadAndRename:
     """Made to help with making sensible filenames for images"""
 
-    def __init__(self, path):
+    def __init__(self, path: str) -> None:
         """
         Determine the sub_path
         """
         self.sub_path = path
 
-    def __call__(self, instance, filename):
+    def __call__(self, instance: Model, filename: str) -> str:
         """Make and return the filenames"""
         ext = filename.split(".")[-1]
         model_name = instance.__class__.__name__.lower()
@@ -26,7 +30,7 @@ class UploadAndRename:
         return os.path.join(self.sub_path, filename)
 
 
-def image_clean_up(instance, image_field_name="image"):
+def image_clean_up(instance: Model, image_field_name: str = "image") -> None:
     """Clean up old photos after updating"""
     proxy = instance._meta.proxy_for_model  # pylint: disable=protected-access
     model = proxy if proxy else instance.__class__
@@ -47,22 +51,22 @@ def image_clean_up(instance, image_field_name="image"):
             image_old.delete(save=False)
 
 
-class PassUserFormMixin:
+class PassUserFormView(FormView):
     """A mixin made to pass the user as an additional kwargs to a form"""
 
-    def get_form_kwargs(self):
+    def get_form_kwargs(self) -> dict:
         """Add the user as the author"""
         kwargs = super().get_form_kwargs()
         kwargs["user"] = self.request.user
         return kwargs
 
-    def form_valid(self, form):
+    def form_valid(self, form: ModelForm) -> HttpResponse:
         """Save the form and inform the user"""
         form.save()
         return super().form_valid(form)
 
-    def form_invalid(self, form):
+    def form_invalid(self, form: ModelForm) -> HttpResponse:
         """Inform the user that the form doesn't want his bad data"""
         for _, error in form.errors.items():
             messages.error(self.request, ", ".join(error))
-            return render(self.request, self.template_name)
+        return render(self.request, self.template_name)

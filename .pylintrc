@@ -5,4 +5,5 @@ good-names= "setUp", "ALLOWED_HOSTS"
 disable=no-member,
 				import-error,
 				too-many-ancestors,
-				too-few-public-methods
+				too-few-public-methods,
+				import-outside-toplevel

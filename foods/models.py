@@ -1,5 +1,6 @@
 """Models for the foods app"""
 import datetime
+from typing import Any, Sequence
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -26,19 +27,19 @@ class Ingredient(models.Model):
         upload_to=UploadAndRename("foods/ingredient_thumbnails"),
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name} measured with {self.measure_type} at {self.convert_rate}g per 1 item"
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """Clean up after the old image if we have a new one"""
         image_clean_up(self)
         super().save(*args, **kwargs)
 
-    def get_base_calories(self):
+    def get_base_calories(self) -> int:
         """Get the calories for 100 grams of a certain food"""
         return round(self.fats * 8 + self.protein * 4 + self.carbs * 4)
 
-    def convert_from_grams(self, grams):
+    def convert_from_grams(self, grams: float) -> float:
         """Display to the user the amount of the item, having the item in grams
 
         Example:    Mango.measure_type = FRUITS
@@ -51,7 +52,7 @@ class Ingredient(models.Model):
         """
         return round(grams / self.convert_rate, 2)
 
-    def convert_to_grams(self, quantity):
+    def convert_to_grams(self, quantity: float) -> float:
         """A function analogous to `convert_from_grams`
 
         Example:    Mango.measure_type = FRUITS
@@ -89,20 +90,22 @@ class Meal(models.Model):
 
         ordering = ["pk"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name}"
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """Set the url for the meal and clean up old images"""
         image_clean_up(self)
         self.url = self.get_absolute_url()
         super().save(*args, **kwargs)
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """Generate the attribute url for the meal"""
         return reverse("foods_meal_detail", kwargs={"pk": self.pk})
 
-    def save_ingredients(self, ingredients, amounts):
+    def save_ingredients(
+        self, ingredients: Sequence[Ingredient], amounts: Sequence[float]
+    ) -> None:
         """Create the necessary relations for ingredients"""
         for ingredient, amount in zip(ingredients, amounts):
             relation = ThroughMealIngr.objects.create(
@@ -125,10 +128,10 @@ class ThroughMealIngr(models.Model):
     protein = models.FloatField(default=0)
     carbs = models.FloatField(default=0)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.meal},{self.ingredient}"
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """Convert from native to grams"""
         self.grams = self.ingredient.convert_to_grams(self.amount)
         self.fats = round(self.ingredient.fats / 100 * self.grams, 2)
@@ -145,10 +148,12 @@ class Day(models.Model):
     meals = models.ManyToManyField(Meal, through="ThroughDayMeal")
     backup = models.BooleanField(default=False)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.date},{self.author}"
 
-    def save_meals(self, meals, meal_nums):
+    def save_meals(
+        self, meals: Sequence[Meal], meal_nums: Sequence[int]
+    ) -> None:
         """Create the necessary relations for meals"""
         for rel in ThroughDayMeal.objects.filter(day=self):
             rel.delete()
@@ -157,7 +162,7 @@ class Day(models.Model):
                 day=self, meal=meal, meal_num=meal_num
             )
 
-    def get_macros(self):
+    def get_macros(self) -> list[float]:
         """Get the total calories from the meals"""
         relations = ThroughDayMeal.objects.filter(day=self)
         macros = [0.0, 0.0, 0.0, 0.0]
@@ -177,7 +182,7 @@ class ThroughDayMeal(models.Model):
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
     meal_num = models.PositiveSmallIntegerField()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.day},{self.meal}"
 
 
@@ -198,29 +203,29 @@ class Diet(models.Model):
 
         ordering = ["pk"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.date},{self.author}"
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """Set the slug field, create days or the backups of the days"""
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """Generate the url for foods_diet_details"""
         return reverse("foods_diet_detail", kwargs={"slug": self.slug})
 
-    def get_import_url(self):
+    def get_import_url(self) -> str:
         """Generate the url for diet imports"""
         return reverse("foods_diet_import", kwargs={"slug": self.slug})
 
-    def delete(self, *args, **kwargs):
+    def delete(self, *args: Any, **kwargs: Any) -> tuple[int, dict[str, int]]:
         """Delete the diet and the associated backup days"""
         for day in self.days.all():
             day.delete()
-        super().delete(*args, **kwargs)
+        return super().delete(*args, **kwargs)
 
-    def save_days(self):
+    def save_days(self) -> None:
         """Create days or the backups of the days"""
         delta = (self.end_date - self.date).days + 1
         dates = (
@@ -246,7 +251,7 @@ class Diet(models.Model):
 
             self.days.add(instance)
 
-    def fill_days(self, user, date):
+    def fill_days(self, user: User, date: Any) -> None:
         """Fill the days of the `user` from `date` with the selected diet"""
 
         if isinstance(date, str):
