@@ -2,10 +2,11 @@ version: '3.8'
 
 services:
   web:
-    build: ./app
+    build: ./src
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./app/:/usr/src/app/
+      - ./src/:/usr/src/app
+      - ./media:/media
     ports:
       - 8000:8000
       - 3000:3000
