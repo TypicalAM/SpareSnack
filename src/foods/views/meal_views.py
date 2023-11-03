@@ -106,7 +106,10 @@ class DayCreate(PassUserFormView):
             day, _ = Day.objects.get_or_create(
                 date=day_query, author=self.request.user, backup=False
             )
+            from django.db import reset_queries
+            from django.db import connection
             inter = ThroughDayMeal.objects.filter(day=day)
+            print(connection.queries)
             meals = [obj.meal for obj in inter]
             meal_nums = [obj.meal_num for obj in inter]
             data_dict["meals"] = serializers.serialize("json", meals)

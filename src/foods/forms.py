@@ -132,9 +132,12 @@ class MealCreateForm(forms.ModelForm):
         )
         amounts = cast(Sequence[float], self.cleaned_data.get("amounts"))
         if commit:
+            print(self.cleaned_data)
+            '''
             Meal.objects.create(
                 **self.cleaned_data, author=self.user
             ).save_ingredients(ingredients, amounts)
+            '''
 
 
 class DietCreateForm(forms.ModelForm):

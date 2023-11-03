@@ -4,13 +4,13 @@
     </a>
 </p>
 
-👋 Hi! This is a diet tracking app which enables users to create/modify and follow different diets in their day to day life with an easy to use interface!
+👋 Hi! This is a diet tracking app which enables users to create/modify and follow different diets in their day-to-day life with an easy-to-use interface!
 
 ---
 
 ## 🧐 Project philosophy
 
-> This app was created for me and my girlfriend to try to motivate ourselves to follow a diet. Every dietary or meal planning app on the market didn't have what we wanted, or just cost a lot of money for the average college student so we decided to work on the solution on our own. I learned a lot about programming and development on the way and I hope you will find this project interesting!
+> This app was created for me and my girlfriend to try to motivate ourselves to follow a diet. Every dietary or meal planning app on the market didn't have what we wanted, or just cost a lot of money for the average college student, so we decided to work on the solution on our own. I learned a lot about programming and development on the way and I hope you will find this project interesting!
 
 ---
 
@@ -21,7 +21,7 @@
 _🛠 This project requires `pip` and `Python 3.6` or above_. See: [Python downloads](https://www.python.org/downloads/). Additionally, two packages require further setup - those are:
 
 - `Psycopg2` - installation [instructions](https://www.psycopg.org/docs/install.html#install-from-source)
-- `Pillow` - instalation [instructions](https://pillow.readthedocs.io/en/stable/installation.html)
+- `Pillow` - installation [instructions](https://pillow.readthedocs.io/en/stable/installation.html)
 
 ### 2. Clone the repository and enter it
 
@@ -56,7 +56,7 @@ SQL_PORT=5432
 DATABASE=postgres
 ```
 
-You can also modify the existing configuration to not require having a postgres database with the `DATABASE` variable.
+You can also modify the existing configuration to not require having a `postgres` database with the `DATABASE` variable.
 
 - Next, we have to make migrations and migrate the database
 
@@ -73,17 +73,17 @@ python3 manage.py migrate
 python3 manage.py runserver
 ```
 
-## ✨ Starting the app in a cointainer
+## ✨ Starting the app in a container
 
-If you have a possiblity to run docker containers on your machine, you can also run the dev version of this product directly in the container using the provided `Dockerfile`. If you want to also use the `postgres` database engine however, you must also set up an image for a `postgres` database. A well-written guide I've found to do this is [here](https://testdriven.io/blog/dockerizing-django-with-postgres-gunicorn-and-nginx/).
+If you have a possibility to run docker containers on your machine, you can also run the dev version of this product directly in the container using the provided `Dockerfile`. If you want to also use the `postgres` database engine however, you must also set up an image for a `postgres` database. A well-written guide I've found to do this is [here](https://testdriven.io/blog/dockerizing-django-with-postgres-gunicorn-and-nginx/).
 
 ## ❓ How do I even use it?
 
 Glad you asked, there are four main components to the app:
-- You have **Recipes**, which go in **Meals**. Each **Day** is comprised of five **Meals**.
+- You have **Recipes**, which go in **Meals**. Each **Day** consists of five **Meals**.
 - If you really liked a **Day** you can save it in a **Diet**, which can be public or private. If it is public everyone is able to see it and **import** it into their day. Importing is a process which involves *reusing* the days which have already been created to make the most out of your well-prepared **Days**.
 - After creating an account (I won't steal your details) you can go into the **My Day** tab to see all the possible options that you have.
-- Initially, it would be useful to also fill the database with ingredients, because its hard to include them in this package since that would be a lot of data.
+- Initially, it would be useful to also fill the database with ingredients, because it's hard to include them in this package since that would be a lot of data.
 
 ---
 

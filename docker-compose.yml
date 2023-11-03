@@ -2,23 +2,15 @@ version: '3.8'
 
 services:
   web:
-    build: .
+    build: ./app
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./:/usr/src/app/
+      - ./app/:/usr/src/app/
     ports:
       - 8000:8000
-    environment:
-      - DEBUG=1
-      - SECRET_KEY=foo
-      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
-      - SQL_ENGINE=django.db.backends.postgresql
-      - SQL_DATABASE=test
-      - SQL_USER=test
-      - SQL_PASSWORD=test
-      - SQL_HOST=db
-      - SQL_PORT=5432
-      - DATABASE=postgres
+      - 3000:3000
+    env_file:
+      - ./.env.dev
     depends_on:
       - db
   db:
@@ -26,9 +18,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_USER=test
-      - POSTGRES_PASSWORD=test
-      - POSTGRES_DB=test
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=production
 
 volumes:
   postgres_data:
