@@ -1,2 +1,5 @@
-media
+media/*
+!media/.gitkeep
+__pycache__/*
+*.pyc
 .env*
