@@ -29,7 +29,7 @@ class UserProfileView(View):
             "diets": Diet.objects.filter(author=cast(User, self.request.user)),
         }
         from django.db import connection
-        print(Meal.objects.filter(author=cast(User, self.request.user)).query)
+
         return render(request, self.template_name, context=context)
 
 

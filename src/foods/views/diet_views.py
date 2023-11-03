@@ -26,7 +26,6 @@ class DietBrowse(ListView):
     def get_queryset(self, *args: Any, **kwargs: Any) -> QuerySet:
         """Get only the public diets"""
         queryset = cast(QuerySet, super().get_queryset(*args, **kwargs))
-        print(queryset.filter(public=True).query)
         return queryset.filter(public=True)
 
 
