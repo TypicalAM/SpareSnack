@@ -1,14 +1,14 @@
-name: Django app
+name: Build and run
 on: [push]
 jobs:
   django_build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Build the docker image
+    - name: Copy the sample env file
+      run: mv .env.sample .env.dev
+    - name: Build the docker compose environment
       run: docker-compose up -d
-    - name: Make migrations
-      run: docker-compose run web python manage.py makemigrations
     - name: Run migrations
       run: docker-compose run web python manage.py migrate
     - name: Run tests
