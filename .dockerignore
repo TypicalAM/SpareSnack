@@ -1,0 +1,6 @@
+media/*
+!media/.gitkeep
+__pycache__/*
+*.pyc
+.env*
+!.env.sample
