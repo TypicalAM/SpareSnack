@@ -32,6 +32,10 @@ ALLOWED_HOSTS = os.environ.get(
     "DJANGO_ALLOWED_HOSTS", default="localhost"
 ).split(" ")
 
+ALLOWED_HOSTS = os.environ.get(
+    "DJANGO_CSRF_TRUSTED_ORIGINS", default="localhost"
+).split(" ")
+
 # Application definition
 
 INSTALLED_APPS = [
