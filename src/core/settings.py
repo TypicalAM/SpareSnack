@@ -154,7 +154,6 @@ MEDIA_ROOT = "/media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 DEBUG_PROPAGATE_EXCEPTIONS = True
-CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
 
 # django-allauth related settings
 SITE_ID = 2
